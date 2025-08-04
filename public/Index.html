@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+ <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js">
+  localStorage.removeItem('isAdmin');
+window.addEventListener("load", () => {
+  if (localStorage.getItem("isAdmin") === "true") {
+    isAdmin = true;
+    showAdminFeatures();
+  }
+});
+
+
+window.addEventListener("load", () => {
+  if (localStorage.getItem("isAdmin") === "true") {
+    showAdminFeatures();
+  }
+});
+ </script>
+ <script>
+  emailjs.init('82kjXx_GqN4q2HVOh');
+ </script>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Montessori Nargis Dutt Public School
+  </title>
+  <style>
+   body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f9;
+      transition: background-color 0.3s ease;
+      
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+
+      background-size: cover;
+      background-position: center;
+    }
+    nav {
+      background-color:  #2a5298;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    section {
+      padding: 30px;
+      display: none;
+    }
+    section.active {
+      display: block;
+      background-color: white;
+      margin: 20px auto;
+      max-width: 800px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    footer {
+      background: transparent;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    
+  color: white;
+  text-shadow: 0 0 2px black;
+}
+    input, textarea, select {
+      padding: 10px;
+      width: 100%;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      background-color:  #2a5298;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    h1, h2 {
+      color: #2a5298;
+    }
+    .leave-step {
+      display: none;
+    }
+    .active-step {
+      display: block;
+    }
+    .gallery-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .gallery-grid img {
+      width: 150px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    .delete-btn {
+      display: block;
+      margin-top: 5px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      padding: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      width: 150px;
+    }
+.video-delete-btn {
+  display: block;
+  margin-top: 5px;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  width: 100px;
+}
+    /* Hide admin features if not logged in */
+    .admin-only {
+      display: none;
+    }
+    .admin-only.visible {
+      display: block;
+    }
+    /* Styling for editable content */
+    .editable {
+      display: none;
+      margin-top: 10px;
+    }
+    .editable.visible {
+      display: block;
+    }
+    /* Background Edit Styles */
+    #backgroundEditable {
+      margin-top: 20px;
+    }
+    #backgroundEditable input {
+      display: inline-block;
+      width: 80%;
+    }
+    /* Admin menu dropdown */
+    .menu-container {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 1000;
+      display: inline-block;
+    }
+    #menuBtn {
+      font-size: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color:#FFFFFF;
+      font-weight: bold;
+    }
+    .dropdown-content {
+      position: absolute;
+      background-color: white;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      padding: 8px 0;
+      min-width: 100px;
+      z-index: 1;
+      display: none;
+      right: 0;
+      border-radius: 4px;
+    }
+    .dropdown-content a {
+      display: block;
+      padding: 8px 12px;
+      text-decoration: none;
+      color: black;
+      cursor: pointer;
+      }
+    .dropdown-content a:hover {
+      background-color: #ddd;
+    }
+    #adminPanel {
+      margin-top: 20px;
+      display: none;
+      max-width: 800px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #adminPanel button {
+      margin-right: 10px;
+      padding: 8px 12px;
+      background-color: #2a5298;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  
+.upload-section, #upload, #uploadVideo {
+  background-color: white !important;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  margin: 15px auto;
+  max-width: 800px;
+}
+  </style>
+ </head>
+ <body>
+  <!-- Admin menu (3 dots) -->
+  <div class="menu-container">
+   <button id="menuBtn">
+    ⋮
+   </button>
+   <div class="dropdown-content" id="dropdown">
+    <a href="#" id="adminOption">
+     Admin
+    </a>
+   </div>
+  </div>
+  <!-- Admin panel -->
+  <div id="adminPanel">
+   <h3>
+    Admin Edit Options
+   </h3>
+   <button onclick="editHome()">
+    Edit Home
+   </button>
+   <button onclick="editAbout()">
+    Edit About Us
+   </button>
+   <button onclick="uploadImage()">
+    Upload Image
+   </button>
+   <button onclick="logout()" style="background-color: #d9534f;">
+    Logout
+   </button>
+  </div>
+  <nav>
+   <a href="#" onclick="showPage('home')">
+    Home
+   </a>
+   <a href="#" onclick="showPage('about')">
+    About Us
+   </a>
+   <a href="#" onclick="showPage('admission')">
+    Online Admission
+   </a>
+   <a href="#" onclick="showPage('leave')">
+    Leave Record System
+   </a>
+   <a href="#" onclick="showPage('gallery')">
+    Gallery
+   </a>
+   <a href="#" onclick="showPage('polls')">
+    Polls
+   </a>
+   <a class="admin-only visible" href="#" id="logoutBtn" onclick="logout()">
+    Logout
+   </a>
+  </nav>
+  <!-- Home Section -->
+  <section class="active" id="home">
+   <h1 id="homeTitle">
+    Welcome to Montessori Nargis Dutt Public School
+   </h1>
+   <p id="homeDesc">
+    Our  School is committed to nurturing young minds through excellence in academics and
+      character building.
+   </p>
+   <!-- Editable content for admin -->
+   <div class="editable" id="homeEditable">
+    <h2>
+     Edit Home Section
+    </h2>
+    <input id="homeTitleInput" placeholder="Edit Title" type="text"/>
+    <textarea id="homeDescInput" placeholder="Edit Description"></textarea>
+    <button onclick="saveHomeChanges()">
+     Save Changes
+    </button>
+   </div>
+   <!-- Background edit section for Admin -->
+   <div class="editable" id="backgroundEditable">
+    <h2>
+     Edit Background
+    </h2>
+    <label for="backgroundColorInput">
+     Background Color (Hex code):
+    </label>
+    <input id="backgroundColorInput" placeholder="Enter hex code, e.g., #ffffff" type="text"/>
+    <button onclick="changeBackgroundColor()">
+     Change Background Color
+    </button>
+    <br/>
+    <br/>
+    <label for="backgroundImageInput">
+     Background Image (Upload):
+    </label>
+    <input accept="image/*" id="backgroundImageInput" type="file"/>
+    <button onclick="changeBackgroundImage()">
+     Change Background Image
+    </button>
+    <button onclick="clearBackgroundImage()" style="background-color: #d9534f; margin-left: 10px;">
+     Clear Background Image
+    </button>
+   </div>
+   <div class="gallery-grid" id="homeGallery">
+   </div>
+  </section>
+  <!-- About Us Section -->
+  <section id="about">
+   <h1 id="aboutTitle">
+    About Montessori School
+   </h1>
+   <p id="aboutDesc">
+    Founded in 2005, Montessori School has grown into a vibrant community of learners...
+   </p>
+   <!-- Editable content for admin -->
+   <div class="editable" id="aboutEditable">
+    <h2>
+     Edit About Us Section
+    </h2>
+    <input id="aboutTitleInput" placeholder="Edit Title" type="text"/>
+    <textarea id="aboutDescInput" placeholder="Edit Description"></textarea>
+    <button onclick="saveAboutChanges()">
+     Save Changes
+    </button>
+   </div>
+  </section>
+  <!-- Admission Form -->
+  <section id="admission">
+   <h1>
+    Online Admission Form
+   </h1>
+   <form id="admissionForm">
+    <label for="admissionName">
+     Name:
+    </label>
+    <input id="admissionName" required="" type="text"/>
+    <label for="admissionAge">
+     Age:
+    </label>
+    <input id="admissionAge" max="18" min="3" required="" type="number"/>
+    <label for="admissionGrade">
+     Grade Applying For:
+    </label>
+    <select id="admissionGrade" required="">
+     <option value="">
+      Select Grade
+     </option>
+     <option value="Nursery">
+      Nursery
+     </option>
+     <option value="Lower Kindergarden ( L.K.G ) ">
+      Lower Kindergarden ( L.K.G )
+     </option>
+     <option value="Upper Kindergarden ( U.K.G ) ">
+      Upper Kindergarden ( U.K.G )
+     </option>
+     <option value="1">
+      1
+     </option>
+     <option value="2">
+      2
+     </option>
+     <option value="3">
+      3
+     </option>
+     <option value="4">
+      4
+     </option>
+     <option value="5">
+      5
+     </option>
+     <option value="6">
+      6
+     </option>
+     <option value="7">
+      7
+     </option>
+     <option value="8">
+      8
+     </option>
+     <option value="9">
+      9
+     </option>
+     <option value="10">
+      10
+     </option>
+    </select>
+    <button type="submit">
+     Submit Admission
+    </button>
+   </form>
+   <p id="admissionMessage" style="color: red; font-weight: bold;">
+   </p>
+  </section>
+  <script>
+   // Override form submission behavior
+  document.getElementById("admissionForm").addEventListener("submit", function (event) {
+  event.preventDefault(); // Stop actual form submit
+  const messageElement = document.getElementById("admissionMessage");
+  messageElement.textContent = "Sorry, Admissions are closed for now";
+  // Clear the message after 1 second
+  setTimeout(() => {
+    messageElement.textContent = "";
+  }, 1000);
+  // Optional: clear form fields
+  document.getElementById("admissionForm").reset();
+});
+  </script>
+  <!-- Leave System -->
+  <section id="leave">
+   <h1>
+    Leave Record System
+   </h1>
+   <div class="leave-step active-step" id="leaveFormStep1">
+    <label for="leaveName">
+     Name:
+    </label>
+    <input id="leaveName" type="text"/>
+    <label for="leaveDate">
+     Date of Leave:
+    </label>
+    <input id="leaveDate" type="date"/>
+    <label for="leaveClass">
+     Class:
+    </label>
+    <input id="leaveClass" type="text"/>
+    <label for="leaveSection">
+     Section:
+    </label>
+    <input id="leaveSection" type="text"/>
+    <label for="leaveRoll">
+     Roll No.:
+    </label>
+    <input id="leaveRoll" type="text"/>
+    <button onclick="nextLeaveStep()">
+     Next
+    </button>
+   </div>
+   <div class="leave-step" id="leaveFormStep2">
+    <label for="leaveReason">
+     Reason for Leave:
+    </label>
+    <textarea id="leaveReason" required=""></textarea>
+    <label for="leaveDays">
+     Number of Days:
+    </label>
+    <input id="leaveDays" min="1" required="" type="number"/>
+    <button onclick="prevLeaveStep()">
+     Back
+    </button>
+    <button id="leaveSubmitButton" onclick="submitLeaveForm()">
+     Submit Leave
+    </button>
+   </div>
+   <div id="leaveRecordDisplay" style="margin-top: 20px;">
+   </div>
+  </section>
+  <!-- Upload Images -->
+  <section class="admin-only" id="upload">
+   <h1>
+    Upload Images
+   </h1>
+   <input accept="image/*" id="uploadInput" multiple="" type="file"/>
+   <button onclick="uploadImages()">
+    Upload
+   </button>
+   <p id="uploadMessage" style="color: green;">
+   </p>
+  </section>
+  <!-- Upload Videos -->
+  <section class="admin-only" id="uploadVideo">
+   <h1>
+    Upload Videos
+   </h1>
+   <input accept="video/*" id="uploadVideoInput" type="file"/>
+   <button onclick="uploadVideo()">
+    Upload Video
+   </button>
+   <p id="uploadVideoMessage" style="color: green;">
+   </p>
+  </section>
+  <!-- Gallery -->
+  <section id="gallery">
+   <h1>
+    Image Gallery
+   </h1>
+   <div class="gallery-grid" id="galleryContainer">
+   </div>
+  </section>
+  <!-- Polls -->
+  <section id="polls">
+   <h1 style="text-align: center;">
+    Update Soon... 😊
+   </h1>
+  </section>
+  <footer>
+   MNDP School © 2025
+  </footer>
+  <script>
+   function isMobileDevice() {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}
+// State variables
+  let isAdmin = false;
+  let leaveStep = 1;
+  const galleryImages = []; // store { id, url } for gallery
+  let imageIdCounter = 0;
+  // Show page by id, hide others
+  function showPage(pageId) {
+    document.querySelectorAll("section").forEach((section) => {
+      if (section.id === pageId) {
+        section.classList.add("active");
+      } else {
+        section.classList.remove("active");
+      }
+    });
+    // Hide or show admin-only features based on login state
+    document.querySelectorAll(".admin-only").forEach((el) => {
+      el.classList.toggle("visible", isAdmin);
+    });
+    // Hide admin panel on page change
+    if(pageId !== 'home' && pageId !== 'about') {
+      hideAdminEdit();
+    }
+  }
+  // Toggle admin editable content visibility
+  function toggleEdit(section) {
+    if (!isAdmin) {
+      alert("Please login as Admin to edit.");
+      return;
+    }
+    const editableDiv = document.getElementById(section + "Editable");
+    if (editableDiv) {
+      editableDiv.classList.toggle("visible");
+    }
+  }
+  // Save Home Section edits
+function saveHomeChanges() {
+  const title = document.getElementById("homeTitleInput").value.trim();
+  const desc = document.getElementById("homeDescInput").value.trim();
+  fetch("http://localhost:3000/save-content", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ section: "home", title, desc })
+  })
+  .then(() => {
+    document.getElementById("homeTitle").textContent = title;
+    document.getElementById("homeDesc").textContent = desc;
+    alert("Home section saved to backend!");
+  })
+  .catch(err => alert("Error saving home section: " + err.message));
+}
+  // Save About Section edits
+  function saveAboutChanges() {
+    const titleInput = document.getElementById("aboutTitleInput");
+    const descInput = document.getElementById("aboutDescInput");
+    document.getElementById("aboutTitle").textContent = titleInput.value;
+    document.getElementById("aboutDesc").textContent = descInput.value;
+    alert("About Us section updated!");
+  }
+  // Leave form step handling
+function nextLeaveStep() {
+  const name = document.getElementById("leaveName").value.trim();
+  const date = document.getElementById("leaveDate").value.trim();
+  const className = document.getElementById("leaveClass").value.trim();
+  const section = document.getElementById("leaveSection").value.trim();
+  const roll = document.getElementById("leaveRoll").value.trim();
+  if (!name || !date || !className || !section || !roll) {
+    alert("Please fill out all fields (Name, Date, Class, Section, Roll No.) to proceed.");
+    return;
+  }
+  leaveStep = 2;
+  updateLeaveForm();
+}
+  function prevLeaveStep() {
+    leaveStep = 1;
+    updateLeaveForm();
+  }
+  function updateLeaveForm() {
+    document.getElementById("leaveFormStep1").classList.toggle("active-step", leaveStep === 1);
+    document.getElementById("leaveFormStep2").classList.toggle("active-step", leaveStep === 2);
+  }
+
+
+   // Admission form submission
+function submitAdmissionForm() {
+  const messageElement = document.getElementById("admissionMessage");
+  if (messageElement) {
+    messageElement.textContent = "Sorry, Admissions are closed for now";
+    // Ensure it's visible (in case styling interferes)
+    messageElement.style.display = "block";
+    // Clear after 1 second
+    setTimeout(() => {
+      messageElement.textContent = "";
+      // Optional: also hide it
+      messageElement.style.display = "none";
+    }, 1000);
+  }
+  return false; // Prevent form submission
+}
+  // Admin login option
+  document.getElementById("adminOption").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (isAdmin) {
+      alert("You are already logged in.");
+      return;
+    }
+    const pwd = prompt("Enter Admin Password:");
+    if (pwd === "admin123") {
+      alert("Admin login successful!");
+      document.getElementById("dropdown").style.display = "none";
+    } else {
+      alert("Incorrect password.");
+    }
+  });
+  // Show admin features and buttons
+  function showAdminFeatures() {
+  isAdmin = true;
+  localStorage.setItem('isAdmin', 'true');
+  document.getElementById("adminPanel").style.display = "block";
+  document.querySelectorAll(".admin-only").forEach(el => el.classList.add("visible"));
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) logoutBtn.style.display = "inline";
+}
+  // Logout admin
+  function logout() {
+    isAdmin = false;
+    localStorage.removeItem('isAdmin');
+    alert("Logged out.");
+    document.getElementById("adminPanel").style.display = "none";
+    document.querySelectorAll(".admin-only").forEach(el => el.classList.remove("visible"));
+    // Hide logout link in nav
+    document.getElementById("logoutBtn").style.display = "none";
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+      btn.style.display = "none";
+    });
+    // Hide editable content
+    hideAdminEdit();
+  }
+  // Hide all editable content
+  function hideAdminEdit() {
+    document.querySelectorAll(".editable").forEach(el => el.classList.remove("visible"));
+  }
+  // Upload images (admin only)
+  function uploadImages() {
+    if (!isAdmin) {
+      alert("Please login as Admin to upload images.");
+      return;
+    }
+    const input = document.getElementById("uploadInput");
+    if (input.files.length === 0) {
+      alert("Select images to upload.");
+      return;
+    }
+    for (const file of input.files) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Add to gallery images array
+        galleryImages.push({ id: imageIdCounter++, url: e.target.result });
+        loadGalleryFromBackend();
+      };
+      reader.readAsDataURL(file);
+    }
+    input.value = ""; // Reset input
+    document.getElementById("uploadMessage").textContent = "Images uploaded successfully!";
+    setTimeout(() => {
+      document.getElementById("uploadMessage").textContent = "";
+    }, 3000);
+  }
+  // Refresh gallery display
+  function refreshGallery() {
+    const container = document.getElementById("galleryContainer");
+  [...container.children].forEach(child => {
+    if (child.classList.contains("image-wrapper")) {
+      container.removeChild(child);
+    }
+  });
+    galleryImages.forEach((imgObj) => {
+      const imgWrapper = document.createElement("div");
+      imgWrapper.className = "image-wrapper";
+      imgWrapper.style.textAlign = "center";
+      const img = document.createElement("img");
+      img.src = imgObj.url;
+      img.alt = "Uploaded Image";
+      imgWrapper.appendChild(img);
+      if (isAdmin) {
+        // Add delete button
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-btn";
+        delBtn.textContent = "Delete";
+        delBtn.onclick = () => {
+          deleteImage(imgObj.id);
+        };
+        imgWrapper.appendChild(delBtn);
+      }
+      container.appendChild(imgWrapper);
+    });
+  }
+  // Delete image by id (admin only)
+  function deleteImage(id) {
+    if (!isAdmin) return;
+    const index = galleryImages.findIndex(img => img.id === id);
+    if (index !== -1) {
+      galleryImages.splice(index, 1);
+      loadGalleryFromBackend();
+    }
+  }
+  // Edit Home button handler
+  function editHome() {
+    showPage("home");
+    if (!isAdmin) return;
+    toggleEdit("home");
+    // Pre-fill inputs with current content
+    document.getElementById("homeTitleInput").value = document.getElementById("homeTitle").textContent;
+    document.getElementById("homeDescInput").value = document.getElementById("homeDesc").textContent;
+    // Show background edit controls
+    document.getElementById("backgroundEditable").classList.add("visible");
+  }
+  // Edit About button handler
+  function editAbout() {
+    showPage("about");
+    if (!isAdmin) return;
+    toggleEdit("about");
+    // Pre-fill inputs with current content
+    document.getElementById("aboutTitleInput").value = document.getElementById("aboutTitle").textContent;
+    document.getElementById("aboutDescInput").value = document.getElementById("aboutDesc").textContent;
+  }
+  // Upload Image button handler
+function uploadImage() {
+  showPage("upload");
+  const input = document.getElementById("uploadInput");
+  if (isMobileDevice()) {
+    input.setAttribute("accept", "image/*;capture=camera"); // Opens camera/photos on phone
+  } else {
+    input.setAttribute("accept", "image/*"); // Regular file picker on PC
+  }
+  input.click(); // trigger file input
+}
+  // Background color change
+  function changeBackgroundColor() {
+    if (!isAdmin) return;
+    const colorInput = document.getElementById("backgroundColorInput").value.trim();
+    if (!colorInput.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i)) {
+      alert("Please enter a valid hex color code.");
+      return;
+    }
+    document.body.style.backgroundColor = colorInput;
+    document.body.style.backgroundImage = ""; // clear any background image
+    alert("Background color updated.");
+  }
+  // Background image change
+  function changeBackgroundImage() {
+    if (!isAdmin) return;
+    const input = document.getElementById("backgroundImageInput");
+    if (input.files.length === 0) {
+      alert("Please select an image file.");
+      return;
+    }
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.body.style.backgroundImage = `url('${e.target.result}')`;
+      document.body.style.backgroundColor = ""; // clear background color
+      alert("Background image updated.");
+    };
+    reader.readAsDataURL(file);
+  }
+  // Clear background image
+  function clearBackgroundImage() {
+    if (!isAdmin) return;
+    document.body.style.backgroundImage = "";
+    alert("Background image cleared.");
+  }
+function uploadVideo() {
+  if (!isAdmin) {
+    alert("Only admins can upload videos.");
+    return;
+  }
+  const input = document.getElementById("uploadVideoInput");
+  if (input.files.length === 0) {
+    alert("Select a video file to upload.");
+    return;
+  }
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const videoId = "video_" + Date.now();
+    const wrapperId = "video_wrapper_" + videoId.split("_")[1];
+    const wrapper = document.createElement("div");
+    wrapper.id = wrapperId;
+    wrapper.style.textAlign = "center";
+    const videoElement = document.createElement("video");
+    videoElement.id = videoId;
+    videoElement.controls = true;
+    videoElement.width = 300;
+    videoElement.src = e.target.result;
+    wrapper.appendChild(videoElement);
+if (isAdmin) {
+  delBtn.style.display = "block";
+  wrapper.appendChild(delBtn);
+}
+    const delBtn = document.createElement("button");
+    delBtn.id = "video_del_" + videoId;
+    delBtn.className = "video-delete-btn";
+    delBtn.textContent = "Delete Video";
+    // Button styles
+    delBtn.style.backgroundColor = "red";
+    delBtn.style.color = "white";
+    delBtn.style.fontSize = "10px";
+    delBtn.style.padding = "3px 6px";
+    delBtn.style.marginTop = "5px";
+    delBtn.style.borderRadius = "4px";
+    delBtn.style.cursor = "pointer";
+    delBtn.style.textAlign = "center";
+    delBtn.style.width = "100px";
+    delBtn.onclick = () => {
+      deleteVideo(videoId.split("_")[1]);
+    };
+     // hide unless admin
+    wrapper.appendChild(delBtn);
+    const container = document.getElementById("galleryContainer");
+    container.appendChild(wrapper);
+  };
+  reader.readAsDataURL(file);
+  document.getElementById("uploadVideoMessage").textContent = "Video uploaded successfully!";
+  setTimeout(() => {
+    document.getElementById("uploadVideoMessage").textContent = "";
+  }, 3000);
+}
+function deleteVideo(id) {
+  if (!isAdmin) return;
+  const wrapper = document.getElementById("video_wrapper_" + id);
+  if (wrapper) wrapper.remove();
+}
+// 🧹 Hide all delete buttons when admin logs out
+function logout() {
+  isAdmin = false;
+  alert("Logged out.");
+  document.getElementById("adminPanel").style.display = "none";
+  document.querySelectorAll(".admin-only").forEach(el => el.classList.remove("visible"));
+  document.getElementById("logoutBtn").style.display = "none";
+  // Hide editable content
+  hideAdminEdit();
+  // Hide all delete buttons (image + video)
+  document.querySelectorAll(".delete-btn, .video-delete-btn").forEach(btn => {
+    btn.style.display = "none";
+  });
+}
+document.getElementById("menuBtn").addEventListener("click", function () {
+  const dropdown = document.getElementById("dropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+});
+  // Initial setup
+window.onload = function () {
+  localStorage.removeItem('isAdmin');
+    showPage("home");
+  };
+  </script>
+  <script>
+   // ---- Admin Save Home ----
+function saveHomeChanges() {
+  const title = document.getElementById("homeTitleInput").value.trim();
+  const desc = document.getElementById("homeDescInput").value.trim();
+  fetch("http://localhost:3000/save-content", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ section: "home", title, desc })
+  })
+  .then(() => {
+    document.getElementById("homeTitle").textContent = title;
+    document.getElementById("homeDesc").textContent = desc;
+    alert("Home section saved to backend!");
+  })
+  .catch(err => alert("Error saving home section: " + err.message));
+}
+// ---- Admin Save About ----
+function saveAboutChanges() {
+  const title = document.getElementById("aboutTitleInput").value.trim();
+  const desc = document.getElementById("aboutDescInput").value.trim();
+  fetch("http://localhost:3000/save-content", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ section: "about", title, desc })
+  })
+  .then(() => {
+    document.getElementById("aboutTitle").textContent = title;
+    document.getElementById("aboutDesc").textContent = desc;
+    alert("About section saved to backend!");
+  });
+}
+// ---- Upload Images ----
+function uploadImages() {
+  if (!isAdmin) return alert("Login as admin to upload images.");
+  const input = document.getElementById("uploadInput");
+  const files = input.files;
+  if (!files.length) return alert("No images selected.");
+  const formData = new FormData();
+  for (let file of files) formData.append('images', file);
+  fetch("http://localhost:3000/upload-image", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("Images uploaded!");
+    data.files.forEach(url => {
+      galleryImages.push({ id: imageIdCounter++, url });
+      loadGalleryFromBackend();
+    });
+  });
+}
+// ---- Upload Video ----
+function uploadVideo() {
+  if (!isAdmin) return alert("Only admins can upload videos.");
+  const input = document.getElementById("uploadVideoInput");
+  if (input.files.length === 0) return alert("Select a video file.");
+  const formData = new FormData();
+  formData.append("video", input.files[0]);
+  fetch("http://localhost:3000/upload-video", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    const wrapper = document.createElement("div");
+    wrapper.style.textAlign = "center";
+    const video = document.createElement("video");
+    video.src = data.file;
+    video.controls = true;
+    video.width = 300;
+    wrapper.appendChild(video);
+    document.getElementById("galleryContainer").appendChild(wrapper);
+    document.getElementById("uploadVideoMessage").textContent = "Video uploaded!";
+    setTimeout(() => document.getElementById("uploadVideoMessage").textContent = "", 3000);
+  });
+}
+// ---- Upload Background Image ----
+function changeBackgroundImage() {
+  if (!isAdmin) return;
+  const input = document.getElementById("backgroundImageInput");
+  if (input.files.length === 0) {
+    alert("Select a background image.");
+    return;
+  }
+  const formData = new FormData();
+  formData.append("background", input.files[0]);
+  fetch("http://localhost:3000/upload-background", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.body.style.backgroundImage = `url(${data.file})`;
+    alert("Background image updated!");
+  });
+}
+// ---- Load Saved Data + Gallery on Load ----
+window.addEventListener("load", () => {
+  fetch("http://localhost:3000/load-content")
+    .then(res => res.json())
+    .then(data => {
+      if (data.backgroundImage) { document.body.style.backgroundImage = `url('${data.backgroundImage}')`; }
+    if (data.home) {
+        document.getElementById("homeTitle").textContent = data.home.title;
+        document.getElementById("homeDesc").textContent = data.home.desc;
+      }
+      if (data.about) {
+        document.getElementById("aboutTitle").textContent = data.about.title;
+        document.getElementById("aboutDesc").textContent = data.about.desc;
+      }
+    });
+  // Load gallery content
+  fetch("http://localhost:3000/uploads/images")
+    .then(() => {
+      // This assumes a static file server or a separate API exists to list files (not implemented yet)
+      // Example: you could build an API that returns filenames in uploads/photos and uploads/videos
+    });
+  // Optional: Load existing images/videos via backend file list API if implemented
+});
+  </script>
+  <script>
+   function loadGalleryFromBackend() {
+  const container = document.getElementById("galleryContainer");
+  container.innerHTML = "";
+
+  fetch("http://localhost:3000/load-content")
+    .then(res => res.json())
+    .then(data => {
+      if (Array.isArray(data.galleryImages)) {
+        data.galleryImages.forEach(url => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "image-wrapper";
+          wrapper.style.textAlign = "center";
+
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = "Gallery Image";
+          img.width = 300;
+          wrapper.appendChild(img);
+
+          if (isAdmin) {
+            const delBtn = document.createElement("button");
+            delBtn.className = "delete-btn";
+            delBtn.textContent = "Delete";
+            delBtn.onclick = () => {
+              fetch("http://localhost:3000/delete-image", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url })
+              }).then(() => {
+                wrapper.remove();
+              });
+            };
+            wrapper.appendChild(delBtn);
+          }
+
+          container.appendChild(wrapper);
+        });
+      }
+
+      if (Array.isArray(data.galleryVideos)) {
+        data.galleryVideos.forEach(url => {
+          const wrapper = document.createElement("div");
+          wrapper.style.textAlign = "center";
+
+          const video = document.createElement("video");
+          video.src = url;
+          video.controls = true;
+          video.width = 300;
+          wrapper.appendChild(video);
+
+          if (isAdmin) {
+            const delBtn = document.createElement("button");
+            delBtn.className = "video-delete-btn";
+            delBtn.textContent = "Delete Video";
+            delBtn.onclick = () => {
+              fetch("http://localhost:3000/delete-video", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url })
+              }).then(() => {
+                wrapper.remove();
+              });
+            };
+            wrapper.appendChild(delBtn);
+          }
+
+          container.appendChild(wrapper);
+        });
+      }
+    });
+}
+function saveHomeChanges() {
+  const title = document.getElementById("homeTitleInput").value.trim();
+  const desc = document.getElementById("homeDescInput").value.trim();
+  fetch("http://localhost:3000/save-content", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ section: "home", title, desc })
+  }).then(() => {
+    document.getElementById("homeTitle").textContent = title;
+    document.getElementById("homeDesc").textContent = desc;
+    alert("Home section saved!");
+  });
+}
+function saveAboutChanges() {
+  const title = document.getElementById("aboutTitleInput").value.trim();
+  const desc = document.getElementById("aboutDescInput").value.trim();
+  fetch("http://localhost:3000/save-content", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ section: "about", title, desc })
+  }).then(() => {
+    document.getElementById("aboutTitle").textContent = title;
+    document.getElementById("aboutDesc").textContent = desc;
+    alert("About section saved!");
+  });
+}
+window.addEventListener("load", () => {
+  fetch("http://localhost:3000/load-content")
+    .then(res => res.json())
+    .then(data => {
+      if (data.home) {
+        document.getElementById("homeTitle").textContent = data.home.title;
+        document.getElementById("homeDesc").textContent = data.home.desc;
+        document.getElementById("homeTitleInput").value = data.home.title;
+        document.getElementById("homeDescInput").value = data.home.desc;
+      }
+      if (data.about) {
+        document.getElementById("aboutTitle").textContent = data.about.title;
+        document.getElementById("aboutDesc").textContent = data.about.desc;
+        document.getElementById("aboutTitleInput").value = data.about.title;
+        document.getElementById("aboutDescInput").value = data.about.desc;
+      }
+    });
+  loadGalleryFromBackend();
+});
+  </script>
+  <script>
+   // Forcefully re-hook admin logic on load and after login
+function showAdminFeatures() {
+  isAdmin = true;
+  localStorage.setItem('isAdmin', 'true');
+  const panel = document.getElementById("adminPanel");
+  if (panel) panel.style.display = "block";
+  document.querySelectorAll(".admin-only").forEach(el => el.classList.add("visible"));
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) logoutBtn.style.display = "inline";
+}
+
+document.getElementById("adminOption").addEventListener("click", (e) => {
+  e.preventDefault();
+  if (localStorage.getItem("isAdmin") === "true") {
+    alert("You are already logged in.");
+    showAdminFeatures();
+    return;
+  }
+  const pwd = prompt("Enter Admin Password:");
+  if (pwd === "admin123") {
+    alert("Admin login successful!");
+    showAdminFeatures();
+    document.getElementById("dropdown").style.display = "none";
+  } else {
+    alert("Incorrect password.");
+  }
+});
+
+// Re-check on load to auto-show admin features if already logged in
+window.addEventListener("load", () => {
+  if (localStorage.getItem("isAdmin") === "true") {
+    showAdminFeatures();
+  }
+});
+  </script>
+  <script>
+   window.addEventListener("load", () => {
+  const name = localStorage.getItem("lastLeaveName");
+  const roll = localStorage.getItem("lastLeaveRoll");
+  const key = name && roll ? `${name}_${roll}` : null;
+  if (key) {
+    const lastSubmit = localStorage.getItem(`leaveSubmit_${key}`);
+    if (lastSubmit) {
+      const now = Date.now();
+      const timePassed = now - parseInt(lastSubmit);
+      const waitTime = 2 * 60 * 1000; // 24 hours
+      if (timePassed < waitTime) {
+        startCountdown(waitTime - timePassed);
+      }
+    }
+  }
+});
+  </script>
+  <script>
+   
+  </script>
+ <script>
+
+function submitLeaveForm() {
+  const name = document.getElementById("leaveName").value.trim();
+  const date = document.getElementById("leaveDate").value.trim();
+  const className = document.getElementById("leaveClass").value.trim();
+  const section = document.getElementById("leaveSection").value.trim();
+  const roll = document.getElementById("leaveRoll").value.trim();
+  const reason = document.getElementById("leaveReason").value.trim();
+  const days = document.getElementById("leaveDays").value.trim();
+  if (!reason || !days) {
+    alert("Please provide a reason and number of days.");
+    return;
+  }
+  const userKey = `${name}_${roll}`;
+  const lastSubmit = localStorage.getItem(`leaveSubmit_${userKey}`);
+  const now = Date.now();
+  const WAIT_TIME = 24 * 60 * 60 * 1000; // 2 minutes demo
+
+  if (lastSubmit && now - parseInt(lastSubmit) < WAIT_TIME) {
+    startCountdown(WAIT_TIME - (now - parseInt(lastSubmit)));
+    return;
+  }
+
+  const submitBtn = document.getElementById("leaveSubmitButton");
+  if (submitBtn) submitBtn.disabled = true;
+
+  emailjs.send("service_zjp0c7m", "template_14sd7cg", {
+    name,
+    class: className,
+    section,
+    roll,
+    reason,
+    days,
+    email_to: "mrjolox@gmail.com"
+  }).then(function(response) {
+    alert("Leave request submitted and emailed to admin!");
+    const recordDisplay = document.getElementById("leaveRecordDisplay");
+    const newRecord = document.createElement("p");
+    newRecord.id = "recentLeaveMsg";
+    newRecord.textContent = `Leave Request: ${name} (Class: ${className}, Section: ${section}, Roll No: ${roll}) on ${date} - Reason: ${reason}, Days: ${days}`;
+    recordDisplay.appendChild(newRecord);
+    setTimeout(() => {
+      const msg = document.getElementById("recentLeaveMsg");
+      if (msg) msg.remove();
+    }, 10000);
+
+    localStorage.setItem(`leaveSubmit_${userKey}`, now.toString());
+    localStorage.setItem('lastLeaveName', name);
+    localStorage.setItem('lastLeaveRoll', roll);
+    resetLeaveForm();
+    startCountdown(WAIT_TIME);
+    if (submitBtn) submitBtn.style.display = "none";
+  }, function(error) {
+    console.error("FAILED...", error);
+    alert("Error sending email: " + JSON.stringify(error));
+    if (submitBtn) submitBtn.disabled = false;
+  });
+
+  function resetLeaveForm() {
+    document.getElementById("leaveName").value = "";
+    document.getElementById("leaveDate").value = "";
+    document.getElementById("leaveClass").value = "";
+    document.getElementById("leaveSection").value = "";
+    document.getElementById("leaveRoll").value = "";
+    document.getElementById("leaveReason").value = "";
+    document.getElementById("leaveDays").value = "";
+    leaveStep = 1;
+    updateLeaveForm();
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+function startCountdown(duration) {
+  const formElement = document.getElementById("leaveFormStep1");
+  const recordDisplay = document.getElementById("leaveRecordDisplay");
+  if (formElement) formElement.style.display = "none";
+  let countdownEl = document.getElementById("leaveCountdownTimer");
+  if (!countdownEl) {
+    countdownEl = document.createElement("div");
+    countdownEl.id = "leaveCountdownTimer";
+    countdownEl.style.margin = "20px";
+    countdownEl.style.fontWeight = "bold";
+    countdownEl.style.fontSize = "16px";
+    recordDisplay.parentNode.insertBefore(countdownEl, recordDisplay);
+  }
+  let timeLeft = Math.floor(duration / 1000);
+  updateCountdownText(timeLeft);
+  const interval = setInterval(() => {
+    timeLeft--;
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      if (countdownEl.parentNode) countdownEl.parentNode.removeChild(countdownEl);
+      if (formElement) formElement.style.display = "block";
+      document.getElementById("leaveSubmitButton").style.display = "inline-block";
+      alert("You can now submit a new leave request.");
+    } else {
+      updateCountdownText(timeLeft);
+    }
+  }, 1000);
+
+  function updateCountdownText(secondsLeft) {
+    const hours = Math.floor(secondsLeft / 3600);
+    const minutes = Math.floor((secondsLeft % 3600) / 60);
+    const seconds = secondsLeft % 60;
+    countdownEl.textContent = `Please wait before submitting again. Time left: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
+function disableLeaveFormIfNeeded() {
+  const name = localStorage.getItem("lastLeaveName");
+  const roll = localStorage.getItem("lastLeaveRoll");
+  const key = name && roll ? `${name}_${roll}` : null;
+  if (key) {
+    const lastSubmit = localStorage.getItem(`leaveSubmit_${key}`);
+    if (lastSubmit) {
+      const now = Date.now();
+      const timePassed = now - parseInt(lastSubmit);
+      const waitTime = 2 * 60 * 1000;
+      if (timePassed < waitTime) {
+        const remaining = waitTime - timePassed;
+        startCountdown(remaining);
+        const form = document.getElementById("leaveFormStep1");
+        if (form) form.style.display = "none";
+        document.getElementById("leaveSubmitButton").style.display = "none";
+      }
+    }
+  }
+}
+window.addEventListener("load", disableLeaveFormIfNeeded);
+
+</script>
+
+<script>
+// ✅ Backend-based leave status check
+function checkLeaveStatus() {
+  const name = localStorage.getItem("lastLeaveName");
+  const roll = localStorage.getItem("lastLeaveRoll");
+  if (!name || !roll) return;
+
+  fetch(`http://localhost:3000/leave-status?name=${name}&roll=${roll}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data.canSubmit && data.remaining > 0) {
+        startCountdown(data.remaining);
+        const form = document.getElementById("leaveFormStep1");
+        if (form) form.style.display = "none";
+        document.getElementById("leaveSubmitButton").style.display = "none";
+      } else {
+        const form = document.getElementById("leaveFormStep1");
+        if (form) form.style.display = "block";
+        document.getElementById("leaveSubmitButton").style.display = "inline-block";
+      }
+    })
+    .catch(err => {
+      console.error("Failed to check leave status:", err);
+    });
+}
+
+// ✅ Replace old disableLeaveFormIfNeeded logic
+window.addEventListener("load", () => {
+  showPage("home");
+  checkLeaveStatus();
+});
+</script>
+
+</body>
+</html>
