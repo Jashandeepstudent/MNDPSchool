@@ -1,7 +1,8 @@
 <!DOCTYPE html>
+
 <html lang="en">
- <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js">
-  localStorage.removeItem('isAdmin');
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js">
+  // DISABLED: localStorage.removeItem('isAdmin');
 window.addEventListener("load", () => {
   if (localStorage.getItem("isAdmin") === "true") {
     isAdmin = true;
@@ -16,45 +17,56 @@ window.addEventListener("load", () => {
   }
 });
  </script>
- <script>
+<script>
   emailjs.init('82kjXx_GqN4q2HVOh');
  </script>
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+<title>
    Montessori Nargis Dutt Public School
   </title>
-  <style>
-   body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f6f9;
-      transition: background-color 0.3s ease;
-      
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+<style>
+   
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
   min-height: 100vh;
   overflow-x: hidden;
+}
 
-      background-size: cover;
-      background-position: center;
-    }
+/* Background image overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("school-bg.png") no-repeat center center fixed;
+  background-size: cover;
+  z-index: -1; /* keeps it behind all content */
+}
+
     nav {
       background-color:  #2a5298;
       color: white;
-      padding: 15px;
-      text-align: center;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      font-size: 14px;
+      white-space: nowrap;
+      padding: 10px;
     }
     nav a {
       color: white;
-      margin: 0 15px;
+      margin: 0 8px;
       text-decoration: none;
       font-weight: bold;
       cursor: pointer;
+      flex: 1;
+      text-align: center;
     }
     section {
       padding: 30px;
@@ -68,18 +80,20 @@ window.addEventListener("load", () => {
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       border-radius: 8px;
     }
-    footer {
-      background: transparent;
-      color: white;
-      text-align: center;
-      padding: 10px;
-      position: fixed;
-      width: 100%;
-      bottom: 0;
     
+footer {
+  background: #2a5298;
   color: white;
-  text-shadow: 0 0 2px black;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  z-index: 1000;
 }
+
     input, textarea, select {
       padding: 10px;
       width: 100%;
@@ -87,6 +101,8 @@ window.addEventListener("load", () => {
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
+    
+      font-size: 16px !important; /* Prevent zoom on iOS */
     }
     button {
       padding: 10px 20px;
@@ -171,19 +187,13 @@ window.addEventListener("load", () => {
     /* Admin menu dropdown */
     .menu-container {
       position: fixed;
-      top: 15px;
+      top: 5px;
       right: 20px;
       z-index: 1000;
       display: inline-block;
     }
-    #menuBtn {
-      font-size: 24px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color:#FFFFFF;
-      font-weight: bold;
-    }
+    #menuBtn { font-size: 24px; cursor: pointer; background:#1f2937; color:#fff; border:none; border-radius:9999px; width:56px; height:56px; position: fixed; bottom: 20px; right: 20px; z-index: 9999; box-shadow: 0 10px 20px rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; }
+#menuBtn:hover { transform: translateY(-1px); }
     .dropdown-content {
       position: absolute;
       background-color: white;
@@ -234,198 +244,449 @@ window.addEventListener("load", () => {
   margin: 15px auto;
   max-width: 800px;
 }
-  </style>
- </head>
- <body>
-  <!-- Admin menu (3 dots) -->
-  <div class="menu-container">
-   <button id="menuBtn">
-    ⋮
+  
+.announcement-date {
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+#leaveCountdownTimer {
+  padding: 12px;
+  background: #fff8e1;
+  border: 1px solid #f0c36d;
+  border-radius: 6px;
+  text-align: center;
+  color: #d35400;
+}
+
+/* --- Combined Deep Fix CSS --- */
+#leaveCountdownTimer{
+  margin:20px;
+  padding:12px;
+  background:#fff8e1;
+  border:1px solid #f0c36d;
+  border-radius:8px;
+  text-align:center;
+  color:#d35400;
+  font-weight:600;
+  font-size:16px;
+}
+
+.announcement-date, .announcement-meta, .ann-date, .announcement .date, .card .date {
+  display:block;
+  margin-top:4px;
+  margin-bottom:8px;
+  line-height:1.3;
+}
+
+/* Try to improve visual separation if time is wrapped in a span */
+.announcement-date .time, .announcement-meta .time, .ann-date .time{
+  margin-left:8px;
+}
+
+
+/* === Mobile Nav + UI Polish === */
+:root{
+  --card-radius: 14px;
+  --card-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+section, .card, .panel {
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+nav, .navbar, .topnav, #topNav, .nav-bar, header nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+nav a, nav button, .navbar a, .navbar button, .topnav a, .topnav button,
+#topNav a, #topNav button, .nav-link, .menu-link, .menu-item, .nav .btn, .nav button.btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 520px){
+  nav a, nav button, .navbar a, .navbar button, .topnav a, .topnav button,
+  #topNav a, #topNav button, .nav-link, .menu-link, .menu-item, .nav .btn, .nav button.btn {
+    font-size: 0.92rem;
+    padding: 6px 10px;
+    line-height: 1.1;
+  }
+  header, nav, .navbar, .topnav { gap: 6px; }
+  section { padding: 14px; margin: 10px; }
+}
+
+/* Compact "Leave Record System" and similar big CTA buttons on phones */
+@media (max-width: 520px){
+  .cta, .big-button, .home-cta, .about-cta, .leave-cta, .section-cta, button[aria-label*="Leave"], a[aria-label*="Leave"] {
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    border-radius: 10px;
+  }
+}
+
+/* Floating Admin Emoji Button + Menu */
+#globalAdminFab{
+  position: fixed;
+  bottom: 12px;
+  
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 9999;
+  user-select: none;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+#globalAdminFab:hover{ transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,0.15); }
+
+#globalAdminMenu{
+  position: fixed;
+  top: 60px;
+  
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+  padding: 8px;
+  z-index: 9999;
+  display: none;
+}
+#globalAdminMenu .item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+#globalAdminMenu .item:hover{ background: #f6f8fb; }
+#globalAdminMenu .sep{ height: 1px; background: #eee; margin: 6px 0; }
+
+/* Hide legacy three-dots triggers on cards for cleaner UI */
+.three-dots, .menu-trigger, .more-vert, .admin-dots { display: none !important; }
+
+</style>
+<style id="create-announcement-override">
+/* Create Announcement button override */
+button[onclick="createAnnouncement()"]{
+  background:#000 !important;
+  color:#fff !important;
+  border:1px solid #000 !important;
+  padding:8px 12px;
+  border-radius:8px;
+}
+</style>
+<style id="tutor-picker-styles">
+.tutor-picker{position:fixed;left:12px;bottom:12px;z-index:99999;background:#000;color:#0f0;padding:10px 12px;border-radius:10px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;font-size:12px;line-height:1.3;max-width:360px;max-height:40vh;overflow:auto;box-shadow:0 6px 24px rgba(0,0,0,.4)"picker-hide-hard">
+#tp-picker { display: none !important; visibility: hidden !important; opacity: 0 !important; }
+</style>
+<style id="polls-actions-style">
+  .tutor-card-actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+  .tutor-del-btn{ padding:6px 10px; border:none; border-radius:8px; background:#ef4444; color:#fff; cursor:pointer; }
+  .tutor-del-btn:hover{ opacity:0.9; }
+  
+  
+<style>/* --- POLLS HARDENING: hide public edit + delete --- */
+#tp-list [class*="edit"], #tp-list [id*="edit"],
+#pollsInject [class*="edit"], #pollsInject [id*="edit"],
+#tp-list [aria-label*="Edit"], #tp-list [title*="Edit"],
+#pollsInject [aria-label*="Edit"], #pollsInject [title*="Edit"] { display: none !important; }<style>/* Delete buttons: hide by default (public) */
+.tutor-del-btn { display: none !important; }</style><style id="polls-hardening">
+/* --- POLLS HARDENING: hide public edit + delete --- */
+#tp-list [class*="edit"], #tp-list [id*="edit"],
+#pollsInject [class*="edit"], #pollsInject [id*="edit"],
+#tp-list [aria-label*="Edit"], #tp-list [title*="Edit"],
+#pollsInject [aria-label*="Edit"], #pollsInject [title*="Edit"] { 
+  display: none !important; 
+}
+
+/* Delete buttons: hide by default (public) */
+.tutor-del-btn, .delete-btn, .video-delete-btn {
+  display: none !important;
+}
+</style>
+<style id="word-wrap-fix">
+/* Prevent lines from going out of the page */
+body, section, p, h1, h2, h3, strong, div {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* Fix announcement box content */
+#announcementsList p, 
+#announcementsList strong, 
+#announcementsList small {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Ensure dropdowns don’t overflow */
+.dropdown-content, .menu-items {
+  max-width: 95vw;
+  overflow-wrap: break-word;
+}
+</style>
+<style id="polls-delete-style">
+.tutor-del-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #ef4444;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+.tutor-del-btn:hover {
+  opacity: 0.9;
+}
+.poll-timer {
+  margin-top: 8px;
+  font-weight: bold;
+  color: #d97706;
+}
+</style>
+<style id="admin-delete-override">
+/* Hide delete by default; show for admin */
+.tutor-del-btn { 
+  display: none !important; 
+}
+body.is-admin .tutor-del-btn { 
+  display: inline-flex !important; 
+  align-items: center; 
+  gap: 6px;
+}
+/* Make sure bin buttons look neat even if created dynamically */
+.tutor-del-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #ef4444;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+.tutor-del-btn:hover { opacity: 0.9; }
+.poll-timer {
+  margin-top: 8px;
+  font-weight: bold;
+}
+</style>
+<style id="admin-delete-visibility-boost">
+/* Hide by default */
+.tutor-del-btn { display: none !important; }
+/* Show for admin via body class */
+body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: center; gap: 6px; }
+</style>
+</head>
+<body>
+<!-- Admin menu (3 dots) -->
+<div class="menu-container">
+<button id="menuBtn">
+    👤
    </button>
-   <div class="dropdown-content" id="dropdown">
-    <a href="#" id="adminOption">
+<div class="dropdown-content" id="dropdown">
+<a href="#" id="adminOption">
      Admin
     </a>
-   </div>
-  </div>
-  <!-- Admin panel -->
-  <div id="adminPanel">
-   <h3>
+</div>
+</div>
+<!-- Admin panel -->
+<div id="adminPanel">
+<h3>
     Admin Edit Options
    </h3>
-   <button onclick="editHome()">
+<button onclick="editHome()">
     Edit Home
    </button>
-   <button onclick="editAbout()">
+<button onclick="editAbout()">
     Edit About Us
    </button>
-   <button onclick="uploadImage()">
-    Upload Image
-   </button>
-   <button onclick="logout()" style="background-color: #d9534f;">
+<button onclick="manageAnnouncements()">Manage Announcements</button>
+<button onclick="managePolls()">Manage Polls</button>
+<button onclick="logout()" style="background-color: #d9534f;">
     Logout
    </button>
-  </div>
-  <nav>
-   <a href="#" onclick="showPage('home')">
+</div>
+<nav>
+<a href="#" onclick="showPage('home')">
     Home
    </a>
-   <a href="#" onclick="showPage('about')">
+<a href="#" onclick="showPage('about')">
     About Us
    </a>
-   <a href="#" onclick="showPage('admission')">
+<a href="#" onclick="showPage('admission')">
     Online Admission
    </a>
-   <a href="#" onclick="showPage('leave')">
+<a href="#" onclick="showPage('leave')">
     Leave Record System
    </a>
-   <a href="#" onclick="showPage('gallery')">
-    Gallery
-   </a>
-   <a href="#" onclick="showPage('polls')">
+<a href="#" onclick="showPage('announcements')">Announcements</a>
+<a href="#" onclick="showPage('polls')">
     Polls
    </a>
-   <a class="admin-only visible" href="#" id="logoutBtn" onclick="logout()">
+<a class="admin-only visible" href="#" id="logoutBtn" onclick="logout()">
     Logout
    </a>
-  </nav>
-  <!-- Home Section -->
-  <section class="active" id="home">
-   <h1 id="homeTitle">
+</nav>
+<!-- Home Section -->
+<section class="active" id="home">
+<h1 id="homeTitle">
     Welcome to Montessori Nargis Dutt Public School
    </h1>
-   <p id="homeDesc">
+<p id="homeDesc">
     Our  School is committed to nurturing young minds through excellence in academics and
       character building.
    </p>
-   <!-- Editable content for admin -->
-   <div class="editable" id="homeEditable">
-    <h2>
+<!-- Editable content for admin -->
+<div class="editable" id="homeEditable">
+<h2>
      Edit Home Section
     </h2>
-    <input id="homeTitleInput" placeholder="Edit Title" type="text"/>
-    <textarea id="homeDescInput" placeholder="Edit Description"></textarea>
-    <button onclick="saveHomeChanges()">
+<input id="homeTitleInput" placeholder="Edit Title" type="text"/>
+<textarea id="homeDescInput" placeholder="Edit Description"></textarea>
+<button onclick="saveHomeChanges()">
      Save Changes
     </button>
-   </div>
-   <!-- Background edit section for Admin -->
-   <div class="editable" id="backgroundEditable">
-    <h2>
+</div>
+<!-- Background edit section for Admin -->
+<div class="editable" id="backgroundEditable">
+<h2>
      Edit Background
     </h2>
-    <label for="backgroundColorInput">
+<label for="backgroundColorInput">
      Background Color (Hex code):
     </label>
-    <input id="backgroundColorInput" placeholder="Enter hex code, e.g., #ffffff" type="text"/>
-    <button onclick="changeBackgroundColor()">
+<input id="backgroundColorInput" placeholder="Enter hex code, e.g., #ffffff" type="text"/>
+<button onclick="changeBackgroundColor()">
      Change Background Color
     </button>
-    <br/>
-    <br/>
-    <label for="backgroundImageInput">
+<br/>
+<br/>
+<label for="backgroundImageInput">
      Background Image (Upload):
     </label>
-    <input accept="image/*" id="backgroundImageInput" type="file"/>
-    <button onclick="changeBackgroundImage()">
+<input accept="image/*" id="backgroundImageInput" type="file"/>
+<button onclick="changeBackgroundImage()">
      Change Background Image
     </button>
-    <button onclick="clearBackgroundImage()" style="background-color: #d9534f; margin-left: 10px;">
+<button onclick="clearBackgroundImage()" style="background-color: #d9534f; margin-left: 10px;">
      Clear Background Image
     </button>
-   </div>
-   <div class="gallery-grid" id="homeGallery">
-   </div>
-  </section>
-  <!-- About Us Section -->
-  <section id="about">
-   <h1 id="aboutTitle">
+</div>
+<div class="gallery-grid" id="homeGallery">
+</div>
+</section>
+<!-- About Us Section -->
+<section id="about">
+<h1 id="aboutTitle">
     About Montessori School
    </h1>
-   <p id="aboutDesc">
+<p id="aboutDesc">
     Founded in 2005, Montessori School has grown into a vibrant community of learners...
    </p>
-   <!-- Editable content for admin -->
-   <div class="editable" id="aboutEditable">
-    <h2>
+<!-- Editable content for admin -->
+<div class="editable" id="aboutEditable">
+<h2>
      Edit About Us Section
     </h2>
-    <input id="aboutTitleInput" placeholder="Edit Title" type="text"/>
-    <textarea id="aboutDescInput" placeholder="Edit Description"></textarea>
-    <button onclick="saveAboutChanges()">
+<input id="aboutTitleInput" placeholder="Edit Title" type="text"/>
+<textarea id="aboutDescInput" placeholder="Edit Description"></textarea>
+<button onclick="saveAboutChanges()">
      Save Changes
     </button>
-   </div>
-  </section>
-  <!-- Admission Form -->
-  <section id="admission">
-   <h1>
+</div>
+</section>
+<!-- Admission Form -->
+<section id="admission">
+<h1>
     Online Admission Form
    </h1>
-   <form id="admissionForm">
-    <label for="admissionName">
+<form id="admissionForm">
+<label for="admissionName">
      Name:
     </label>
-    <input id="admissionName" required="" type="text"/>
-    <label for="admissionAge">
+<input id="admissionName" required="" type="text"/>
+<label for="admissionAge">
      Age:
     </label>
-    <input id="admissionAge" max="18" min="3" required="" type="number"/>
-    <label for="admissionGrade">
+<input id="admissionAge" max="18" min="3" required="" type="number"/>
+<label for="admissionGrade">
      Grade Applying For:
     </label>
-    <select id="admissionGrade" required="">
-     <option value="">
+<select id="admissionGrade" required="">
+<option value="">
       Select Grade
      </option>
-     <option value="Nursery">
+<option value="Nursery">
       Nursery
      </option>
-     <option value="Lower Kindergarden ( L.K.G ) ">
+<option value="Lower Kindergarden ( L.K.G ) ">
       Lower Kindergarden ( L.K.G )
      </option>
-     <option value="Upper Kindergarden ( U.K.G ) ">
+<option value="Upper Kindergarden ( U.K.G ) ">
       Upper Kindergarden ( U.K.G )
      </option>
-     <option value="1">
+<option value="1">
       1
      </option>
-     <option value="2">
+<option value="2">
       2
      </option>
-     <option value="3">
+<option value="3">
       3
      </option>
-     <option value="4">
+<option value="4">
       4
      </option>
-     <option value="5">
+<option value="5">
       5
      </option>
-     <option value="6">
+<option value="6">
       6
      </option>
-     <option value="7">
+<option value="7">
       7
      </option>
-     <option value="8">
+<option value="8">
       8
      </option>
-     <option value="9">
+<option value="9">
       9
      </option>
-     <option value="10">
+<option value="10">
       10
      </option>
-    </select>
-    <button type="submit">
+</select>
+<button type="submit">
      Submit Admission
     </button>
-   </form>
-   <p id="admissionMessage" style="color: red; font-weight: bold;">
-   </p>
-  </section>
-  <script>
+</form>
+<p id="admissionMessage" style="color: red; font-weight: bold;">
+</p>
+</section>
+<script>
    // Override form submission behavior
   document.getElementById("admissionForm").addEventListener("submit", function (event) {
   event.preventDefault(); // Stop actual form submit
@@ -439,97 +700,89 @@ window.addEventListener("load", () => {
   document.getElementById("admissionForm").reset();
 });
   </script>
-  <!-- Leave System -->
-  <section id="leave">
-   <h1>
+<!-- Leave System -->
+<section id="leave">
+<h1>
     Leave Record System
    </h1>
-   <div class="leave-step active-step" id="leaveFormStep1">
-    <label for="leaveName">
+<div class="leave-step active-step" id="leaveFormStep1">
+<label for="leaveName">
      Name:
     </label>
-    <input id="leaveName" type="text"/>
-    <label for="leaveDate">
+<input id="leaveName" type="text"/>
+<label for="leaveDate">
      Date of Leave:
     </label>
-    <input id="leaveDate" type="date"/>
-    <label for="leaveClass">
+<input id="leaveDate" type="date"/>
+<label for="leaveClass">
      Class:
     </label>
-    <input id="leaveClass" type="text"/>
-    <label for="leaveSection">
+<input id="leaveClass" type="text"/>
+<label for="leaveSection">
      Section:
     </label>
-    <input id="leaveSection" type="text"/>
-    <label for="leaveRoll">
+<input id="leaveSection" type="text"/>
+<label for="leaveRoll">
      Roll No.:
     </label>
-    <input id="leaveRoll" type="text"/>
-    <button onclick="nextLeaveStep()">
+<input id="leaveRoll" type="text"/>
+<button onclick="nextLeaveStep()">
      Next
     </button>
-   </div>
-   <div class="leave-step" id="leaveFormStep2">
-    <label for="leaveReason">
+</div>
+<div class="leave-step" id="leaveFormStep2">
+<label for="leaveReason">
      Reason for Leave:
     </label>
-    <textarea id="leaveReason" required=""></textarea>
-    <label for="leaveDays">
+<textarea id="leaveReason" required=""></textarea>
+<label for="leaveDays">
      Number of Days:
     </label>
-    <input id="leaveDays" min="1" required="" type="number"/>
-    <button onclick="prevLeaveStep()">
+<input id="leaveDays" min="1" required="" type="number"/>
+<button onclick="prevLeaveStep()">
      Back
     </button>
-    <button id="leaveSubmitButton" onclick="submitLeaveForm()">
+<button id="leaveSubmitButton" onclick="fixedSubmitLeave(event)">
      Submit Leave
     </button>
-   </div>
-   <div id="leaveRecordDisplay" style="margin-top: 20px;">
-   </div>
-  </section>
-  <!-- Upload Images -->
-  <section class="admin-only" id="upload">
-   <h1>
-    Upload Images
-   </h1>
-   <input accept="image/*" id="uploadInput" multiple="" type="file"/>
-   <button onclick="uploadImages()">
-    Upload
-   </button>
-   <p id="uploadMessage" style="color: green;">
-   </p>
-  </section>
-  <!-- Upload Videos -->
-  <section class="admin-only" id="uploadVideo">
-   <h1>
-    Upload Videos
-   </h1>
-   <input accept="video/*" id="uploadVideoInput" type="file"/>
-   <button onclick="uploadVideo()">
-    Upload Video
-   </button>
-   <p id="uploadVideoMessage" style="color: green;">
-   </p>
-  </section>
-  <!-- Gallery -->
-  <section id="gallery">
-   <h1>
-    Image Gallery
-   </h1>
-   <div class="gallery-grid" id="galleryContainer">
-   </div>
-  </section>
-  <!-- Polls -->
-  <section id="polls">
-   <h1 style="text-align: center;">
-    Update Soon... 😊
-   </h1>
-  </section>
-  <footer>
+</div>
+<div id="leaveRecordDisplay" style="margin-top: 20px;">
+</div>
+</section>
+<!-- Announcements -->
+<section id="announcements">
+<h1>Announcements</h1>
+<div id="announcementsList">
+<p>No announcements yet.</p>
+</div>
+<!-- Admin-only controls -->
+<div class="admin-only" id="announcementsControls" style="display:none;">
+<button onclick="createAnnouncement()">Create Announcement</button>
+</div>
+<div id="announcementFormContainer" style="display:none; margin-top:20px;">
+<h3>Create New Announcement</h3>
+<form id="announcementForm">
+<label>Title</label>
+<input id="aTitle" required="" type="text"/>
+<label>Date</label>
+<input id="aDate" required="" type="datetime-local"/>
+<label>Announcement</label>
+<textarea id="aText" required="" rows="6"></textarea>
+<label>Signed By</label>
+<input id="aSigned" required="" type="text"/>
+<button type="submit">Create</button>
+<button onclick="cancelAnnouncementForm()" style="background:red;margin-left:10px;" type="button">Cancel</button>
+</form>
+</div>
+</section>
+<!-- Polls -->
+<section id="polls">
+<h1 style="text-align: center;">Poll Management</h1>
+</section>
+<footer>
    MNDP School © 2025
   </footer>
-  <script>
+<script>
    function isMobileDevice() {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 }
@@ -633,40 +886,67 @@ function submitAdmissionForm() {
 }
   // Admin login option
   document.getElementById("adminOption").addEventListener("click", (e) => {
-    e.preventDefault();
-    if (isAdmin) {
-      alert("You are already logged in.");
-      return;
-    }
-    const pwd = prompt("Enter Admin Password:");
-    if (pwd === "admin123") {
-      alert("Admin login successful!");
-      document.getElementById("dropdown").style.display = "none";
-    } else {
-      alert("Incorrect password.");
-    }
-  });
+  e.preventDefault();
+  if (typeof isAdmin !== "undefined" && isAdmin) {
+    alert("You are already logged in.");
+    return;
+  }
+  const pwd = prompt("Enter Admin Password:");
+  if (pwd === "admin123") {
+    // Set admin state
+    if (typeof window.isAdmin === "boolean") { window.isAdmin = true; } else { window.isAdmin = true; }
+    try { localStorage.setItem("isAdmin", "true"); } catch(_) {}
+    // Hide the top-right person emoji (login button)
+    /* removed auto-hide of menuBtn */
+    // Show admin-only controls
+    document.querySelectorAll(".admin-only").forEach(el => el.classList.add("visible"));
+    // Show admin panel if present
+    const panel = document.getElementById("adminPanel"); if (panel) panel.style.display = "block";
+    // Show nav logout button if present
+    const logoutBtn = document.getElementById("logoutBtn"); if (logoutBtn) logoutBtn.style.display = "inline";
+    // Sync any custom UI
+    if (typeof window.updateAdminUI === "function") window.updateAdminUI();
+    // If there's a helper, call it too
+    if (typeof window.showAdminFeatures === "function") try { window.showAdminFeatures(); } catch(_) {}
+    alert("Admin login successful!");
+    const dd = document.getElementById("dropdown"); if (dd) dd.style.display = "none";
+  } else {
+    alert("Incorrect password.");
+  }
+});
   // Show admin features and buttons
   function showAdminFeatures() {
   isAdmin = true;
   localStorage.setItem('isAdmin', 'true');
   document.getElementById("adminPanel").style.display = "block";
+  /* removed auto-hide of menuBtn */
   document.querySelectorAll(".admin-only").forEach(el => el.classList.add("visible"));
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) logoutBtn.style.display = "inline";
+
+
+// Show poll delete buttons on admin login
+document.querySelectorAll('.tutor-del-btn').forEach(btn => btn.style.display = 'inline-block');
+
 }
   // Logout admin
   function logout() {
     isAdmin = false;
-    localStorage.removeItem('isAdmin');
+    // DISABLED: localStorage.removeItem('isAdmin');
     alert("Logged out.");
     document.getElementById("adminPanel").style.display = "none";
+    const mb = document.getElementById("menuBtn"); if (mb) mb.style.display = "inline-block";
     document.querySelectorAll(".admin-only").forEach(el => el.classList.remove("visible"));
     // Hide logout link in nav
     document.getElementById("logoutBtn").style.display = "none";
     document.querySelectorAll(".delete-btn").forEach(btn => {
       btn.style.display = "none";
-    });
+    
+
+// Hide poll delete buttons on logout
+document.querySelectorAll('.tutor-del-btn').forEach(btn => btn.style.display = 'none');
+
+});
     // Hide editable content
     hideAdminEdit();
   }
@@ -732,7 +1012,7 @@ function submitAdmissionForm() {
   // Delete image by id (admin only)
   function deleteImage(id) {
     if (!isAdmin) return;
-    const index = galleryImages.findIndex(img => img.id === id);
+    const index = galleryImages.findIndex(img => img.id == id);
     if (index !== -1) {
       galleryImages.splice(index, 1);
       loadGalleryFromBackend();
@@ -870,6 +1150,7 @@ function logout() {
   isAdmin = false;
   alert("Logged out.");
   document.getElementById("adminPanel").style.display = "none";
+    const mb = document.getElementById("menuBtn"); if (mb) mb.style.display = "inline-block";
   document.querySelectorAll(".admin-only").forEach(el => el.classList.remove("visible"));
   document.getElementById("logoutBtn").style.display = "none";
   // Hide editable content
@@ -877,7 +1158,12 @@ function logout() {
   // Hide all delete buttons (image + video)
   document.querySelectorAll(".delete-btn, .video-delete-btn").forEach(btn => {
     btn.style.display = "none";
-  });
+  
+
+// Hide poll delete buttons on logout
+document.querySelectorAll('.tutor-del-btn').forEach(btn => btn.style.display = 'none');
+
+});
 }
 document.getElementById("menuBtn").addEventListener("click", function () {
   const dropdown = document.getElementById("dropdown");
@@ -885,11 +1171,11 @@ document.getElementById("menuBtn").addEventListener("click", function () {
 });
   // Initial setup
 window.onload = function () {
-  localStorage.removeItem('isAdmin');
+  // DISABLED: localStorage.removeItem('isAdmin');
     showPage("home");
   };
   </script>
-  <script>
+<script>
    // ---- Admin Save Home ----
 function saveHomeChanges() {
   const title = document.getElementById("homeTitleInput").value.trim();
@@ -1011,7 +1297,7 @@ window.addEventListener("load", () => {
   // Optional: Load existing images/videos via backend file list API if implemented
 });
   </script>
-  <script>
+<script>
    function loadGalleryFromBackend() {
   const container = document.getElementById("galleryContainer");
   container.innerHTML = "";
@@ -1129,7 +1415,7 @@ window.addEventListener("load", () => {
   loadGalleryFromBackend();
 });
   </script>
-  <script>
+<script>
    // Forcefully re-hook admin logic on load and after login
 function showAdminFeatures() {
   isAdmin = true;
@@ -1139,20 +1425,38 @@ function showAdminFeatures() {
   document.querySelectorAll(".admin-only").forEach(el => el.classList.add("visible"));
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) logoutBtn.style.display = "inline";
+
+
+// Show poll delete buttons on admin login
+document.querySelectorAll('.tutor-del-btn').forEach(btn => btn.style.display = 'inline-block');
+
 }
 
 document.getElementById("adminOption").addEventListener("click", (e) => {
   e.preventDefault();
-  if (localStorage.getItem("isAdmin") === "true") {
+  if (typeof isAdmin !== "undefined" && isAdmin) {
     alert("You are already logged in.");
-    showAdminFeatures();
     return;
   }
   const pwd = prompt("Enter Admin Password:");
   if (pwd === "admin123") {
+    // Set admin state
+    if (typeof window.isAdmin === "boolean") { window.isAdmin = true; } else { window.isAdmin = true; }
+    try { localStorage.setItem("isAdmin", "true"); } catch(_) {}
+    // Hide the top-right person emoji (login button)
+    /* removed auto-hide of menuBtn */
+    // Show admin-only controls
+    document.querySelectorAll(".admin-only").forEach(el => el.classList.add("visible"));
+    // Show admin panel if present
+    const panel = document.getElementById("adminPanel"); if (panel) panel.style.display = "block";
+    // Show nav logout button if present
+    const logoutBtn = document.getElementById("logoutBtn"); if (logoutBtn) logoutBtn.style.display = "inline";
+    // Sync any custom UI
+    if (typeof window.updateAdminUI === "function") window.updateAdminUI();
+    // If there's a helper, call it too
+    if (typeof window.showAdminFeatures === "function") try { window.showAdminFeatures(); } catch(_) {}
     alert("Admin login successful!");
-    showAdminFeatures();
-    document.getElementById("dropdown").style.display = "none";
+    const dd = document.getElementById("dropdown"); if (dd) dd.style.display = "none";
   } else {
     alert("Incorrect password.");
   }
@@ -1165,7 +1469,7 @@ window.addEventListener("load", () => {
   }
 });
   </script>
-  <script>
+<script>
    window.addEventListener("load", () => {
   const name = localStorage.getItem("lastLeaveName");
   const roll = localStorage.getItem("lastLeaveRoll");
@@ -1175,7 +1479,7 @@ window.addEventListener("load", () => {
     if (lastSubmit) {
       const now = Date.now();
       const timePassed = now - parseInt(lastSubmit);
-      const waitTime = 2 * 60 * 1000; // 24 hours
+      const waitTime = WAIT_TIME;
       if (timePassed < waitTime) {
         startCountdown(waitTime - timePassed);
       }
@@ -1183,10 +1487,11 @@ window.addEventListener("load", () => {
   }
 });
   </script>
-  <script>
-   
-  </script>
- <script>
+<script>
+</script>
+<script>
+// Global wait time (24 hours)
+const WAIT_TIME = 24 * 60 * 60 * 1000; // 24 hours (production)
 
 function submitLeaveForm() {
   const name = document.getElementById("leaveName").value.trim();
@@ -1203,8 +1508,7 @@ function submitLeaveForm() {
   const userKey = `${name}_${roll}`;
   const lastSubmit = localStorage.getItem(`leaveSubmit_${userKey}`);
   const now = Date.now();
-  const WAIT_TIME = 24 * 60 * 60 * 1000; // 2 minutes demo
-
+  
   if (lastSubmit && now - parseInt(lastSubmit) < WAIT_TIME) {
     startCountdown(WAIT_TIME - (now - parseInt(lastSubmit)));
     return;
@@ -1304,7 +1608,7 @@ function disableLeaveFormIfNeeded() {
     if (lastSubmit) {
       const now = Date.now();
       const timePassed = now - parseInt(lastSubmit);
-      const waitTime = 2 * 60 * 1000;
+      const waitTime = WAIT_TIME;
       if (timePassed < waitTime) {
         const remaining = waitTime - timePassed;
         startCountdown(remaining);
@@ -1317,40 +1621,3669 @@ function disableLeaveFormIfNeeded() {
 }
 window.addEventListener("load", disableLeaveFormIfNeeded);
 
+
+
+  /* removed auto-hide of menuBtn */
+  /* removed auto-hide of menuBtn */
+  const mb = document.getElementById("menuBtn"); if (mb) mb.style.display = "inline-block";
+  const mb = document.getElementById("menuBtn"); if (mb) mb.style.display = "inline-block";}
+
+}
+
 </script>
-
 <script>
-// ✅ Backend-based leave status check
-function checkLeaveStatus() {
-  const name = localStorage.getItem("lastLeaveName");
-  const roll = localStorage.getItem("lastLeaveRoll");
-  if (!name || !roll) return;
+// Admin-only manage: show controls and go to announcements
+</script>
+<script>
+</script>
+<script>
+function updateAdminUI(){
+  var ctrl = document.getElementById("announcementsControls");
+  if (ctrl){
+    ctrl.style.display = (typeof isAdmin !== "undefined" && isAdmin) ? "block" : "none";
+  }
+  // re-render announcements so admin menus (👤) appear/disappear immediately
+  if (document.getElementById("announcementsList")) {
+    loadAnnouncements();
+  }
+}
+document.addEventListener("DOMContentLoaded", updateAdminUI);
+</script>
+<script>
+</script>
+<script>
+</script>
+<script>
+var editingAnnouncementIndex = null;
 
-  fetch(`http://localhost:3000/leave-status?name=${name}&roll=${roll}`)
-    .then(res => res.json())
-    .then(data => {
-      if (!data.canSubmit && data.remaining > 0) {
-        startCountdown(data.remaining);
-        const form = document.getElementById("leaveFormStep1");
-        if (form) form.style.display = "none";
-        document.getElementById("leaveSubmitButton").style.display = "none";
-      } else {
-        const form = document.getElementById("leaveFormStep1");
-        if (form) form.style.display = "block";
-        document.getElementById("leaveSubmitButton").style.display = "inline-block";
-      }
-    })
-    .catch(err => {
-      console.error("Failed to check leave status:", err);
+
+function managePolls() {
+  if (!isAdmin) { alert("Admin only."); return; }
+  showPage("polls");
+}
+function manageAnnouncements() {
+  showPage("announcements");
+  updateAdminUI();
+  loadAnnouncements();
+}
+
+function updateAdminUI(){
+  var ctrl = document.getElementById("announcementsControls");
+  if(ctrl){
+    ctrl.style.display = (typeof isAdmin !== "undefined" && isAdmin) ? "block" : "none";
+  }
+}
+
+// PATCH login/logout to update UI
+if (typeof login === "function") {
+  const oldLogin = login;
+  login = function() {
+    oldLogin();
+    updateAdminUI();
+  }
+}
+if (typeof logout === "function") {
+  const oldLogout = logout;
+  logout = function() {
+    oldLogout();
+    isAdmin = false;
+    updateAdminUI();
+  }
+}
+
+function editAnnouncement(index, ann) {
+  if (!(typeof isAdmin !== "undefined" && isAdmin)) {
+    alert("Admin only.");
+    return;
+  }
+  // mark editing index and open the form in-place
+  editingAnnouncementIndex = index;
+  showPage("announcements");
+  var container = document.getElementById("announcementFormContainer");
+  var form = document.getElementById("announcementForm");
+  if (!container || !form) return;
+
+  // Update heading + submit button text
+  var h = container.querySelector("h3");
+  if (h) h.textContent = "Edit Announcement";
+  var submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.textContent = "Save";
+
+  // Fill fields
+  document.getElementById("aTitle").value  = (ann && ann.title)  ? ann.title  : "";
+  document.getElementById("aDate").value   = (ann && ann.date)   ? ann.date   : "";
+  document.getElementById("aText").value   = (ann && ann.text)   ? ann.text   : "";
+  document.getElementById("aSigned").value = (ann && ann.signed) ? ann.signed : "";
+
+  // show the form
+  container.style.display = "block";
+}
+
+function deleteAnnouncement(index) {
+  if(!confirm("Are you sure you want to delete this announcement?")) return;
+  fetch('delete-announcement',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({index:index})})
+  .then(function(){ loadAnnouncements(); })
+  .catch(function(){
+    try{
+      var list=JSON.parse(localStorage.getItem('announcements')||'[]');
+      list.splice(index,1);
+      localStorage.setItem('announcements',JSON.stringify(list));
+      loadAnnouncements();
+    }catch(e2){ alert('Delete failed: '+e2.message); }
+  });
+}
+
+function loadAnnouncements() {
+  var container=document.getElementById("announcementsList");
+  if(!container) return;
+  fetch("announcements.json",{cache:"no-store"})
+    .then(res=>res.json())
+    .then(renderAnnouncements)
+    .catch(()=>{
+      try{ renderAnnouncements(JSON.parse(localStorage.getItem("announcements")||"[]")); }
+      catch(e){ container.innerHTML="<p>Failed to load announcements.</p>"; }
     });
 }
 
-// ✅ Replace old disableLeaveFormIfNeeded logic
-window.addEventListener("load", () => {
-  showPage("home");
-  checkLeaveStatus();
+function renderAnnouncements(list){
+  var container=document.getElementById("announcementsList");
+  if(!container) return;
+  container.innerHTML="";
+  if(!Array.isArray(list)||list.length===0){
+    container.innerHTML="<p>No announcements yet.</p>"; return;
+  }
+  list.forEach((a,i)=>{
+    var box=document.createElement("div");
+    box.style.position="relative";
+    box.style.border="2px solid #2a5298";
+    box.style.borderRadius="10px";
+    box.style.padding="16px";
+    box.style.marginBottom="16px";
+    box.style.background="#f5f8ff";
+    box.innerHTML=`<h3 style="color:#2a5298;margin:0 0 4px 0;">${a.title||''}</h3>
+                   <small>${a.date||''}</small>
+                   <p style="margin:8px 0 10px 0;white-space:pre-line;">${a.text||''}</p>
+                   <strong style="background:linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+                   -webkit-background-clip:text; color:transparent; font-weight:bold;">Signed by: ${a.signed||''}</strong>`;
+    if(typeof isAdmin !== "undefined" && isAdmin){
+      var menuWrapper=document.createElement("div");
+      menuWrapper.className="dropdown";
+      menuWrapper.style.position="absolute";
+      menuWrapper.style.top="8px";
+      menuWrapper.style.right="8px";
+      menuWrapper.innerHTML=`<span class="menu-toggle" style="cursor:pointer;font-weight:bold;font-size:18px;">⋮</span>
+        <div class="menu-items" style="display:none;position:absolute;right:0;background:white;border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:10;">
+          <div style="padding:6px 12px;cursor:pointer;" onmouseover="this.style.background='#eee'" onmouseout="this.style.background=''" onclick='editAnnouncement(${i}, ${JSON.stringify(a)})'>✏️ Edit</div>
+          <div style="padding:6px 12px;cursor:pointer;color:red;" onmouseover="this.style.background='#eee'" onmouseout="this.style.background=''" onclick='deleteAnnouncement(${i})'>🗑️ Delete</div>
+        </div>`;
+      box.appendChild(menuWrapper);
+
+      let toggle = menuWrapper.querySelector(".menu-toggle");
+      let menuItems = menuWrapper.querySelector(".menu-items");
+      toggle.addEventListener("click", function(e){
+        e.stopPropagation();
+        document.querySelectorAll(".menu-items").forEach(m=>m.style.display="none");
+        menuItems.style.display = (menuItems.style.display==="block"?"none":"block");
+      });
+    }
+    container.appendChild(box);
+  });
+
+  document.addEventListener("click", ()=>{
+    document.querySelectorAll(".menu-items").forEach(m=>m.style.display="none");
+  });
+}
+document.addEventListener("DOMContentLoaded", function(){
+  if(document.getElementById("announcementsList")) loadAnnouncements();
+  updateAdminUI();
+});
+function submitLeaveForm() {
+  const name = document.getElementById("leaveName").value.trim();
+  const date = document.getElementById("leaveDate").value.trim();
+  const className = document.getElementById("leaveClass").value.trim();
+  const section = document.getElementById("leaveSection").value.trim();
+  const roll = document.getElementById("leaveRoll").value.trim();
+  const reason = document.getElementById("leaveReason").value.trim();
+  const days = document.getElementById("leaveDays").value.trim();
+  if (!reason || !days) {
+    alert("Please provide a reason and number of days.");
+    return;
+  }
+  const userKey = `${name}_${roll}`;
+  const lastSubmit = localStorage.getItem(`leaveSubmit_${userKey}`);
+  const now = Date.now();
+  
+  if (lastSubmit && now - parseInt(lastSubmit) < WAIT_TIME) {
+    startCountdown(WAIT_TIME - (now - parseInt(lastSubmit)));
+    return;
+  }
+
+  const submitBtn = document.getElementById("leaveSubmitButton");
+  if (submitBtn) submitBtn.disabled = true;
+
+  emailjs.send("service_zjp0c7m", "template_14sd7cg", {
+    name,
+    class: className,
+    section,
+    roll,
+    reason,
+    days,
+    email_to: "mrjolox@gmail.com"
+  }).then(function(response) {
+    alert("Leave request submitted and emailed to admin!");
+    const recordDisplay = document.getElementById("leaveRecordDisplay");
+    const newRecord = document.createElement("p");
+    newRecord.id = "recentLeaveMsg";
+    newRecord.textContent = `Leave Request: ${name} (Class: ${className}, Section: ${section}, Roll No: ${roll}) on ${date} - Reason: ${reason}, Days: ${days}`;
+    recordDisplay.appendChild(newRecord);
+    setTimeout(() => {
+      const msg = document.getElementById("recentLeaveMsg");
+      if (msg) msg.remove();
+    }, 10000);
+
+    localStorage.setItem(`leaveSubmit_${userKey}`, now.toString());
+    localStorage.setItem('lastLeaveName', name);
+    localStorage.setItem('lastLeaveRoll', roll);
+    resetLeaveForm();
+    startCountdown(WAIT_TIME);
+    if (submitBtn) submitBtn.style.display = "none";
+  }, function(error) {
+    console.error("FAILED...", error);
+    alert("Error sending email: " + JSON.stringify(error));
+    if (submitBtn) submitBtn.disabled = false;
+  });
+
+  function resetLeaveForm() {
+    document.getElementById("leaveName").value = "";
+    document.getElementById("leaveDate").value = "";
+    document.getElementById("leaveClass").value = "";
+    document.getElementById("leaveSection").value = "";
+    document.getElementById("leaveRoll").value = "";
+    document.getElementById("leaveReason").value = "";
+    document.getElementById("leaveDays").value = "";
+    leaveStep = 1;
+    updateLeaveForm();
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+function createAnnouncement() {
+  // entering create mode
+  editingAnnouncementIndex = null;
+  var container = document.getElementById("announcementFormContainer");
+  var form = document.getElementById("announcementForm");
+  if (!container || !form) return;
+  form.reset();
+  var h = container.querySelector("h3");
+  if (h) h.textContent = "Create New Announcement";
+  var submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.textContent = "Create";
+  container.style.display = "block";
+}
+
+function cancelAnnouncementForm() {
+  editingAnnouncementIndex = null;
+  var container = document.getElementById("announcementFormContainer");
+  var form = document.getElementById("announcementForm");
+  if (form) form.reset();
+  if (container) container.style.display = "none";
+  var h = container ? container.querySelector("h3") : null;
+  if (h) h.textContent = "Create New Announcement";
+  var submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+  if (submitBtn) submitBtn.textContent = "Create";
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  const form = document.getElementById("announcementForm");
+  if(form){
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById("aTitle").value,
+        date: document.getElementById("aDate").value,
+        text: document.getElementById("aText").value,
+        signed: document.getElementById("aSigned").value
+      };
+      let list = JSON.parse(localStorage.getItem("announcements") || "[]");
+
+      if (editingAnnouncementIndex !== null && !isNaN(parseInt(editingAnnouncementIndex))) {
+        // Update existing
+        const idx = parseInt(editingAnnouncementIndex, 10);
+        if (idx >= 0 && idx < list.length) {
+          list[idx] = payload;
+          localStorage.setItem("announcements", JSON.stringify(list));
+          // optional: try backend save, but stay on page regardless
+          fetch('edit-announcement', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ index: idx, ...payload })
+          }).catch(()=>{});
+          alert("Announcement updated!");
+        } else {
+          // fallback to create if index is off
+          list.push(payload);
+          localStorage.setItem("announcements", JSON.stringify(list));
+          alert("Announcement created!");
+        }
+      } else {
+        // Create new
+        list.push(payload);
+        localStorage.setItem("announcements", JSON.stringify(list));
+        alert("Announcement created!");
+      }
+      // Reset UI back to create mode
+      editingAnnouncementIndex = null;
+      loadAnnouncements();
+      cancelAnnouncementForm();
+    });
+  }
 });
 </script>
+<script>
+// Auto-fill today's date + time when creating a new announcement
+function setDefaultAnnouncementDate() {
+  const dateInput = document.getElementById("aDate");
+  if (!dateInput) return;
+  const now = new Date();
+  const iso = now.toISOString().slice(0,16); // format yyyy-MM-ddTHH:mm
+  dateInput.value = iso;
+}
 
+function createAnnouncement() {
+  editingAnnouncementIndex = null;
+  var container = document.getElementById("announcementFormContainer");
+  var form = document.getElementById("announcementForm");
+  if (!container || !form) return;
+  form.reset();
+
+  // auto-fill current date+time
+  setDefaultAnnouncementDate();
+
+  var h = container.querySelector("h3");
+  if (h) h.textContent = "Create New Announcement";
+  var submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.textContent = "Create";
+  container.style.display = "block";
+}
+
+// Force update announcements UI when login/logout
+function updateAdminUI(){
+  var ctrl = document.getElementById("announcementsControls");
+  if(ctrl){
+    ctrl.style.display = (typeof isAdmin !== "undefined" && isAdmin) ? "block" : "none";
+  }
+  // reload announcements to hide/show 3 dots menus
+  if (document.getElementById("announcementsList")) {
+    loadAnnouncements();
+  }
+}
+</script>
+<!-- HARDENED BEHAVIOR PATCH -->
+<script>
+(function(){
+  function hideLeaveForms(){
+    var s1 = document.getElementById('leaveFormStep1');
+    var s2 = document.getElementById('leaveFormStep2');
+    if (s1) s1.style.display = 'none';
+    if (s2) s2.style.display = 'none';
+    var submitBtn = document.getElementById('leaveSubmitButton');
+    if (submitBtn) submitBtn.style.display = 'none';
+  }
+  function showLeaveForm(){
+    var s1 = document.getElementById('leaveFormStep1');
+    var s2 = document.getElementById('leaveFormStep2');
+    if (s2) {
+      s2.classList.remove('active-step');
+      s2.style.display = 'none';
+    }
+    if (s1) {
+      s1.classList.add('active-step');
+      s1.style.display = 'block';
+    }
+    var submitBtn = document.getElementById('leaveSubmitButton');
+    if (submitBtn) submitBtn.style.display = 'inline-block';
+  }
+
+  // Robust countdown that always hides both steps
+  window.startCountdown = function(duration){
+    hideLeaveForms();
+    var recordDisplay = document.getElementById("leaveRecordDisplay");
+    if (!recordDisplay) return;
+    var countdownEl = document.getElementById("leaveCountdownTimer");
+    if (!countdownEl){
+      countdownEl = document.createElement("div");
+      countdownEl.id = "leaveCountdownTimer";
+      countdownEl.style.margin = "20px";
+      countdownEl.style.fontWeight = "bold";
+      countdownEl.style.fontSize = "16px";
+      countdownEl.style.padding = "12px";
+      countdownEl.style.background = "#fff8e1";
+      countdownEl.style.border = "1px solid #f0c36d";
+      countdownEl.style.borderRadius = "6px";
+      countdownEl.style.textAlign = "center";
+      countdownEl.style.color = "#d35400";
+      recordDisplay.parentNode.insertBefore(countdownEl, recordDisplay);
+    }
+    var timeLeft = Math.floor(duration / 1000);
+    function fmt(n){ return String(n).padStart(2, '0'); }
+    function render(){
+      var h = Math.floor(timeLeft / 3600);
+      var m = Math.floor((timeLeft % 3600) / 60);
+      var s = timeLeft % 60;
+      countdownEl.textContent = "Please wait before submitting again. Time left: "
+        + fmt(h) + ":" + fmt(m) + ":" + fmt(s);
+    }
+    render();
+    var interval = setInterval(function(){
+      timeLeft--;
+      if (timeLeft <= 0){
+        clearInterval(interval);
+        if (countdownEl && countdownEl.parentNode){
+          countdownEl.parentNode.removeChild(countdownEl);
+        }
+        showLeaveForm();
+        alert("You can now submit a new leave request.");
+      } else {
+        render();
+      }
+    }, 1000);
+  };
+
+  // Ensure submit action immediately hides UI; original logic will call startCountdown after success
+  if (typeof window.submitLeaveForm === "function"){
+    var _oldSubmitLeaveForm = window.submitLeaveForm;
+    window.submitLeaveForm = function(){
+      // Hide the UI immediately for better UX; if submission fails, we restore
+      hideLeaveForms();
+      try {
+        
+      try {
+        // Start countdown immediately for feedback
+        startCountdown(WAIT_TIME); // 24 hours (production)
+        return _oldSubmitLeaveForm.apply(this, arguments);
+      } catch (e) {
+
+      } catch (e) {
+        // If something threw before countdown begins, bring the form back
+        showLeaveForm();
+        throw e;
+      }
+    };
+  }
+
+  // Hide create/edit announcement form on logout
+  (function(){
+    var _oldLogout = window.logout;
+    window.logout = function(){
+      if (typeof _oldLogout === "function") _oldLogout();
+      try {
+        var formWrap = document.getElementById("announcementFormContainer");
+        var form = document.getElementById("announcementForm");
+        if (form) form.reset();
+        if (formWrap) formWrap.style.display = "none";
+        window.editingAnnouncementIndex = null;
+        // Close any open admin menus on announcement cards
+        document.querySelectorAll(".menu-items").forEach(function(m){ m.style.display="none"; });
+        if (typeof window.updateAdminUI === "function") window.updateAdminUI();
+      } catch (e) {}
+    };
+  })();
+
+  // On load, if a countdown is in progress via localStorage, hide both steps
+  document.addEventListener("DOMContentLoaded", function(){
+    // This mirrors existing localStorage logic; if disableLeaveFormIfNeeded runs, our startCountdown will handle hiding
+    // But if not, ensure UI is consistent
+    var name = localStorage.getItem("lastLeaveName");
+    var roll = localStorage.getItem("lastLeaveRoll");
+    var key = (name && roll) ? (name + "_" + roll) : null;
+    var WAIT_TIME = 24 * 60 * 60 * 1000; // 24 hours (production)
+    if (key){
+      var lastSubmit = localStorage.getItem("leaveSubmit_" + key);
+      if (lastSubmit){
+        var now = Date.now();
+        var elapsed = now - parseInt(lastSubmit, 10);
+        if (elapsed < WAIT_TIME){
+          hideLeaveForms();
+        }
+      }
+    }
+  });
+})();
+</script>
+<!-- === FULL COMBINED DEEPFIX PATCH === -->
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Config ---------- */
+  // Test mode as requested: 1 minute cooldown. Switch to 24h for production.
+  const WAIT_TIME = 24 * 60 * 60 * 1000; // 24 hours (production)
+  const STORAGE_PREFIX = "leaveCooldown_";
+  let leaveCountdownInterval = null;
+
+  /* ---------- Utilities ---------- */
+  function $(id){ return document.getElementById(id); }
+  function safeShow(el){ if (el) el.style.display = ""; }
+  function safeHide(el){ if (el) el.style.display = "none"; }
+
+  function getUserKey(){
+    // Prefer explicit fields
+    const nameEl = $("leaveName");
+    const rollEl = $("leaveRoll");
+    let name = nameEl ? (nameEl.value || "").trim() : "";
+    let roll = rollEl ? (rollEl.value || "").trim() : "";
+    // Fallback to last saved
+    if (!name) name = localStorage.getItem("lastLeaveName") || "";
+    if (!roll) roll = localStorage.getItem("lastLeaveRoll") || "";
+    const key = (name && roll) ? (name + "_" + roll) : "anonymous";
+    return key;
+  }
+
+  function rememberNameRoll(){
+    const nameEl = $("leaveName");
+    const rollEl = $("leaveRoll");
+    if (nameEl) localStorage.setItem("lastLeaveName", (nameEl.value || "").trim());
+    if (rollEl) localStorage.setItem("lastLeaveRoll", (rollEl.value || "").trim());
+  }
+
+  function hideLeaveForms(){
+    safeHide($("leaveFormStep1"));
+    safeHide($("leaveFormStep2"));
+    safeHide($("leaveFormContainer")); // if exists
+    const submitBtn = $("leaveSubmitButton");
+    if (submitBtn){
+      submitBtn.disabled = true;
+      safeHide(submitBtn);
+    }
+  }
+
+  function showLeaveForm(){
+    // Default to showing step1
+    safeShow($("leaveFormStep1"));
+    safeHide($("leaveFormStep2"));
+    const submitBtn = $("leaveSubmitButton");
+    if (submitBtn){
+      submitBtn.disabled = false;
+      safeShow(submitBtn);
+    }
+    // If there is a wrapper container, ensure it's visible
+    safeShow($("leaveFormContainer"));
+  }
+
+  function removeCountdownEl(){
+    const el = $("leaveCountdownTimer");
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+  }
+
+  function ensureCountdownEl(){
+    let countdownEl = $("leaveCountdownTimer");
+    if (!countdownEl){
+      // Try to place above a status/record area if present
+      const recordDisplay = $("leaveRecordDisplay") || $("leaveStatusArea") || $("leaveFormStep1") || document.body;
+      countdownEl = document.createElement("div");
+      countdownEl.id = "leaveCountdownTimer";
+      countdownEl.setAttribute("role","status");
+      if (recordDisplay === document.body){
+        document.body.insertBefore(countdownEl, document.body.firstChild);
+      } else {
+        recordDisplay.parentNode.insertBefore(countdownEl, recordDisplay);
+      }
+    }
+    return countdownEl;
+  }
+
+  function fmt2(n){ return String(n).padStart(2, "0"); }
+
+  /* ---------- Countdown Controller ---------- */
+  function startCountdownTo(endTs){
+    hideLeaveForms();
+    clearInterval(leaveCountdownInterval);
+    const el = ensureCountdownEl();
+
+    function render(){
+      const now = Date.now();
+      let ms = endTs - now;
+      if (ms <= 0){
+        clearInterval(leaveCountdownInterval);
+        localStorage.removeItem(STORAGE_PREFIX + getUserKey());
+        removeCountdownEl();
+        showLeaveForm();
+        try { alert("You can now submit a new leave request."); } catch(_){}
+        return;
+      }
+      const totalSeconds = Math.floor(ms / 1000);
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
+      el.textContent = "Please wait before submitting again. Time left: " + fmt2(h) + ":" + fmt2(m) + ":" + fmt2(s);
+    }
+
+    render();
+    leaveCountdownInterval = setInterval(render, 1000);
+  }
+
+  function beginCooldownNow(duration){
+    const endTs = Date.now() + duration;
+    const key = STORAGE_PREFIX + getUserKey();
+    localStorage.setItem(key, String(endTs));
+    startCountdownTo(endTs);
+  }
+
+  function cancelCooldown(){
+    clearInterval(leaveCountdownInterval);
+    localStorage.removeItem(STORAGE_PREFIX + getUserKey());
+    removeCountdownEl();
+    showLeaveForm();
+  }
+
+  function restoreCooldownIfAny(){
+    const key = STORAGE_PREFIX + getUserKey();
+    const v = localStorage.getItem(key);
+    if (!v) return;
+    const endTs = parseInt(v, 10);
+    if (Number.isFinite(endTs) && endTs > Date.now()){
+      startCountdownTo(endTs);
+    } else {
+      // Expired or invalid
+      localStorage.removeItem(key);
+      showLeaveForm();
+      removeCountdownEl();
+    }
+  }
+
+  /* ---------- Wrap submitLeaveForm ---------- */
+  document.addEventListener("DOMContentLoaded", function(){
+    // Track name/roll for reload persistence
+    ["leaveName","leaveRoll"].forEach(function(id){
+      const el = $(id);
+      if (el){
+        el.addEventListener("change", rememberNameRoll);
+        el.addEventListener("input", rememberNameRoll);
+      }
+    });
+
+    // If original submit exists, wrap it to start cooldown immediately
+    if (typeof window.submitLeaveForm === "function"){
+      const _oldSubmit = window.submitLeaveForm;
+      window.submitLeaveForm = function(){
+        // Start countdown right away for feedback
+        beginCooldownNow(WAIT_TIME);
+        try {
+          const result = _oldSubmit.apply(this, arguments);
+          // If it returns a promise, handle rejection to rollback UI
+          if (result && typeof result.then === "function"){
+            return result.then(function(res){
+              return res;
+            }).catch(function(err){
+              // rollback cooldown on failure
+              cancelCooldown();
+              throw err;
+            });
+          }
+          return result;
+        } catch (err){
+          // rollback cooldown on synchronous error
+          cancelCooldown();
+          throw err;
+        }
+      };
+    }
+
+    // Restore countdown if the user reloads while cooling down
+    restoreCooldownIfAny();
+  });
+
+  /* ---------- Admin logout: ensure admin forms are hidden/reset ---------- */
+  (function hardenLogout(){
+    const oldLogout = window.logout;
+    window.logout = function(){
+      if (typeof oldLogout === "function") oldLogout();
+      try {
+        const formWrap = document.getElementById("announcementFormContainer");
+        const form = document.getElementById("announcementForm");
+        if (form) form.reset();
+        if (formWrap) formWrap.style.display = "none";
+        window.editingAnnouncementIndex = null;
+        document.querySelectorAll(".menu-items").forEach(m => m.style.display = "none");
+        if (typeof window.updateAdminUI === "function") window.updateAdminUI();
+      } catch(e){}
+    };
+  })();
+
+  /* ---------- Announcement date/time spacing polish ---------- */
+  function splitDateTimeText(el){
+    if (!el || !el.textContent) return;
+    const t = el.textContent.trim();
+    // Try to find a HH:MM(:SS)?( AM| PM)? pattern and split before it
+    const m = t.match(/^(.*?)(\s+)(\d{1,2}:\d{2}(?::\d{2})?\s*(AM|PM)?)$/i);
+    if (m){
+      el.innerHTML = m[1].trim() + '<span class="time" style="margin-left:8px;">' + m[3].trim() + '</span>';
+    }
+  }
+
+  function polishAnnouncementDates(root){
+    const scope = root || document;
+    const candidates = scope.querySelectorAll(".announcement-date, .announcement-meta, .ann-date, .announcement .date, .card .date, .announcement small, .announcement time");
+    candidates.forEach(splitDateTimeText);
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    polishAnnouncementDates();
+    // If announcements are dynamically added, observe and polish new ones
+    const host = document.querySelector("#announcementsList, .announcements-list, .announcement-list, .cards");
+    if (host && "MutationObserver" in window){
+      const mo = new MutationObserver(function(muts){
+        muts.forEach(m => m.addedNodes && m.addedNodes.forEach(n => {
+          if (n.nodeType === 1) polishAnnouncementDates(n);
+        }));
+      });
+      mo.observe(host, {childList:true, subtree:true});
+    }
+  });
+})();
+</script>
+<!-- === Global Admin Emoji Menu Injection === -->
+<script>
+(function(){
+  "use strict";
+  if (document.getElementById("globalAdminFab")) return; // avoid duplicates
+
+  // Create FAB
+  const fab = document.createElement("button");
+  fab.id = "globalAdminFab";
+  fab.title = "Admin Menu";
+  fab.setAttribute("aria-label", "Admin menu");
+  // Use a "man" emoji variant that's neutral; can be changed if you prefer
+  fab.textContent = "";
+
+ 
+  // Toggle menu
+  function toggleMenu(show){
+    const visible = show !== undefined ? show : (menu.style.display !== "block");
+    menu.style.display = visible ? "block" : "none";
+  }
+  fab.addEventListener("click", function(e){
+    e.stopPropagation();
+    toggleMenu();
+  });
+  document.addEventListener("click", function(e){
+    if (!menu.contains(e.target) && e.target !== fab) toggleMenu(false);
+  });
+
+  // Hook up actions with graceful fallbacks to your current script APIs / DOM
+  menu.addEventListener("click", function(e){
+    const item = e.target.closest(".item");
+    if (!item) return;
+    const action = item.getAttribute("data-action");
+
+    if (action === "create-ann"){
+      // Prefer existing function if present
+      if (typeof window.openCreateAnnouncement === "function"){
+        window.openCreateAnnouncement();
+      } else if (typeof window.showAnnouncementForm === "function"){
+        window.showAnnouncementForm();
+      } else {
+        // Fallback: show form container if found
+        const wrap = document.getElementById("announcementFormContainer");
+        if (wrap) { wrap.style.display = "block"; wrap.scrollIntoView({behavior:"smooth", block:"start"}); }
+      }
+      toggleMenu(false);
+    }
+
+    if (action === "manage-ann"){
+      if (typeof window.openManageAnnouncements === "function"){
+        window.openManageAnnouncements();
+      } else {
+        // Fallback: try to navigate to announcements section
+        const sec = document.getElementById("announcementsSection") || document.querySelector('[data-section="announcements"]');
+        if (sec){ sec.scrollIntoView({behavior:"smooth", block:"start"}); }
+      }
+      toggleMenu(false);
+    }
+
+    if (action === "go-leave"){
+      // Scroll to leave records if identifiable
+      const sec = document.getElementById("leaveSection") || document.querySelector('[data-section*="leave" i]');
+      if (sec){ sec.scrollIntoView({behavior:"smooth", block:"start"}); }
+      toggleMenu(false);
+    }
+
+    if (action === "logout"){
+      if (typeof window.logout === "function"){
+        window.logout();
+      } else {
+        // Fallback: simple local reset used by your previous patches
+        try {
+          localStorage.setItem("isAdmin", "false");
+          alert("Logged out.");
+        } catch(_){}
+      }
+      toggleMenu(false);
+    }
+  });
+
+  // Optional: only show FAB for admins if you have a flag
+  function updateFabVisibility(){
+    try{
+      const adminFlags = [
+        window.isAdmin,
+        window.currentUserIsAdmin,
+        (localStorage.getItem("isAdmin") === "true"),
+        (localStorage.getItem("adminLoggedIn") === "true")
+      ];
+      const isAdmin = adminFlags.some(Boolean);
+      // If you prefer always visible, comment next line:
+      fab.style.display = isAdmin ? "flex" : "none";
+    }catch(_){
+      fab.style.display = "flex"; // safest fallback
+    }
+  }
+
+  // Hide any per-card three-dots menus (legacy) to avoid UI duplication
+  function hideLegacyDotMenus(){
+    document.querySelectorAll(".three-dots, .menu-trigger, .more-vert, .admin-dots")
+      .forEach(el => el.style.display = "none");
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    updateFabVisibility();
+    hideLegacyDotMenus();
+    if (typeof window.updateAdminUI === "function"){
+      // Patch updateAdminUI to also sync fab visibility
+      const old = window.updateAdminUI;
+      window.updateAdminUI = function(){
+        const r = old.apply(this, arguments);
+        try { updateFabVisibility(); } catch(_){}
+        return r;
+      }
+    }
+  });
+})();
+</script>
+<!-- Mobile Bottom Tab Bar -->
+<style>
+  .mobile-tabbar { position: fixed; bottom: 0; left: 0; right: 0; display: flex; gap: 8px;
+    padding: 8px; background: rgba(255,255,255,0.95); backdrop-filter: blur(6px);
+    border-top: 1px solid #e5e7eb; z-index: 9999; }
+  .mobile-tabbar button { flex: 1; padding: 10px 8px; border: 1px solid #e5e7eb; border-radius: 12px;
+    background: #fff; font-weight: 600; }
+  .mobile-tabbar .active { outline: 2px solid #6366f1; }
+  @media (min-width: 769px) { .mobile-tabbar { display: none; } }
+  body { padding-bottom: 70px; } /* space so content isn't hidden behind tabbar on mobile */
+</style>
+<div class="mobile-tabbar" id="mobileTabbar">
+<button id="tabHome" onclick="showPage('home'); setActiveTab(this)">Home</button>
+<button id="tabAbout" onclick="showPage('about'); setActiveTab(this)">About Us</button>
+<button id="tabLeave" onclick="showPage('leave'); setActiveTab(this)">Leave System</button>
+</div>
+<script>
+  function setActiveTab(btn){
+    document.querySelectorAll('#mobileTabbar button').forEach(b=>b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+  // Initialize selected tab based on the visible section
+  document.addEventListener('DOMContentLoaded', function(){
+    var active = document.querySelector('section.active');
+    if (active){
+      var id = active.id;
+      if (id === 'home') setActiveTab(document.getElementById('tabHome'));
+      else if (id === 'about') setActiveTab(document.getElementById('tabAbout'));
+      else if (id === 'leave') setActiveTab(document.getElementById('tabLeave'));
+    } else {
+      setActiveTab(document.getElementById('tabHome'));
+    }
+  });
+</script>
+<!-- Fixed Leave Submit + 24h Countdown (aug-2025 patch) -->
+<script>
+(function(){
+  const WAIT_TIME = 24 * 60 * 60 * 1000; // 24 hours
+  const STORAGE_PREFIX = "LEAVE_COOLDOWN_";
+  let countdownTimerId = null;
+
+  function $(id){ return document.getElementById(id); }
+  function getUserKey(){
+    const name = ($("leaveName")?.value || "").trim();
+    const roll = ($("leaveRoll")?.value || "").trim();
+    return name + "_" + roll;
+  }
+
+  function ensureCountdownEl(){
+    let el = $("leaveCountdown");
+    if (!el){
+      el = document.createElement("div");
+      el.id = "leaveCountdown";
+      el.setAttribute('role','status');
+      el.style.margin = "16px 0";
+      el.style.padding = "12px";
+      el.style.border = "1px solid #e5e7eb";
+      el.style.borderRadius = "12px";
+      el.style.fontWeight = "600";
+      el.style.textAlign = "center";
+      const host = $("leaveRecordDisplay") || document.body;
+      host.parentNode.insertBefore(el, host);
+    }
+    return el;
+  }
+
+  function hideLeaveForm(){
+    const s1 = $("leaveFormStep1");
+    const s2 = $("leaveFormStep2");
+    if (s1) s1.style.display = "none";
+    if (s2) s2.style.display = "none";
+    const btn = $("leaveSubmitButton");
+    if (btn) btn.style.display = "none";
+  }
+  function showLeaveForm(){
+    const s1 = $("leaveFormStep1");
+    if (s1) s1.style.display = "block";
+    const btn = $("leaveSubmitButton");
+    if (btn) btn.style.display = "inline-block";
+  }
+
+  function startCountdownTo(endTs){
+    hideLeaveForm();
+    const el = ensureCountdownEl();
+    function render(){
+      const now = Date.now();
+      const diff = endTs - now;
+      if (diff <= 0) {
+        clearInterval(countdownTimerId);
+        localStorage.removeItem(STORAGE_PREFIX + getUserKey());
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+        showLeaveForm();
+        alert("You can now submit a new leave request.");
+        return;
+      }
+      const total = Math.floor(diff/1000);
+      const h = Math.floor(total/3600);
+      const m = Math.floor((total%3600)/60);
+      const s = total%60;
+      el.textContent = "Please wait before submitting again. Time left: " +
+        String(h).padStart(2,'0') + ":" + String(m).padStart(2,'0') + ":" + String(s).padStart(2,'0');
+    }
+    render();
+    clearInterval(countdownTimerId);
+    countdownTimerId = setInterval(render, 1000);
+  }
+
+  function beginCooldownNow(){
+    const endTs = Date.now() + WAIT_TIME;
+    localStorage.setItem(STORAGE_PREFIX + getUserKey(), String(endTs));
+    startCountdownTo(endTs);
+  }
+
+  function restoreCooldown(){
+    const v = localStorage.getItem(STORAGE_PREFIX + getUserKey());
+    if (!v) return;
+    const endTs = parseInt(v, 10);
+    if (Number.isFinite(endTs) && endTs > Date.now()) startCountdownTo(endTs);
+    else localStorage.removeItem(STORAGE_PREFIX + getUserKey());
+  }
+
+  // Our fixed submit handler
+  window.fixedSubmitLeave = function(ev){
+    if (ev) ev.preventDefault();
+    const name = ($("leaveName")?.value || "").trim();
+    const date = ($("leaveDate")?.value || "").trim();
+    const className = ($("leaveClass")?.value || "").trim();
+    const section = ($("leaveSection")?.value || "").trim();
+    const roll = ($("leaveRoll")?.value || "").trim();
+    const reason = ($("leaveReason")?.value || "").trim();
+    const days = ($("leaveDays")?.value || "").trim();
+
+    if (!reason || !days) {
+      alert("Please provide a reason and number of days.");
+      return;
+    }
+
+    // If already on cooldown, just show countdown and exit
+    const v = localStorage.getItem(STORAGE_PREFIX + getUserKey());
+    if (v && parseInt(v,10) > Date.now()){ startCountdownTo(parseInt(v,10)); return; }
+
+    // Start cooldown immediately so UI always shows countdown
+    beginCooldownNow();
+
+    const submitBtn = $("leaveSubmitButton");
+    if (submitBtn) submitBtn.disabled = true;
+
+    // Prepare and send email (uses your existing EmailJS IDs)
+    const tpl = {
+      name: name,
+      class: className,
+      section: section,
+      roll: roll,
+      reason: reason,
+      days: days,
+      email_to: "mrjolox@gmail.com"
+    };
+
+    if (typeof emailjs !== "undefined" && emailjs.send) {
+      emailjs.send("service_zjp0c7m", "template_14sd7cg", tpl)
+        .then(function(resp){
+          console.log("Email sent", resp);
+          alert("Leave request submitted and emailed to admin!");
+        })
+        .catch(function(err){
+          console.error("Email failed", err);
+          alert("Leave request submitted. Email failed to send, but cooldown is active.");
+        })
+        .finally(function(){
+          if (submitBtn) submitBtn.disabled = false;
+          // Clear form
+          ["leaveReason","leaveDays"].forEach(function(id){ const el = $(id); if (el) el.value=""; });
+        });
+    } else {
+      alert("Leave request submitted. (EmailJS not loaded)");
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded", function(){
+    restoreCooldown();
+  });
+})();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  try{
+    const mb = document.getElementById("menuBtn");
+    const isAdminStored = (localStorage.getItem("isAdmin") === "true");
+    if (mb){
+      mb.style.display = "inline-block";
+    }
+  }catch(e){}
+});
+</script>
+<style>#globalAdminFab{display:none !important;}</style>
+<!-- TUTOR_POLLS_MODULE_START -->
+<!-- Polls module injected on 2025-08-22T12:53:15.135646 -->
+<style id="tutor-polls-styles">
+/* Namespaced dark theme for polls to minimize collisions */
+.tutor-polls-root{font-family:inherit; color:#ffffff}
+.tutor-polls-panel{background:#0f0f0f;border:1px solid #222;border-radius:12px;padding:14px;margin:12px 0}
+.tutor-polls-row{display:flex;align-items:center;gap:8px}
+.tutor-polls-btn{appearance:none;border:1px solid #2b2b2b;background:#111;color:#fff;padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:600}
+.tutor-polls-btn.primary{background:#0b76b8;color:#fff;border-color:transparent}
+.tutor-polls-btn.ghost{background:transparent;border-color:#2b2b2b}
+.tutor-polls-hidden{display:none !important}
+.tutor-polls-create-drawer{margin-top:10px;border-radius:10px;border:1px dashed #2b2b2b;padding:12px;background:#0b0b0b}
+.tutor-polls-field{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.tutor-polls-field label{font-size:13px;color:#9aa0a6}
+.tutor-polls-field input[type="text"]{padding:8px 10px;background:#0b0b0b;border:1px solid #222;color:#fff;border-radius:8px}
+.tutor-polls-options{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.tutor-polls-option{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;border:1px solid #1e1e1e;background:#0d0d0d;cursor:pointer}
+.tutor-polls-option:hover{border-color:#303030}
+.tutor-polls-option.selected{border-color:#0b76b8;background:linear-gradient(90deg, rgba(11,118,184,0.08), transparent)}
+.tutor-polls-votes{font-variant-numeric:tabular-nums;color:#8fbce6;font-weight:700;display:none}
+.tutor-polls-option.show-votes .tutor-polls-votes{display:inline}
+.tutor-polls-help{color:#9aa0a6;font-size:12px}
+.tutor-polls-empty{padding:18px;text-align:center;color:#9aa0a6}
+.tutor-polls-meta{color:#909497;font-size:12px;margin-top:8px}
+</style>
+<style>
+/* ===== POLLS — Minimal white theme, YouTube-style fills ===== */
+.tutor-polls{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+.tutor-polls-panel{border:2px solid #000;background:#fff;color:#000;border-radius:14px;padding:14px;max-width:760px;margin:20px auto}
+.tutor-polls-row{display:flex;align-items:center;gap:8px}
+.tutor-polls-btn{appearance:none;background:#fff;border:1.5px solid #000;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700;color:#000}
+.tutor-polls-btn.primary{background:#111;color:#fff;border-color:#111}
+.tutor-polls-hidden{display:none!important}
+.tutor-create{margin-top:12px;border-radius:12px;border:1.5px dashed #000;padding:12px;background:#fafafa}
+.tutor-field{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.tutor-field input[type="text"]{padding:10px 12px;background:#fff;border:1.5px solid #000;color:#000;border-radius:10px}
+.tutor-options{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.tutor-option-row{display:flex;align-items:center;gap:8px}
+.tutor-option-row input[type="text"]{flex:1;padding:10px 12px;border:1.5px solid #000;border-radius:10px}
+.tutor-card{border:2px solid #000;border-radius:12px;padding:14px;background:#fff;margin:18px 0}
+.tutor-q{font-weight:800;margin-bottom:10px}
+/* clickable options (before voting) */
+.tutor-click{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1.5px solid #000;border-radius:9999px;padding:10px 14px;background:#fff;cursor:pointer;transition:transform .06s ease}
+.tutor-click:active{transform:scale(.99)}
+/* results (after voting) */
+.tutor-bar{position:relative;border:1.5px solid #000;border-radius:9999px;overflow:hidden;background:#fff}
+.tutor-bar-fill{position:absolute;inset:0 0 0 0;width:0%;background:rgba(0,0,0,.12);transition:width .35s ease}
+.tutor-bar-inner{position:relative;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-weight:700}
+.tutor-percent{font-variant-numeric:tabular-nums}
+.tutor-actions{display:flex;gap:8px;justify-content:flex-end}
+/* small helpers */
+.tutor-mini{font-size:12px;opacity:.7}
+</style>
+<style>
+/* ===== POLLS — White theme, YouTube-style fills (sky blue), no vote counts shown ===== */
+.tutor-polls{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+.tutor-polls-panel{border:2px solid #000;background:#fff;color:#000;border-radius:14px;padding:14px;max-width:760px;margin:20px auto}
+.tutor-polls-row{display:flex;align-items:center;gap:8px}
+.tutor-polls-btn{appearance:none;background:#fff;border:1.5px solid #000;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700;color:#000}
+.tutor-polls-btn.primary{background:#111;color:#fff;border-color:#111}
+.tutor-polls-hidden{display:none!important}
+.tutor-create{margin-top:12px;border-radius:12px;border:1.5px dashed #000;padding:12px;background:#fafafa}
+.tutor-field{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.tutor-field label{font-size:13px}
+.tutor-field input[type="text"], .tutor-field input[type="number"], .tutor-field select{padding:10px 12px;background:#fff;border:1.5px solid #000;color:#000;border-radius:10px}
+.tutor-options{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.tutor-option-row{display:flex;align-items:center;gap:8px}
+.tutor-option-row input[type="text"]{flex:1}
+.tutor-card{border:2px solid #000;border-radius:12px;padding:14px;background:#fff;margin:18px 0}
+.tutor-q{font-weight:800;margin-bottom:10px}
+/* clickable options (before voting) */
+.tutor-click{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1.5px solid #000;border-radius:9999px;padding:10px 14px;background:#fff;cursor:pointer;transition:transform .06s ease}
+.tutor-click:active{transform:scale(.99)}
+/* results (after voting) */
+.tutor-bar{position:relative;border:1.5px solid #000;border-radius:9999px;overflow:hidden;background:#fff}
+.tutor-bar-fill{position:absolute;inset:0 0 0 0;width:0%;background:#87CEEB; /* sky blue */ transition:width .35s ease}
+.tutor-bar-inner{position:relative;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-weight:700}
+.tutor-percent{font-variant-numeric:tabular-nums}
+.tutor-actions{display:flex;gap:8px;justify-content:flex-end}
+.tutor-mini{font-size:12px;opacity:.7}
+.tutor-inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+</style>
+<div class="tutor-polls tutor-polls-hidden" id="pollsInject">
+<div aria-label="Polls" class="tutor-polls-panel" role="region"><div class="tutor-polls-row" id="tp-toolbar" style="margin-bottom:8px">
+<div style="flex:1"></div>
+<button class="tutor-polls-btn admin-only" id="tp-createBtn">Create Poll</button>
+</div>
+</div>
+<div class="tutor-create tutor-polls-hidden" id="tp-create">
+<div class="tutor-field">
+<label for="tp-q">Question</label>
+<input id="tp-q" placeholder="Question" type="text"/>
+<div style="margin-top:8px"><input id="tp-expiry-hours" min="0" placeholder="Expires in hours (optional)" style="width:100%" type="number"/></div>
+</div>
+<div class="tutor-options" id="tp-opts"></div>
+<div class="tutor-actions" style="margin-top:6px">
+<button class="tutor-polls-btn" id="tp-add">Add option</button>
+<div style="flex:1"></div>
+</div>
+<!-- Time limit (used for auto-delete only; nothing shown on cards) -->
+<div class="tutor-field">
+<label>Time limit</label>
+<div class="tutor-inline">
+<label style="display:flex;align-items:center;gap:6px"><input checked="" id="tp-exp-all" name="tp-exp" type="radio"> All time</input></label>
+<label style="display:flex;align-items:center;gap:6px"><input id="tp-exp-cus" name="tp-exp" type="radio"/> Custom</label>
+<input disabled="" id="tp-exp-amt" min="1" placeholder="Amount" style="width:120px" type="number"/>
+<select disabled="" id="tp-exp-unit" style="width:150px">
+<option value="minutes">Minutes</option>
+<option value="hours">Hours</option>
+<option value="days">Days</option>
+</select>
+</div>
+<span class="tutor-mini">Used for auto-delete only. Nothing will show on the poll.</span>
+</div>
+<div class="tutor-actions" style="margin-top:10px">
+<div style="flex:1"></div>
+<button class="tutor-polls-btn primary" id="tp-save">Create</button>
+</div>
+</div>
+<div id="tp-list"></div>
+<div aria-hidden="true" class="tutor-picker tutor-polls-hidden" id="tp-picker">
+<div class="tutor-picker-backdrop"></div>
+<div aria-labelledby="tp-picker-title" aria-modal="true" class="tutor-picker-card" role="dialog">
+<div class="tutor-picker-head">
+<h3 id="tp-picker-title">Select a poll</h3>
+<button class="tutor-polls-btn" id="tp-picker-close">Close</button>
+</div>
+<div class="tutor-picker-list" id="tp-picker-list"></div>
+</div>
+</div>
+</div>
+<script id="pollsInjectScript">
+(function(){
+  if(window.__polls_injected_v2__) return; window.__polls_injected_v2__ = true;
+
+  const KEY_P = "tutor_polls_v3";
+  const KEY_V = "tutor_polls_votes_v3";
+
+  const $ = sel => document.querySelector(sel);
+  const root = document.getElementById("pollsInject");
+  const list = document.getElementById("tp-list");
+  const createBtn = document.getElementById("tp-createBtn");
+  const drawer = document.getElementById("tp-create");
+  const qInput = document.getElementById("tp-q");
+  const optsWrap = document.getElementById("tp-opts");
+  const addBtn = document.getElementById("tp-add");
+  const saveBtn = document.getElementById("tp-save");
+
+  // expiry inputs
+  const expAll = document.getElementById("tp-exp-all");
+  const expCus = document.getElementById("tp-exp-cus");
+  const expAmt = document.getElementById("tp-exp-amt");
+  const expUnit = document.getElementById("tp-exp-unit");
+
+  function toggleExpInputs(){
+    const on = expCus.checked;
+    expAmt.disabled = !on; expUnit.disabled = !on;
+  }
+  expAll.addEventListener("change", toggleExpInputs);
+  expCus.addEventListener("change", toggleExpInputs);
+  toggleExpInputs();
+
+  function read(k, f){ try{ const s=localStorage.getItem(k); return s?JSON.parse(s):f }catch(e){ return f } }
+  function write(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)) }catch(e){} }
+
+  let polls = read(KEY_P, []);
+  let my = read(KEY_V, {});
+
+  // Attach panel into existing Polls section if present
+  (function attach(){
+    const target = document.getElementById("polls") || document.querySelector("[data-section='polls']") || document.querySelector(".polls, #pollsSection");
+    if(target) target.prepend(root);
+    document.getElementById("pollsInject").classList.remove("tutor-polls-hidden");
+  })();
+
+  // Admin gate for Create button
+  function syncAdmin(){
+    if(window.isAdmin){ createBtn.classList.remove("tutor-polls-hidden"); }
+    else { createBtn.classList.add("tutor-polls-hidden"); drawer.classList.add("tutor-polls-hidden"); }
+  }
+  syncAdmin();
+
+  function syncAdminToolbar(){
+    try {
+      const isAdm = !!window.isAdmin || localStorage.getItem("isAdmin")==="true";
+      window.isAdmin = !!isAdm;
+      document.querySelectorAll(".admin-only").forEach(el=>{
+        if (el.classList.contains("tutor-card-actions")) el.style.display = isAdm ? "flex" : "none";
+        else el.style.display = isAdm ? "" : "none";
+      });
+      // Hide any legacy toolbar edit/delete buttons if present
+      const e1 = document.getElementById("tp-editBtn"); if (e1) e1.style.display = "none";
+      const e2 = document.getElementById("tp-delBtn");  if (e2) e2.style.display = "none";
+    } catch(e){}
+  }
+
+  try {
+    const prev = window.updateAdminUI;
+    window.updateAdminUI = function(){ if(typeof prev === "function") prev(); syncAdmin(); };
+  } catch(e){}
+
+  // Option inputs (min 2, max 4)
+  let optionInputs = ["",""];
+  function renderInputs(){
+    optsWrap.innerHTML = "";
+    optionInputs.forEach((val, i)=>{
+      const row = document.createElement("div");
+      row.className = "tutor-option-row";
+      const inp = document.createElement("input");
+      inp.type = "text"; inp.placeholder = "Option " + (i+1); inp.value = val;
+      inp.oninput = () => optionInputs[i] = inp.value;
+      const del = document.createElement("button");
+      del.className = "tutor-polls-btn"; del.textContent = "Remove";
+      del.onclick = ()=>{
+        if(optionInputs.length <= 2){
+          alert("Minimum 2 options required");
+          return;
+        }
+        optionInputs.splice(i,1); renderInputs();
+      };
+      row.appendChild(inp); row.appendChild(del);
+      optsWrap.appendChild(row);
+    });
+  }
+  addBtn.onclick = ()=>{ if(optionInputs.length>=4) return; optionInputs.push(""); renderInputs(); };
+  renderInputs();
+
+  // Create button toggle
+  createBtn.onclick = ()=> drawer.classList.toggle("tutor-polls-hidden");
+
+  function purgeExpiredSilent(){
+    const now = Date.now();
+    const before = polls.length;
+    polls = polls.filter(p => !p.expiresAt || p.expiresAt > now);
+    if(before !== polls.length) write(KEY_P, polls);
+  }
+
+  function render(){
+    purgeExpiredSilent();
+    list.innerHTML = "";
+    polls.forEach(p=> list.appendChild(renderCard(p)));
+  }
+
+  function renderCard(p){
+    const card = document.createElement("div");
+    card.className = "tutor-card";
+    try{ card.dataset.id = p.id; }catch(e){}
+
+    const q = document.createElement("div");
+    q.className = "tutor-q";
+    q.textContent = p.question;
+    card.appendChild(q);
+
+    const votedIdx = my[p.id];
+    const hasVoted = (votedIdx !== undefined);
+    const total = p.options.reduce((a,b)=> a + (b.v||0), 0) || 0;
+
+    p.options.forEach((opt, idx)=>{
+      if(!hasVoted){
+        const click = document.createElement("div");
+        click.className = "tutor-click";
+        const t = document.createElement("span");
+        t.textContent = opt.t;
+        const mini = document.createElement("span"); mini.className = "tutor-mini"; mini.textContent = "vote";
+        click.appendChild(t); click.appendChild(mini);
+        click.onclick = ()=> vote(p.id, idx);
+        card.appendChild(click);
+      } else {
+        const bar = document.createElement("div");
+        bar.className = "tutor-bar";
+        const fill = document.createElement("div");
+        fill.className = "tutor-bar-fill";
+        const inner = document.createElement("div");
+        inner.className = "tutor-bar-inner";
+        const pct = total? Math.round((opt.v||0) * 100 / total) : 0;
+        fill.style.width = pct + "%";
+        const label = document.createElement("span"); label.textContent = opt.t;
+        // If you want to hide percentage too, comment out the next two lines
+        const pspan = document.createElement("span"); pspan.className = "tutor-votes"; pspan.textContent = (opt.v||0) + " " + ((opt.v||0)===1?"vote":"votes");
+        bar.appendChild(fill); inner.appendChild(label); inner.appendChild(pspan); bar.appendChild(inner);
+
+        // Allow toggling by clicking the chosen bar again (or switch to another)
+        bar.style.cursor = "pointer";
+        bar.onclick = ()=> vote(p.id, idx);
+
+        card.appendChild(bar);
+      }
+    });
+    // Insert hourglass expiry chip at bottom-right if poll has expiresAt
+    if (p.expiresAt){
+      const chip = document.createElement("div");
+      chip.className = "tutor-expiry";
+      chip.dataset.expires = p.expiresAt;
+      chip.innerHTML = '<span class="hg">⏳</span><span class="t">--:--:--</span>';
+      card.appendChild(chip);
+    }
+
+
+    
+    // Admin per-card actions
+    (function addActions(){
+      try {
+        const actions = document.createElement("div");
+        actions.className = "tutor-card-actions admin-only";
+        // Edit
+        const ebtn = document.createElement("button");
+        ebtn.className = "tutor-edit-btn";
+        ebtn.textContent = "Edit";
+        ebtn.onclick = ()=> beginEdit(p.id);
+        // Delete
+        const dbtn = document.createElement("button");
+        dbtn.className = "tutor-del-btn";
+        dbtn.textContent = '🗑️';
+        dbtn.onclick = ()=>{
+          if(!window.isAdmin){ alert("Admin only."); return; }
+          if(confirm("Are you sure you want to delete this poll?")){
+            polls = polls.filter(x=>x.id !== p.id);
+            write(KEY_P, polls);
+            try{ const my = read(KEY_V)||{}; delete my[p.id]; write(KEY_V,my);}catch(e){}
+            render();
+            setTimeout(syncAdminToolbar,0);
+          }
+        };
+        actions.appendChild(ebtn);
+        actions.appendChild(dbtn);
+        card.appendChild(actions);
+      } catch(e){}
+    })();
+    return card;
+  }
+
+  function vote(id, idx){
+    const p = polls.find(x=>x.id == id); if(!p) return;
+    const prev = my[id];
+
+    if(prev === idx){
+      // toggle off same choice
+      if(p.options[idx].v && p.options[idx].v > 0) p.options[idx].v--;
+      delete my[id];
+      write(KEY_P, polls); write(KEY_V, my);
+      render();
+      return;
+    }
+
+    if(prev !== undefined){
+      // move vote to another choice
+      if(p.options[prev] && p.options[prev].v > 0) p.options[prev].v--;
+      p.options[idx].v = (p.options[idx].v||0) + 1;
+      my[id] = idx;
+      write(KEY_P, polls); write(KEY_V, my);
+      render();
+      return;
+    }
+
+    // first-time vote
+    p.options[idx].v = (p.options[idx].v||0) + 1;
+    my[id] = idx;
+    write(KEY_P, polls); write(KEY_V, my);
+    render();
+  }
+
+  // expiry computation (for create form only; not shown on cards)
+  function computeExpiryTs(){
+    if (expAll.checked) return null;
+    const amt = parseInt(expAmt.value, 10);
+    if (!Number.isFinite(amt) || amt <= 0) { alert("Enter a valid time amount"); return undefined; }
+    const unit = expUnit.value;
+    let ms = 0;
+    if (unit === "minutes") ms = amt * 60 * 1000;
+    if (unit === "hours")   ms = amt * 60 * 60 * 1000;
+    if (unit === "days")    ms = amt * 24 * 60 * 60 * 1000;
+    return Date.now() + ms;
+  }
+
+  // Save
+  saveBtn.onclick = ()=>{
+    const q = (qInput.value||"").trim();
+    const opts = optionInputs.map(x=>x.trim()).filter(Boolean);
+    if(!q) return alert("Enter a question");
+    if(opts.length<2) return alert("Need at least 2 options");
+
+    const expiresAt = computeExpiryTs();
+    if (expiresAt === undefined) return; // invalid custom input
+
+    const poll = {
+      id: "p_" + Math.random().toString(36).slice(2,10),
+      question: q,
+      options: opts.map(t=>({t, v:0})),
+      createdAt: Date.now(),
+      expiresAt: expiresAt || null
+    };
+    polls.push(poll);
+    write(KEY_P, polls);
+    // reset
+    qInput.value = "";
+    optionInputs = ["",""]; renderInputs();
+    expAll.checked = true; expCus.checked = false; expAmt.value = ""; expUnit.value = "minutes"; toggleExpInputs();
+    drawer.classList.add("tutor-polls-hidden");
+    render();
+  };
+
+  // Initial render
+  render();
+  // === Expiry chips updater ===
+  function fmt2p(n){ return String(n).padStart(2,"0"); }
+  function updateExpiryChip(el){
+    const exp = parseInt(el.dataset.expires,10);
+    if(!Number.isFinite(exp)) { el.textContent = "Expired"; return; }
+    const now = Date.now();
+    let ms = exp - now;
+    if (ms <= 0){ el.textContent = "Expired"; return; }
+    const totalSeconds = Math.floor(ms/1000);
+    const h = Math.floor(totalSeconds/3600);
+    const m = Math.floor((totalSeconds%3600)/60);
+    const s = totalSeconds%60;
+    const tEl = el.querySelector(".t");
+    if (tEl) { tEl.textContent = (""+h).padStart(2,"0")+":"+(""+m).padStart(2,"0")+":"+(""+s).padStart(2,"0"); }
+  }
+  setInterval(()=>{
+    document.querySelectorAll(".tutor-expiry").forEach(updateExpiryChip);
+  },1000);
+  // Remove expired polls entirely
+  document.querySelectorAll(".tutor-expiry").forEach(el=>{
+    const exp = parseInt(el.dataset.expires,10);
+    if (Date.now() > exp){
+      const card = el.closest(".tutor-card");
+      if (card) card.remove();
+    }
+  });
+
+
+  // Expose minimal API for debugging
+  window.tutorPolls = { list:()=>polls.slice(), clearVotes:()=>{ my={}; write(KEY_V,my); render(); } };
+})();
+
+  // ===== Edit/Delete & Picker =====
+  let editingId = null;
+
+  function openPicker(action){
+    const picker = document.getElementById("tp-picker");
+    const listEl = document.getElementById("tp-picker-list");
+    listEl.innerHTML = "";
+    if(!polls.length){
+      const empty = document.createElement("div"); empty.textContent = "No polls available.";
+      listEl.appendChild(empty);
+    } else {
+      polls.forEach((p, i)=>{
+        const item = document.createElement("div");
+        item.className = "tutor-picker-item";
+        item.dataset.id = p.id;
+        item.innerHTML = `<span class="tutor-badge">#${i+1}</span><div><div style="font-weight:700">${p.question||"(no title)"}</div><div class="tutor-mini">${(p.options||[]).length} options</div></div>`;
+        item.onclick = ()=>{
+          if(action === "edit"){
+            beginEdit(p.id);
+          } else if(action === "delete"){
+            if(confirm("Are you sure you want to delete this poll?")) {
+              const idx = polls.findIndex(x=>x.id===p.id);
+              if(idx>=0){ polls.splice(idx,1); write(KEY_P, polls); render(); }
+            }
+          }
+          closePicker();
+        };
+        listEl.appendChild(item);
+      });
+    }
+    picker.classList.remove("tutor-polls-hidden");
+    picker.setAttribute("aria-hidden","false");
+  }
+  function closePicker(){
+    const picker = document.getElementById("tp-picker");
+    picker.classList.add("tutor-polls-hidden");
+    picker.setAttribute("aria-hidden","true");
+  }
+  (function bindPicker(){
+    const picker = document.getElementById("tp-picker");
+    const back = picker.querySelector(".tutor-picker-backdrop");
+    const btn = document.getElementById("tp-picker-close");
+    back.onclick = closePicker; btn.onclick = closePicker;
+  })();
+
+  function beginEdit(id){
+    const p = polls.find(x=>x.id == id);
+    if(!p) return alert("Poll not found");
+    editingId = id;
+    // Question
+    qInput.value = p.question || "";
+    // Options (up to 4)
+    optionInputs = (p.options||[]).map(o=>o.t).slice(0,4);
+    while(optionInputs.length < 2) optionInputs.push("");
+    renderInputs();
+    // Expiry prefill
+    if (!p.expiresAt || p.expiresAt === null){
+      expAll.checked = true; expCus.checked = false;
+    } else {
+      const now = Date.now();
+      let ms = Math.max(0, p.expiresAt - now);
+      // Prefer whole days -> hours -> minutes
+      let unit = "minutes";
+      let amt = Math.max(1, Math.round(ms/60000));
+      const days = ms / (24*60*60*1000);
+      const hours = ms / (60*60*1000);
+      if (Number.isInteger(days) && days >= 1){ unit = "days"; amt = days; }
+      else if (Number.isInteger(hours) && hours >= 1){ unit = "hours"; amt = hours; }
+      else { unit = "minutes"; amt = Math.max(1, Math.round(ms/60000)); }
+      expCus.checked = true; expAll.checked = false;
+      expUnit.value = unit;
+      expAmt.value = String(amt);
+    }
+    toggleExpInputs();
+    // Open drawer, set labels
+    drawer.classList.remove("tutor-polls-hidden");
+    saveBtn.textContent = "Save Changes";
+    try { createBtn.textContent = "Editing…"; } catch(e){}
+  }
+  try{ window.__tp_beginEdit = beginEdit; }catch(e){}
+
+
+  // Bind toolbar buttons (guarded - toolbar may be removed)
+  (function bindToolbar(){
+    const editBtn = document.getElementById("tp-editBtn");
+    const delBtn  = document.getElementById("tp-delBtn");
+    if (editBtn) editBtn.addEventListener("click", ()=>{
+      if(!window.isAdmin){ alert("Admin only."); return; }
+      openPicker("edit");
+    });
+    if (delBtn) delBtn.addEventListener("click", ()=>{
+      if(!window.isAdmin){ alert("Admin only."); return; }
+      openPicker("delete");
+    });
+  })();
+
+  // Patch save handler to support editing
+  const _oldSave = saveBtn.onclick;
+  saveBtn.onclick = ()=>{
+    const q = (qInput.value||"").trim();
+    const opts = optionInputs.map(x=>x.trim()).filter(Boolean);
+    if(!q) return alert("Enter a question");
+    if(opts.length<2) return alert("Need at least 2 options");
+
+    if(editingId){
+      const idx = polls.findIndex(x=>x.id===editingId);
+      if(idx<0){ alert("Editing target not found."); editingId = null; return; }
+      const old = polls[idx];
+      const expiresAt = computeExpiryTs();
+      if (expiresAt === undefined) return;
+      // map old votes by label text
+      const voteMap = new Map((old.options||[]).map(o=>[o.t, o.v||0]));
+      const newOpts = opts.map(t=>({ t, v: voteMap.get(t) || 0 }));
+      polls[idx] = {
+        ...old,
+        question: q,
+        options: newOpts,
+        expiresAt: (expiresAt===null ? null : expiresAt)
+      };
+      write(KEY_P, polls);
+      editingId = null;
+      saveBtn.textContent = "Create";
+      createBtn.textContent = "Create Poll";
+      drawer.classList.add("tutor-polls-hidden");
+      // clear form
+      qInput.value = ""; optionInputs = ["",""]; renderInputs();
+      render();
+      return;
+    }
+
+    // otherwise, run original create logic
+    if(typeof _oldSave === "function") return _oldSave();
+    // fallback if not a function (shouldn't happen): minimal create
+    const expiresAt = computeExpiryTs();
+    if (expiresAt === undefined) return;
+    const poll = {
+      id: "p_" + Math.random().toString(36).slice(2,10),
+      question: q,
+      options: opts.map(t=>({t, v:0})),
+      createdAt: Date.now(),
+      expiresAt: expiresAt || null
+    };
+    polls.unshift(poll); write(KEY_P, polls);
+    qInput.value = ""; optionInputs = ["",""]; renderInputs();
+    drawer.classList.add("tutor-polls-hidden");
+    render();
+  };
+
+  // Keep admin buttons visible/hidden in sync like Create button
+    try {
+    const prev = window.updateAdminUI;
+    window.updateAdminUI = function(){ if(typeof prev === "function") prev(); syncAdmin(); syncAdminToolbar(); };
+  } catch(e){}
+  syncAdminToolbar();
+
+  // === Admin toolbar watcher ===
+    // Call on load
+  try { document.addEventListener("DOMContentLoaded", syncAdminToolbar); } catch(e){}
+  setTimeout(syncAdminToolbar, 0);
+
+  // Patch common login/logout hooks (if present) to also sync toolbar
+  (function hookAuth(){
+    try {
+      const prevLogin = window.login;
+      window.login = async function(){
+        const r = prevLogin && prevLogin.apply(this, arguments);
+        try { window.isAdmin = true; localStorage.setItem("isAdmin","true"); } catch(e){}
+        syncAdminToolbar();
+        return r;
+      };
+    } catch(e){}
+    try {
+      const prevLogout = window.logout;
+      window.logout = async function(){
+        const r = prevLogout && prevLogout.apply(this, arguments);
+        try { window.isAdmin = false; localStorage.setItem("isAdmin","false"); } catch(e){}
+        syncAdminToolbar();
+        return r;
+      };
+    } catch(e){}
+  })();
+
+  // Fallback: poll for changes to admin flag to catch other login flows
+  (function adminPoll(){
+    let last = null;
+    setInterval(()=>{
+      const cur = (window.isAdmin ? "1" : "0") + "|" + (localStorage.getItem("isAdmin")==="true");
+      if (cur !== last){ last = cur; syncAdminToolbar(); }
+    }, 500);
+  })();
+
+
+
+  // Hide legacy toolbar buttons (defensive)
+  (function hideLegacyToolbar(){
+    try{ const e1=document.getElementById("tp-editBtn"); if(e1) e1.style.display="none"; }catch(e){}
+    try{ const e2=document.getElementById("tp-delBtn"); if(e2) e2.style.display="none"; }catch(e){}
+  })();
+</script>
+<!-- POLLS_MODULE_END -->
+<!-- === PATCH: UI tweaks (hourglass, ripple, spacing, admin menu fix) === -->
+<style>
+/* Countdown chip styling and bottom hourglass */
+#leaveCountdownTimer, #leaveCountdown {
+  position: relative;
+  padding: 12px 16px;
+  margin: 12px 0;
+  border-radius: 12px;
+  background: linear-gradient(180deg,#fff8e1,#fff3cd);
+  border: 1px solid #f0c36d;
+  color: #6b2e00;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  overflow: visible;
+}
+#leaveCountdownTimer::after, #leaveCountdown::after {
+  content: "⌛";
+  position: absolute;
+  
+  bottom: -10px;
+  font-size: 22px;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.12));
+  line-height: 1;
+}
+
+/* Poll option spacing */
+.tutor-options, .tutor-polls-options { gap: 14px !important; }
+
+/* Ripple/wave overlay on poll bars (subtle) */
+.tutor-bar-fill {
+  background: linear-gradient(90deg, rgba(11,118,184,0.22), rgba(11,118,184,0.32));
+  position: absolute;
+  inset: 0;
+  transition: width .45s ease;
+  overflow: hidden;
+}
+.tutor-bar-fill::before {
+  content: "";
+  position: absolute;
+  left: -40px;
+  top: -10px;
+  right: -40px;
+  bottom: -10px;
+  background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.18) 2px, transparent 4px),
+                    repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.03) 2px, transparent 6px);
+  background-size: 40px 6px, 80px 6px;
+  opacity: 0.9;
+  animation: waveMove 2.6s linear infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+@keyframes waveMove { from { transform: translateX(0) } to { transform: translateX(160px) } }
+
+/* Ensure label stays readable */
+.tutor-bar-inner { position: relative; z-index: 2; }
+
+/* Remove 'Update Soon' placeholder in polls section if present */
+#polls h1 { display: none !important; }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  try {
+    const pollsH = document.querySelector('#polls h1');
+    if (pollsH && /update soon/i.test(pollsH.textContent)) pollsH.remove();
+  } catch(e){}
+
+  window.updateMenuVisibility = function(){
+    try {
+      const mb = document.getElementById('menuBtn');
+      const isAdminStored = localStorage.getItem('isAdmin') === 'true';
+      if (mb) mb.style.display = "inline-block";
+    } catch(e){}
+  };
+  updateMenuVisibility();
+
+  try {
+    const oldShow = window.showAdminFeatures;
+    window.showAdminFeatures = function(){
+      if (typeof oldShow === 'function') oldShow();
+      updateMenuVisibility();
+    };
+  } catch(e){}
+  try {
+    const oldLogout = window.logout;
+    window.logout = function(){
+      if (typeof oldLogout === 'function') oldLogout();
+      updateMenuVisibility();
+    };
+  } catch(e){}
+});
+
+// === Poll Edit/Delete ===
+
+  const polls = document.querySelectorAll(".tutor-card");
+  if (!polls.length){ alert("No polls available."); return; }
+  const choice = prompt("Enter poll number to edit (1-"+polls.length+"):");
+  const idx = parseInt(choice,10)-1;
+  if (isNaN(idx) || idx<0 || idx>=polls.length){ alert("Invalid choice."); return; }
+  const poll = polls[idx];
+  alert("Opening poll for editing: "+poll.querySelector("h3").textContent);
+  // Placeholder: logic to actually edit poll content
+}
+function deletePoll(){
+  if (!isAdmin){ alert("Admin only."); return; }
+  const polls = document.querySelectorAll(".tutor-card");
+  if (!polls.length){ alert("No polls available."); return; }
+  const choice = prompt("Enter poll number to delete (1-"+polls.length+"):");
+  const idx = parseInt(choice,10)-1;
+  if (isNaN(idx) || idx<0 || idx>=polls.length){ alert("Invalid choice."); return; }
+  const poll = polls[idx];
+  if (confirm("Are you sure you want to delete: "+poll.querySelector("h3").textContent+" ?")){
+    poll.remove();
+  }
+}
+
+</script>
+<!-- === END PATCH === -->
+<style id="polls-overrides">
+/* Force spacing between options */
+.tutor-bar, .tutor-click { margin-bottom: 12px !important; }
+/* Votes text style */
+.tutor-votes { font-variant-numeric: tabular-nums; }
+/* Position timer chip inside card bottom-right (extreme down-right) */
+.tutor-card { position: relative; padding-bottom: 46px; }
+.tutor-expiry {
+  position: absolute;
+  right: 6px; bottom: 6px;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff3cd; color: #6b2e00;
+  border: 1px solid #f0c36d; border-radius: 999px;
+  padding: 6px 10px; font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+}
+.tutor-expiry .hg { font-size: 16px; line-height: 1; }
+
+/* Profile card delete button - hidden for public */
+.profile-card .delete-btn {
+  display: none;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* Show only for admin */
+body.is-admin .profile-card .delete-btn {
+  display: inline-block;
+}
+
+
+/* Force show delete buttons when admin */
+body.is-admin .tutor-del-btn,
+body.is-admin .delete-btn,
+body.is-admin .video-delete-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+</style>
+<div id="tp-toast">Please select a poll first</div>
+<script>
+(function(){
+  'use strict';
+  var selectedCard = null;
+
+  function $(sel){ return document.querySelector(sel); }
+  function $all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); }
+
+  function getList(){ return document.getElementById('tp-list'); }
+
+  function showToast(msg){
+    var t = document.getElementById('tp-toast');
+    if(!t) return;
+    t.textContent = msg || 'Please select a poll first';
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 1600);
+  }
+
+  function updateButtons(){
+    var list = getList();
+    var has = !!(list && list.children && list.children.length>0);
+    var editBtn = document.getElementById('tp-editBtn');
+    var delBtn = document.getElementById('tp-delBtn');
+    if(editBtn) editBtn.style.display = has ? '' : 'none';
+    if(delBtn)  delBtn.style.display  = has ? '' : 'none';
+  }
+
+  function selectCard(card){
+    if(!card) return;
+    // only one selected
+    $all('#tp-list > .tutor-card.selected').forEach(function(c){ if(c!==card){ c.classList.remove('selected'); }});
+    card.classList.add('selected');
+    selectedCard = card;
+  }
+
+  function findCardFromEventTarget(t){
+    var list = getList();
+    if(!list) return null;
+    while(t && t!==list){
+      if(t.parentElement === list && t.classList && t.classList.contains('tutor-card')) return t;
+      t = t.parentElement;
+    }
+    return null;
+  }
+
+  function ensureCardRole(){
+    var list = getList();
+    if(!list) return;
+    Array.from(list.children).forEach(function(n){
+      if(n.nodeType !== 1) return;
+      if(!n.classList.contains('tutor-card')) return;
+      n.setAttribute('tabindex','0');
+    });
+  }
+
+  // Hijack original click handlers on Edit/Delete buttons by cloning the nodes
+  function stripListenersAndWire(){
+    function resetOne(id, handler){
+      var old = document.getElementById(id);
+      if(!old) return null;
+      var clone = old.cloneNode(true);
+      old.parentNode.replaceChild(clone, old);
+      clone.addEventListener('click', handler);
+      return clone;
+    }
+    // EDIT: open the create form prefilled for the selected poll (using beginEdit from the original script)
+    resetOne('tp-editBtn', function(){
+      if(!selectedCard){
+        showToast('Please select a poll first');
+        return;
+      }
+      var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
+      if(!pid){
+        showToast('Could not determine poll id');
+        return;
+      }
+      try {
+        // create the hidden picker list so openPicker wires closures (no visual due to CSS #tp-picker {display:none})
+        if(typeof openPicker === 'function'){
+          openPicker('edit');
+          var item = document.querySelector('#tp-picker-list .tutor-picker-item[data-id="'+pid+'"]');
+          if(item && item.onclick){ item.onclick(); }
+          if(typeof closePicker === 'function') closePicker();
+        } else if (typeof beginEdit === 'function'){
+          // Fallback path: call beginEdit directly if available
+          beginEdit(pid);
+        }
+      } catch(e){
+        try { console.error('Edit handler error', e); } catch(_){}
+      }
+    });
+
+    // DELETE: ask confirm, then trigger the original delete flow programmatically
+    resetOne('tp-delBtn', function(){
+      if(!selectedCard){
+        showToast('Please select a poll first');
+        return;
+      }
+      if(!window.confirm('Are you sure you want to delete this poll?')) return;
+      var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
+      if(!pid){
+        showToast('Could not determine poll id');
+        return;
+      }
+      try {
+        if(typeof openPicker === 'function'){
+          openPicker('delete');
+          var item = document.querySelector('#tp-picker-list .tutor-picker-item[data-id="'+pid+'"]');
+          if(item && item.onclick){ item.onclick(); }
+          if(typeof closePicker === 'function') closePicker();
+        } else {
+          // Fallback: remove the card only (UI), real data may persist if original API is unavailable
+          selectedCard.remove();
+        }
+        selectedCard = null;
+        updateButtons();
+      } catch(e){
+        try { console.error('Delete handler error', e); } catch(_){}
+      }
+    });
+  }
+
+  // Selection behaviors: click & focus while typing
+  document.addEventListener('click', function(e){
+    var card = findCardFromEventTarget(e.target);
+    if(card) selectCard(card);
+  });
+  document.addEventListener('focusin', function(e){
+    var card = findCardFromEventTarget(e.target);
+    if(card) selectCard(card);
+  });
+  document.addEventListener('keydown', function(e){
+    var list = getList();
+    if(!list || !list.contains(e.target)) return;
+    var card = findCardFromEventTarget(e.target);
+    if(!card) return;
+    if(e.code === 'Space' || e.code === 'Enter'){
+      selectCard(card);
+    }
+  });
+
+  // Observe poll list for add/remove to keep buttons state in sync & ensure tabindex
+  function observeList(){
+    var list = getList();
+    if(!list || !('MutationObserver' in window)) return;
+    var mo = new MutationObserver(function(){
+      ensureCardRole();
+      updateButtons();
+    });
+    mo.observe(list, {childList:true, subtree:false});
+  }
+
+  /document.addEventListener('DOMContentLoaded', function(){
+    ensureCardRole();
+    updateButtons();
+    stripListenersAndWire();
+    observeList();
+  });
+  window.addEventListener('load', function(){
+    ensureCardRole();
+    updateButtons();
+    stripListenersAndWire();
+    observeList();
+  });
+})();
+</script>
+<script>
+(function(){
+  'use strict';
+  var selectedCard = null;
+  var wiredStamp = '__wired_by_controller__';
+
+  function $(sel){ return document.querySelector(sel); }
+  function $all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); }
+  function getList(){ return document.getElementById('tp-list'); }
+
+  function showToast(msg){
+    var t = document.getElementById('tp-toast');
+    if(!t) {
+      t = document.createElement('div');
+      t.id = 'tp-toast';
+      t.textContent = msg || 'Please select a poll first';
+      t.style.position = 'fixed';
+      t.style.left = '50%';
+      t.style.transform = 'translateX(-50%)';
+      t.style.bottom = '24px';
+      t.style.background = 'rgba(17,24,39,.95)';
+      t.style.color = '#fff';
+      t.style.padding = '10px 14px';
+      t.style.borderRadius = '8px';
+      t.style.fontSize = '14px';
+      t.style.zIndex = '10001';
+      document.body.appendChild(t);
+    } else {
+      t.textContent = msg || 'Please select a poll first';
+    }
+    t.style.display = 'block';
+    setTimeout(function(){ t.style.display = 'none'; }, 1400);
+  }
+
+  function updateButtons(){
+    var list = getList();
+    var has = !!(list && list.children && list.children.length>0);
+    var editBtn = document.getElementById('tp-editBtn');
+    var delBtn = document.getElementById('tp-delBtn');
+    if(editBtn) editBtn.style.display = has ? '' : 'none';
+    if(delBtn)  delBtn.style.display  = has ? '' : 'none';
+  }
+
+  function selectCard(card){
+    if(!card) return;
+    // only one selected
+    $all('#tp-list > .tutor-card.selected').forEach(function(c){ if(c!==card){ c.classList.remove('selected'); }});
+    card.classList.add('selected');
+    selectedCard = card;
+  }
+
+  function findCardFromEventTarget(t){
+    var list = getList();
+    if(!list) return null;
+    while(t && t!==list){
+      if(t.parentElement === list && t.classList && t.classList.contains('tutor-card')) return t;
+      t = t.parentElement;
+    }
+    return null;
+  }
+
+  function ensureCardAttrs(){
+    var list = getList();
+    if(!list) return;
+    Array.from(list.children).forEach(function(n){
+      if(n.nodeType !== 1) return;
+      if(!n.classList.contains('tutor-card')) return;
+      if(!n.getAttribute('tabindex')) n.setAttribute('tabindex','0');
+    });
+  }
+
+  // Wire handlers to Edit/Delete buttons; rewire if DOM replaces the nodes
+  function wireButton(btn, handler){
+    if(!btn) return;
+    if(btn[wiredStamp]) return; // already wired by us
+    btn[wiredStamp] = true;
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      handler(e);
+      return false;
+    }, true);
+    // also neutralize any inline onclick
+    btn.setAttribute('onclick','return false;');
+  }
+
+  function rewireControls(){
+    var e = document.getElementById('tp-editBtn');
+    var d = document.getElementById('tp-delBtn');
+    wireButton(e, function(){
+      if(!selectedCard){ showToast('Please select a poll first'); return; }
+      var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
+      if(!pid){ showToast('Could not determine poll id'); return; }
+      try{
+        if(typeof openPicker==='function'){
+          openPicker('edit'); // makes picker build item list and closures (hidden via CSS)
+          var item = document.querySelector('#tp-picker-list .tutor-picker-item[data-id="'+pid+'"]');
+          if(item && item.onclick){ item.onclick(); }
+          if(typeof closePicker==='function') closePicker();
+        } else if (typeof beginEdit==='function'){
+          beginEdit(pid);
+        }
+      }catch(e){ try{ console.error(e);}catch(_){} }
+    });
+    wireButton(d, function(){
+      if(!selectedCard){ showToast('Please select a poll first'); return; }
+      if(!window.confirm('Are you sure you want to delete this poll?')) return;
+      var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
+      try{
+        if(typeof openPicker==='function'){
+          openPicker('delete');
+          var item = document.querySelector('#tp-picker-list .tutor-picker-item[data-id="'+pid+'"]');
+          if(item && item.onclick){ item.onclick(); }
+          if(typeof closePicker==='function') closePicker();
+        } else {
+          selectedCard.remove();
+        }
+      }catch(e){ try{ console.error(e);}catch(_){} }
+      selectedCard = null;
+      updateButtons();
+    });
+  }
+
+  // Selection behaviors: click & focus while typing
+  document.addEventListener('click', function(e){
+    var card = findCardFromEventTarget(e.target);
+    if(card) selectCard(card);
+  });
+  document.addEventListener('focusin', function(e){
+    var card = findCardFromEventTarget(e.target);
+    if(card) selectCard(card);
+  });
+  document.addEventListener('keydown', function(e){
+    var list = getList();
+    if(!list || !list.contains(e.target)) return;
+    var card = findCardFromEventTarget(e.target);
+    if(!card) return;
+    if(e.code === 'Space' || e.code === 'Enter'){
+      selectCard(card);
+    }
+  });
+
+  // Observe poll list for add/remove; also observe body for re-rendered nodes
+  function observeAll(){
+    var list = getList();
+    if('MutationObserver' in window){
+      if(list){
+        var mo = new MutationObserver(function(){
+          ensureCardAttrs();
+          updateButtons();
+        });
+        mo.observe(list, {childList:true});
+      }
+      var bodyMO = new MutationObserver(function(){
+        ensureCardAttrs();
+        updateButtons();
+        rewireControls();
+      });
+      bodyMO.observe(document.body, {childList:true, subtree:true});
+    }
+  }
+
+  // Ensure picker overlay is invisible
+  (function hidePickerOverlay(){
+    var css = document.getElementById('picker-hide-hard');
+    if(!css){
+      css = document.createElement('style');
+      css.id = 'picker-hide-hard';
+      css.textContent = '#tp-picker{display:none!important;visibility:hidden!important;opacity:0!important;}';
+      document.head.appendChild(css);
+    }
+  })();
+
+  // Inject selection outline style
+  // Also update buttons after clicking #tp-save (create or save)
+  document.addEventListener('click', function(e){
+    if(e.target && e.target.id === 'tp-save'){
+      setTimeout(updateButtons, 50);
+      setTimeout(updateButtons, 300);
+    }
+  }, true);
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', function(){
+    ensureCardAttrs();
+    updateButtons();
+    rewireControls();
+    observeAll();
+  });
+  window.addEventListener('load', function(){
+    ensureCardAttrs();
+    updateButtons();
+    rewireControls();
+    observeAll();
+  });
+})();
+</script>
+<script>
+(function(){
+  'use strict';
+  var selectedCard = null;
+  var wiredStamp = '__wired_by_controller_v2__';
+
+  function $(sel){ return document.querySelector(sel); }
+  function $all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); }
+  function getList(){ return document.getElementById('tp-list'); }
+
+  function showToast(msg){
+    var t = document.getElementById('tp-toast');
+    if(!t){
+      t = document.createElement('div');
+      t.id = 'tp-toast';
+      t.style.position = 'fixed';
+      t.style.left = '50%';
+      t.style.transform = 'translateX(-50%)';
+      t.style.bottom = '24px';
+      t.style.background = 'rgba(17,24,39,.95)';
+      t.style.color = '#fff';
+      t.style.padding = '10px 14px';
+      t.style.borderRadius = '8px';
+      t.style.fontSize = '14px';
+      t.style.zIndex = '10001';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg || 'Please select a poll first';
+    t.style.display = 'block';
+    setTimeout(function(){ t.style.display = 'none'; }, 1400);
+  }
+
+  function updateButtons(){
+    var list = getList();
+    var has = !!(list && list.children && list.children.length>0);
+    var editBtn = document.getElementById('tp-editBtn');
+    var delBtn = document.getElementById('tp-delBtn');
+    if(editBtn) editBtn.style.display = has ? '' : 'none';
+    if(delBtn)  delBtn.style.display  = has ? '' : 'none';
+  }
+
+  function selectCard(card){
+    if(!card) return;
+    // only one selected
+    $all('#tp-list > .tutor-card.selected').forEach(function(c){ if(c!==card){ c.classList.remove('selected'); }});
+    card.classList.add('selected');
+    selectedCard = card;
+  }
+
+  function findCardFromEventTarget(t){
+    var list = getList();
+    if(!list) return null;
+    while(t && t!==list){
+      if(t.parentElement === list && t.classList && t.classList.contains('tutor-card')) return t;
+      t = t.parentElement;
+    }
+    return null;
+  }
+
+  function ensureCardAttrs(){
+    var list = getList();
+    if(!list) return;
+    Array.from(list.children).forEach(function(n){
+      if(n.nodeType !== 1) return;
+      if(!n.classList.contains('tutor-card')) return;
+      if(!n.getAttribute('tabindex')) n.setAttribute('tabindex','0');
+    });
+  }
+
+  // Direct, safe delete without picker overlay
+  function hardDeleteById(id){
+    try{
+      if(!window.polls) return;
+      var idx = window.polls.findIndex(function(x){ return x && x.id == id; // Wire handlers to Edit/Delete buttons
+  function wireButton(btn, handler){
+    if(!btn || btn[wiredStamp]) return;
+    btn[wiredStamp] = true;
+    btn.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      handler(e);
+      return false;
+    }, true);
+    btn.removeAttribute('onclick'); // nuke inline
+  }
+
+  function rewireControls(){
+    var e = document.getElementById('tp-editBtn');
+    var d = document.getElementById('tp-delBtn');
+
+    wireButton(e, function(){
+      if(!selectedCard){ showToast('Please select a poll first'); return; }
+      var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
+      if(!pid){ showToast('Could not determine poll id'); return; }
+      try{
+        if(typeof window.__tp_beginEdit === "function"){ window.__tp_beginEdit(pid); } else if(typeof beginEdit === "function"){ beginEdit(pid); }
+        else if(typeof openPicker === 'function'){
+          // fallback: use picker but we keep it hidden
+          openPicker('edit');
+          var item = document.querySelector('#tp-picker-list .tutor-picker-item[data-id="'+pid+'"]');
+          if(item && item.onclick) item.onclick();
+          if(typeof closePicker === 'function') closePicker();
+        }
+      }catch(e){ try{ console.error(e);}catch(_){} }
+    });
+
+    wireButton(d, function(){
+      if(!selectedCard){ showToast('Please select a poll first'); return; }
+      var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
+      if(!pid){ showToast('Could not determine poll id'); return; }
+      if(!window.confirm('Are you sure you want to delete this poll?')) return;
+      // Prefer direct delete (no overlay)
+      hardDeleteById(pid);
+    });
+  }
+
+  // Selection behaviors: click & focus while typing
+  document.addEventListener('click', function(e){
+    var card = findCardFromEventTarget(e.target);
+    if(card) selectCard(card);
+  });
+  document.addEventListener('focusin', function(e){
+    var card = findCardFromEventTarget(e.target);
+    if(card) selectCard(card);
+  });
+  document.addEventListener('keydown', function(e){
+    var list = getList();
+    if(!list || !list.contains(e.target)) return;
+    var card = findCardFromEventTarget(e.target);
+    if(!card) return;
+    if(e.code === 'Space' || e.code === 'Enter'){
+      selectCard(card);
+    }
+  });
+
+  // Observe for list changes + global changes to keep wiring alive
+  function observeAll(){
+    var list = getList();
+    if('MutationObserver' in window){
+      if(list){
+        var mo = new MutationObserver(function(){
+          ensureCardAttrs(); updateButtons();
+        });
+        mo.observe(list, {childList:true});
+      }
+      var bodyMO = new MutationObserver(function(){
+        ensureCardAttrs(); updateButtons(); rewireControls();
+      });
+      bodyMO.observe(document.body, {childList:true, subtree:true});
+    }
+  }
+
+  // Make red border thicker
+  // Hard-hide picker overlay (safety)
+  (function hidePickerOverlay(){
+    var css = document.getElementById('picker-hide-hard');
+    if(!css){
+      css = document.createElement('style');
+      css.id = 'picker-hide-hard';
+      document.head.appendChild(css);
+    }
+    css.textContent = '#tp-picker{display:none!important;visibility:hidden!important;opacity:0!important;}';
+  })();
+
+  // Update buttons when saving/creating
+  document.addEventListener('click', function(e){
+    if(e.target && e.target.id === 'tp-save'){
+      setTimeout(updateButtons, 50);
+      setTimeout(updateButtons, 300);
+    }
+  }, true);
+
+  document.addEventListener('DOMContentLoaded', function(){
+    ensureCardAttrs(); updateButtons(); rewireControls(); observeAll();
+  });
+  window.addEventListener('load', function(){
+    ensureCardAttrs(); updateButtons(); rewireControls(); observeAll();
+  });
+})();
+</script>
+<script>window.__safeBeginEdit = window.__safeBeginEdit || function(id){ if(window.beginEdit) return window.beginEdit(id); };</script>
+<!-- === HOTFIX: Polls prefill not opening — dedupe IDs & force edit wiring === -->
+<script>
+(function(){
+  function onReady(fn){
+    if(document.readyState === "complete" || document.readyState === "interactive"){ setTimeout(fn, 0); }
+    else document.addEventListener("DOMContentLoaded", fn);
+  }
+  function dedupeIds(ids){
+    ids.forEach(function(id){
+      var els = Array.prototype.slice.call(document.querySelectorAll("#"+CSS.escape(id)));
+      if(els.length>1){
+        // keep the first; remove the rest
+        for (var i=1;i<els.length;i++){
+          var el = els[i];
+          if (el && el.parentNode) el.parentNode.removeChild(el);
+        }
+      }
+    });
+  }
+  function ensureVisible(){
+    var root = document.getElementById("pollsInject");
+    if (root){ root.classList.remove("tutor-polls-hidden"); }
+    var drawer = document.getElementById("tp-create");
+    if (drawer){ drawer.classList.remove("tutor-polls-hidden"); /* opened when editing */ }
+  }
+  function getSelectedCard(){
+    var sel = document.querySelector("#tp-list > .tutor-card.selected");
+    if (sel) return sel;
+    // fallback: first card
+    var first = document.querySelector("#tp-list > .tutor-card");
+    return first || null;
+  }
+  function callBeginEdit(id){
+    var fn = window.__tp_beginEdit || window.beginEdit || window.__safeBeginEdit;
+    if (typeof fn === "function"){ fn(id); return true; }
+    return false;
+  }
+  onReady(function(){
+    // Remove duplicate widgets that break beginEdit lookup
+    dedupeIds([
+      "pollsInject","tp-create","tp-q","tp-opts","tp-add","tp-save",
+      "tp-list","tp-picker","tp-picker-list","tp-editBtn","tp-delBtn"
+    ]);
+    // Make sure base polls widget is visible
+    var root = document.getElementById("pollsInject");
+    if (root) root.classList.remove("tutor-polls-hidden");
+
+    // Per-card "Edit" (if present on cards)
+    document.addEventListener("click", function(e){
+      var btn = e.target.closest && e.target.closest("
+      if (!callBeginEdit(id)) alert("Edit form not available");
+    });
+
+    // Admin toolbar "Edit" -> edit selected card
+    var tb = document.getElementById("tp-editBtn");
+    if (tb){
+      tb.addEventListener("click", function(ev){
+        var card = getSelectedCard();
+        var id = card && card.dataset ? card.dataset.id : null;
+        if(!id){ alert("Please select a poll first"); return; }
+        if (!callBeginEdit(id)) alert("Edit form not available");
+      });
+    }
+
+    // Ensure drawer becomes visible when beginEdit runs (some themes keep it hidden)
+    (function patchBeginEditVisibility(){
+      var _be = window.__tp_beginEdit || window.beginEdit;
+      if (typeof _be === "function"){
+        var wrap = function(){
+          var r = _be.apply(this, arguments);
+          try { ensureVisible(); } catch(_){}
+          return r;
+        };
+        try {
+          if (window.__tp_beginEdit) window.__tp_beginEdit = wrap;
+          else if (window.beginEdit) window.beginEdit = wrap;
+        } catch(_){}
+      }
+    })();
+  });
+})();
+</script>
+<!-- === END HOTFIX === -->
+<script>
+(function(){
+  function hidePollEdits(){
+    try{
+      var scope = document.querySelector('#tp-list') || document.getElementById('pollsInject') || document;
+      if(!scope) return;
+      var cand = scope.querySelectorAll('button, a, [role="button"], .btn, .badge, .chip, [title], [aria-label]');
+      cand.forEach(function(el){
+        var txt = (el.textContent||'').trim();
+        var cls = el.className || '';
+        var id = el.id || '';
+        var title = el.getAttribute && (el.getAttribute('title')||'') || '';
+        var aria = el.getAttribute && (el.getAttribute('aria-label')||'') || '';
+        if(/\bedit\b/i.test(txt) || /edit/i.test(title) || /edit/i.test(aria) || /\bedit\b/i.test(cls) || /\bedit\b/i.test(id)){
+          // Remove any edit-like control within polls
+          el.remove();
+        }
+      });
+    }catch(e){ /* silent */ }
+  }
+
+  // Initial run
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', hidePollEdits, {once:true});
+  } else {
+    hidePollEdits();
+  }
+
+  // Observe dynamic changes to the poll list
+  var target = document.getElementById('tp-list');
+  if (target && 'MutationObserver' in window){
+    var mo = new MutationObserver(function(){ hidePollEdits(); });
+    mo.observe(target, {childList:true, subtree:true});
+  }
+})();
+</script>
+<script>
+(function(){
+  function showAdminDelete(){
+    document.querySelectorAll('.tutor-del-btn').forEach(function(btn){ btn.style.display = 'inline-block'; });
+  }
+  function hideAdminDelete(){
+    document.querySelectorAll('.tutor-del-btn').forEach(function(btn){ btn.style.display = 'none'; });
+  }
+  // If admin flag present in localStorage at load, show delete
+  try {
+    if (localStorage.getItem('isAdmin') === 'true') { showAdminDelete(); }
+  } catch(_) {}
+  // Expose helpers if needed elsewhere
+  window.__showAdminDelete = showAdminDelete;
+  window.__hideAdminDelete = hideAdminDelete;
+})();
+</script>
+<script>
+function updateDeleteButtonsVisibility() {
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    document.querySelectorAll('.tutor-del-btn, .delete-btn, .video-delete-btn').forEach(btn => {
+        btn.style.display = isAdmin ? "inline-block" : "none";
+    });
+}
+
+// Hook into login
+const oldShowAdmin = window.showAdminFeatures;
+window.showAdminFeatures = function() {
+    if (oldShowAdmin) oldShowAdmin();
+    updateDeleteButtonsVisibility();
+};
+
+// Hook into logout
+const oldLogout = window.logout;
+window.logout = function() {
+    if (oldLogout) oldLogout();
+    updateDeleteButtonsVisibility();
+};
+
+// Run on page load
+window.addEventListener("load", updateDeleteButtonsVisibility);
+</script>
+<script>
+// --- Ensure delete buttons show for admin ---
+
+// Call this after rendering/creating polls
+function refreshPollButtons() {
+  if (isAdmin) {
+    document.querySelectorAll('.tutor-del-btn').forEach(btn => {
+      btn.style.display = 'inline-block';
+    });
+  } else {
+    document.querySelectorAll('.tutor-del-btn').forEach(btn => {
+      btn.style.display = 'none';
+    });
+  }
+}
+
+// When admin logs in
+function showAdminFeatures() {
+  isAdmin = true;
+  localStorage.setItem('isAdmin', 'true');
+  document.getElementById("adminPanel").style.display = "block";
+  document.querySelectorAll(".admin-only").forEach(el => el.classList.add("visible"));
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) logoutBtn.style.display = "inline";
+
+  // Show delete buttons
+  refreshPollButtons();
+}
+
+// When admin logs out
+function logout() {
+  isAdmin = false;
+  // DISABLED: localStorage.removeItem('isAdmin');
+  document.getElementById("adminPanel").style.display = "none";
+  document.querySelectorAll(".admin-only").forEach(el => el.classList.remove("visible"));
+  document.getElementById("logoutBtn").style.display = "none";
+
+  // Hide delete buttons
+  refreshPollButtons();
+}
+</script>
+<script>
+// --- Poll Timer Logic ---
+// Start a countdown for a poll; auto-remove when expired
+function startPollTimer(pollElement, durationMs) {
+  if (!durationMs || isNaN(durationMs)) return; // optional
+  const endTime = Date.now() + durationMs;
+  const timerEl = document.createElement("div");
+  timerEl.className = "poll-timer";
+  pollElement.appendChild(timerEl);
+
+  const interval = setInterval(() => {
+    const remaining = endTime - Date.now();
+    if (remaining <= 0) {
+      clearInterval(interval);
+      pollElement.remove(); // auto-remove poll
+      return;
+    }
+    const hrs = Math.floor(remaining / (1000*60*60));
+    const mins = Math.floor((remaining % (1000*60*60)) / (1000*60));
+    const secs = Math.floor((remaining % (1000*60)) / 1000);
+    timerEl.textContent = `⏳ ${hrs.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+  }, 1000);
+}
+</script>
+<script>
+// === Robust Admin Visibility & Poll Timer ===
+
+// Safe global flag
+var isAdmin = (function(){ 
+  try { return localStorage.getItem('isAdmin') === 'true'; } catch(e) { return false; }
+})();
+
+// Add/remove admin class on body
+function applyAdminClass() {
+  if (isAdmin) { document.body.classList.add('is-admin'); }
+  else { document.body.classList.remove('is-admin'); }
+}
+
+// Ensure any .tutor-del-btn has the bin icon
+function normalizeDeleteButtons(root) {
+  (root || document).querySelectorAll('.tutor-del-btn').forEach(btn => {
+    const txt = (btn.textContent || '').trim();
+    if (!txt || /delete/i.test(txt)) {
+      btn.textContent = '🗑️';
+    }
+  });
+}
+
+// Public API to show admin features
+function showAdminFeatures() {
+  isAdmin = true;
+  try { localStorage.setItem('isAdmin', 'true'); } catch(e){}
+  applyAdminClass();
+  normalizeDeleteButtons(document);
+}
+
+// Public API to logout admin
+function logout() {
+  isAdmin = false;
+  try { // DISABLED: localStorage.removeItem('isAdmin'); } catch(e){}
+  applyAdminClass();
+}
+
+// ---- Poll Timer ----
+// Attach a timer to a poll element. Optional; only runs if durationMs provided.
+function startPollTimer(pollElement, durationMs) {
+  if (!pollElement || !durationMs || isNaN(durationMs)) return;
+  const end = Date.now() + Number(durationMs);
+  pollElement.dataset.expireAt = String(end);
+  attachTimerToElement(pollElement, end);
+}
+
+// Scan and attach timers based on data attributes
+function initPollTimers(root) {
+  const scope = root || document;
+  // Support both data-expire-at (ms or ISO) and data-duration-ms
+  scope.querySelectorAll('[data-expire-at], [data-duration-ms]').forEach(el => {
+    if (el.dataset.timerAttached === '1') return;
+    let end = null;
+    if (el.hasAttribute('data-expire-at')) {
+      const raw = el.getAttribute('data-expire-at');
+      if (!raw) return;
+      // Try number (ms or s), else ISO
+      if (/^\d+$/.test(raw)) {
+        const n = Number(raw);
+        end = (raw.length > 10 ? n : n * 1000);
+      } else {
+        const t = Date.parse(raw);
+        if (!isNaN(t)) end = t;
+      }
+    } else if (el.hasAttribute('data-duration-ms')) {
+      const d = Number(el.getAttribute('data-duration-ms'));
+      if (!isNaN(d) && d > 0) end = Date.now() + d;
+    }
+    if (end) attachTimerToElement(el, end);
+  });
+}
+
+function attachTimerToElement(el, endTimeMs) {
+  el.dataset.timerAttached = '1';
+  // Add/ensure visible timer element
+  let timerEl = el.querySelector('.poll-timer');
+  if (!timerEl) {
+    timerEl = document.createElement('div');
+    timerEl.className = 'poll-timer';
+    el.appendChild(timerEl);
+  }
+  // Tick
+  function tick() {
+    const remaining = endTimeMs - Date.now();
+    if (remaining <= 0) {
+      clearInterval(iv);
+      // Remove poll element on expiry
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+      return;
+    }
+    const hrs = Math.floor(remaining / 3600000);
+    const mins = Math.floor((remaining % 3600000) / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
+    timerEl.textContent = '⏳ ' + String(hrs).padStart(2,'0') + ':' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+  }
+  tick();
+  const iv = setInterval(tick, 1000);
+  // Store interval id in dataset for potential cleanup
+  el.dataset.timerInterval = String(iv);
+}
+
+// Observe dynamic additions under likely poll containers
+function observeDynamicPolls() {
+  const containers = [
+    document.getElementById('tp-list'),
+    document.getElementById('pollsInject'),
+    document.body
+  ].filter(Boolean);
+
+  containers.forEach(c => {
+    const mo = new MutationObserver(muts => {
+      muts.forEach(m => {
+        m.addedNodes.forEach(node => {
+          if (!(node instanceof HTMLElement)) return;
+          // If a poll card or contains poll-like elements
+          if (node.matches && (node.matches('.poll-item, .tp-card, [data-poll-id]') || node.querySelector('.poll-item, .tp-card, [data-poll-id]'))) {
+            initPollTimers(node);
+            normalizeDeleteButtons(node);
+          } else {
+            // In case delete buttons are added elsewhere
+            normalizeDeleteButtons(node);
+          }
+        });
+      });
+    });
+    mo.observe(c, { childList: true, subtree: true });
+  });
+}
+
+// Init on DOM ready
+(function() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll, { once: true });
+  } else {
+    initAll();
+  }
+})();
+
+function initAll() {
+  applyAdminClass();
+  normalizeDeleteButtons(document);
+  initPollTimers(document);
+  observeDynamicPolls();
+
+  // If localStorage indicates admin, ensure class is applied and buttons normalized
+  if (isAdmin) applyAdminClass();
+}
+</script>
+<script>
+// === Auto-inject Delete Button into Poll Cards ===
+(function(){
+  const POLL_SELECTORS = '.poll-item, .tp-card, [data-poll-id]';
+
+  function addDeleteButton(pollEl){
+    if (!pollEl || !isAdmin) return;
+    if (pollEl.querySelector('.tutor-del-btn')) return; // avoid duplicates
+
+    const btn = document.createElement('button');
+    btn.className = 'tutor-del-btn';
+    btn.title = 'Delete Poll';
+    btn.textContent = '🗑️';
+    btn.addEventListener('click', function(){
+      // Clear any running timer interval
+      const ivId = pollEl && pollEl.dataset ? pollEl.dataset.timerInterval : null;
+      if (ivId) {
+        try { clearInterval(Number(ivId)); } catch(e){}
+      }
+      if (pollEl && pollEl.parentNode) pollEl.parentNode.removeChild(pollEl);
+    });
+
+    // Prefer an actions/footer area if present
+    const footer = pollEl.querySelector('.poll-actions, .card-actions, footer');
+    if (footer) footer.appendChild(btn);
+    else pollEl.appendChild(btn);
+  }
+
+  function addButtonsInScope(root){
+    (root || document).querySelectorAll(POLL_SELECTORS).forEach(addDeleteButton);
+  }
+
+  // On init, add buttons to existing cards (if admin)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){
+      if (isAdmin) addButtonsInScope(document);
+    }, { once: true });
+  } else {
+    if (isAdmin) addButtonsInScope(document);
+  }
+
+  // Hook into existing observer if present, else create our own
+  let hasExistingObserver = false;
+  try {
+    // We piggyback on our previous observeDynamicPolls by redefining it to include button injection,
+    // or we create our own observer if it isn't defined.
+    const origObserve = (typeof observeDynamicPolls === 'function') ? observeDynamicPolls : null;
+
+    function combinedObserve(){
+      const containers = [
+        document.getElementById('tp-list'),
+        document.getElementById('pollsInject'),
+        document.body
+      ].filter(Boolean);
+
+      containers.forEach(c => {
+        const mo = new MutationObserver(muts => {
+          muts.forEach(m => {
+            m.addedNodes.forEach(node => {
+              if (!(node instanceof HTMLElement)) return;
+              // If a poll card or contains poll-like elements
+              if (node.matches && (node.matches(POLL_SELECTORS))) {
+                if (isAdmin) addDeleteButton(node);
+              } else {
+                node.querySelectorAll && node.querySelectorAll(POLL_SELECTORS).forEach(el => {
+                  if (isAdmin) addDeleteButton(el);
+                });
+              }
+            });
+          });
+        });
+        mo.observe(c, { childList: true, subtree: true });
+      });
+    }
+
+    // Replace or create the observer
+    if (origObserve) {
+      // We can't safely override already-declared functions without context, so we just call ours additionally.
+      combinedObserve();
+      hasExistingObserver = true;
+    } else {
+      combinedObserve();
+      hasExistingObserver = true;
+    }
+  } catch(e){}
+
+  // Also respond to admin mode changes by re-adding buttons
+  const _origShowAdmin = (typeof showAdminFeatures === 'function') ? showAdminFeatures : null;
+  window.showAdminFeatures = function(){
+    if (_origShowAdmin) _origShowAdmin(); else { 
+      // fallback toggle in case original is missing
+      isAdmin = true; try { localStorage.setItem('isAdmin','true'); } catch(e){}
+      document.body.classList.add('is-admin');
+    }
+    addButtonsInScope(document);
+  };
+
+})();
+
+function deleteProfile(name) {
+  if (!isAdmin) return alert("Admins only.");
+  if (!confirm(`Delete profile for ${name}?`)) return;
+
+  // remove from DOM
+  const cards = document.querySelectorAll('.profile-card');
+  cards.forEach(c => {
+    if (c.querySelector('h3').textContent === name) {
+      c.remove();
+    }
+  });
+
+  // optional: also update backend/localStorage if needed
+}
+
+</script>
+<!-- ===== FINAL Admin Poll Delete (robust) ===== -->
+<style id="final-admin-del-override">
+  /* Hide by default (public) */
+  .tutor-del-btn { display: none !important; }
+  /* Show for admins — very specific to beat earlier rules */
+  html body.is-admin .tutor-del-btn { 
+    display: inline-flex !important; 
+    align-items: center; 
+    gap: 6px;
+  }
+  /* A bit of polish */
+  .tutor-del-btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 10px;
+    background: #ef4444;
+    color: #fff;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .tutor-del-btn:hover { opacity: .9; }
+</style>
+<script id="final-admin-del-script">
+(function(){
+  // --- Admin flag helpers
+  function isAdminStored(){ try { return (sessionStorage.getItem('isAdmin') || localStorage.getItem('isAdmin')) === 'true'; } catch(e){ return false; } }
+  function applyAdminClass(){
+    var on = isAdminStored();
+    if (on) document.body.classList.add('is-admin');
+    else document.body.classList.remove('is-admin');
+    document.querySelectorAll('.tutor-del-btn').forEach(function(btn){
+      btn.style.display = on ? 'inline-flex' : 'none';
+    });
+  }
+
+  // --- "Real poll" detection
+  function looksLikePoll(card){
+    if (!card || !(card instanceof HTMLElement)) return false;
+    // Exclude creators / toolbars / forms
+    if (card.closest('#tp-create') || card.id === 'tp-create') return false;
+    if (card.matches('#tp-toolbar, .tutor-polls-panel, .tutor-create')) return false;
+    if (card.querySelector('#tp-createBtn')) return false;
+
+    // Must have a stable poll id or at least poll content
+    var hasId = !!(card.dataset && (card.dataset.pollId || card.dataset.id));
+    // Must have options or at least two radios/checkboxes
+    var hasOptions = !!(card.querySelector('.tutor-options, .tp-options, .poll-options'));
+    var inputs = card.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+    var hasChoiceInputs = inputs && inputs.length >= 2;
+
+    return hasId || hasOptions || hasChoiceInputs;
+  }
+
+  function ensureDeleteButton(card){
+    if (!looksLikePoll(card)) return;
+    if (card.querySelector('.tutor-del-btn')) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'tutor-del-btn';
+    btn.setAttribute('aria-label','Delete poll');
+    btn.title = 'Delete';
+    btn.textContent = '🗑️';
+    btn.addEventListener('click', function(ev){
+      ev.preventDefault(); ev.stopPropagation();
+      if (!isAdminStored()){ alert('Admin only.'); return; }
+      if (!confirm('Delete this poll?')) return;
+      // Remove from storage (best-effort)
+      try {
+        var pid = card.dataset && (card.dataset.pollId || card.dataset.id);
+        if (pid){
+          Object.keys(localStorage).forEach(function(k){
+            try {
+              var v = localStorage.getItem(k);
+              if (!v || v[0] !== '[') return;
+              var arr = JSON.parse(v);
+              if (!Array.isArray(arr)) return;
+              var changed = false;
+              for (var i = arr.length - 1; i >= 0; i--) {
+                var o = arr[i];
+                if (o && (o.id == pid || o.pollId == pid)) { arr.splice(i,1); changed = true; }
+              }
+              if (changed) localStorage.setItem(k, JSON.stringify(arr));
+            } catch(_){}
+          });
+        }
+      } catch(_){}
+      // Remove card from DOM
+      if (card.parentNode) card.parentNode.removeChild(card);
+    });
+
+    // Insert in an existing actions/footer area if present; else create a small actions row
+    var actions = card.querySelector('.poll-actions, .card-actions, .tutor-card-actions, footer');
+    if (!actions){
+      actions = document.createElement('div');
+      actions.className = 'tutor-card-actions';
+      card.appendChild(actions);
+    }
+    actions.appendChild(btn);
+  }
+
+  function scan(root){
+    // Clean up any stray buttons in the Create panel
+    document.querySelectorAll('#tp-create .tutor-del-btn, .tutor-polls-panel > .tutor-del-btn').forEach(function(b){ b.remove(); });
+
+    var cards = (root || document).querySelectorAll([
+      // Be conservative: only these look like real polls
+      '.poll-item',
+      '.tp-card[data-poll-id]',
+      '.tutor-card[data-poll-id]',
+      '[data-poll-id]',
+      '.tutor-card[data-id]',
+      '.tp-card[data-id]'
+    ].join(', '));
+
+    cards.forEach(ensureDeleteButton);
+    applyAdminClass();
+  }
+
+  // Observe additions
+  ['tp-list','pollsInject','tp-create'].map(function(id){ return document.getElementById(id); }).filter(Boolean).forEach(function(t){
+    try {
+      var mo = new MutationObserver(function(muts){
+        muts.forEach(function(m){
+          (m.addedNodes || []).forEach(function(n){ if (n && n.querySelectorAll) scan(n); });
+        });
+      });
+      mo.observe(t, { childList: true, subtree: true });
+    } catch(_) {}
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ scan(document); }, { once: true });
+  } else {
+    scan(document);
+  }
+})();
+</script>
+<!-- ===== End FINAL Admin Poll Delete ===== -->
+<!-- ===== NO-AUTO-ADMIN GUARD (session-based admin) ===== -->
+<script id="no-auto-admin-guard">
+(function(){
+  // 1) Route any localStorage isAdmin calls to sessionStorage (non-persistent)
+  try {
+    var _ls_get = localStorage.getItem.bind(localStorage);
+    var _ls_set = localStorage.setItem.bind(localStorage);
+    var _ls_rem = localStorage.removeItem.bind(localStorage);
+    localStorage.getItem = function(k){
+      if (k === 'isAdmin') { return sessionStorage.getItem('isAdmin') || 'false'; }
+      return _ls_get(k);
+    };
+    localStorage.setItem = function(k, v){
+      if (k === 'isAdmin') { sessionStorage.setItem('isAdmin', v); return; }
+      return _ls_set(k, v);
+    };
+    localStorage.removeItem = function(k){
+      if (k === 'isAdmin') { sessionStorage.removeItem('isAdmin'); return; }
+      return _ls_rem(k);
+    };
+  } catch(e){}
+
+  // 2) Ensure admin is OFF on first load (blocks "auto login")
+  function forcePublic(){
+    try { sessionStorage.setItem('isAdmin','false'); } catch(e){}
+    try { _ls_set('isAdmin','false'); } catch(e){}
+    try { window.isAdmin = false; } catch(e){}
+    try { document.body.classList.remove('is-admin'); } catch(e){}
+    // Hide any existing admin-only UI
+    try {
+      document.querySelectorAll('.tutor-del-btn').forEach(function(btn){
+        btn.style.display = 'none';
+      });
+    } catch(e){}
+  }
+
+  // 3) Re-apply delete-button visibility if admin turns on
+  function applyAdmin(){
+    var on = (sessionStorage.getItem('isAdmin') === 'true');
+    if (on) document.body.classList.add('is-admin'); else document.body.classList.remove('is-admin');
+    try {
+      document.querySelectorAll('.tutor-del-btn').forEach(function(btn){
+        btn.style.display = on ? 'inline-flex' : 'none';
+      });
+    } catch(e){}
+  }
+
+  // 4) Provide a simple, optional login flow (Shift+Alt+A) and global helpers
+  var ADMIN_PW = 'admin'; // change as you like
+  window.adminLoginPrompt = function(){
+    var pw = prompt('Admin password:');
+    if (pw === null) return;
+    if (pw === ADMIN_PW){
+      try { sessionStorage.setItem('isAdmin','true'); } catch(e){}
+      window.isAdmin = true;
+      applyAdmin();
+    } else {
+      alert('Wrong password');
+    }
+  };
+  window.setAdmin = function(on){
+    try { sessionStorage.setItem('isAdmin', on ? 'true' : 'false'); } catch(e){}
+    window.isAdmin = !!on;
+    applyAdmin();
+  };
+
+  // Keyboard shortcut: Shift+Alt+A
+  window.addEventListener('keydown', function(e){
+    if (e.altKey && e.shiftKey && (e.key === 'A' || e.key === 'a')){
+      e.preventDefault();
+      adminLoginPrompt();
+    }
+  });
+
+  // 5) Run after page scripts have executed to override any "auto-true"
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){
+      forcePublic();
+      applyAdmin();
+    }, { once: true });
+  } else {
+    forcePublic();
+    applyAdmin();
+  }
+})();
+</script>
+<!-- ===== End NO-AUTO-ADMIN GUARD ===== -->
+<!-- Firestore Status Box -->
+
+<!-- Firebase SDKs (compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script>
+// ===== Firestore Integration (Home, About, Announcements) =====
+(function(){
+  // --- status logger ---
+  function ts(){ const d=new Date(); return '['+d.toLocaleTimeString()+'] '; }
+  window.logStatus = function(msg, isError){
+    try{
+      var log = document.getElementById('firebaseStatusLog');
+      if(!log) return;
+      var p = document.createElement('div');
+      p.textContent = ts() + msg;
+      if(isError){ p.style.color = '#ff7676'; }
+      log.appendChild(p);
+      log.scrollTop = log.scrollHeight;
+    }catch(e){ /* ignore */ }
+  };
+
+  // --- Firebase init ---
+  try{
+    var firebaseConfig = {
+      apiKey: "AIzaSyAByLACmttf6BY6r0hEmZKYontfVqnDNpM",
+      authDomain: "mndpschoolrspura.firebaseapp.com",
+      projectId: "mndpschoolrspura",
+      storageBucket: "mndpschoolrspura.firebasestorage.app",
+      messagingSenderId: "810534224714",
+      appId: "1:810534224714:web:a3055b4a6b3bca507337b3",
+      measurementId: "G-2610K130EN"
+    };
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    window.db = firebase.firestore();
+    logStatus('Firebase initialized');
+  }catch(e){
+    logStatus('Firebase init failed: '+e.message, true);
+    return;
+  }
+
+  // ---------- HOME (realtime) ----------
+  try{
+    var homeRef = db.collection('content').doc('home');
+    homeRef.onSnapshot(function(doc){
+      if(doc.exists){
+        var data = doc.data()||{};
+        var t = document.getElementById('homeTitle');
+        var d = document.getElementById('homeDesc');
+        if(t && typeof data.title === 'string') t.textContent = data.title;
+        if(d && typeof data.desc === 'string') d.textContent = data.desc;
+        logStatus('Home loaded (realtime)');
+      }else{
+        logStatus('Home doc not found (initial)');
+      }
+    }, function(err){
+      logStatus('Home listener error: ' + err.message, true);
+    });
+
+    // override saveHomeChanges to write to Firestore
+    window.saveHomeChanges = function(){
+      var title = (document.getElementById('homeTitleInput')||{}).value || '';
+      var desc  = (document.getElementById('homeDescInput')||{}).value || '';
+      homeRef.set({ title: title, desc: desc, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
+        .then(function(){ logStatus('Home saved to Firestore'); })
+        .catch(function(err){ logStatus('Home save failed: ' + err.message, true); });
+    };
+  }catch(e){
+    logStatus('Home wiring failed: ' + e.message, true);
+  }
+
+  // ---------- ABOUT (realtime) ----------
+  try{
+    var aboutRef = db.collection('content').doc('about');
+    aboutRef.onSnapshot(function(doc){
+      if(doc.exists){
+        var data = doc.data()||{};
+        var t = document.getElementById('aboutTitle');
+        var d = document.getElementById('aboutDesc');
+        if(t && typeof data.title === 'string') t.textContent = data.title;
+        if(d && typeof data.desc === 'string') d.textContent = data.desc;
+        logStatus('About loaded (realtime)');
+      }else{
+        logStatus('About doc not found (initial)');
+      }
+    }, function(err){
+      logStatus('About listener error: ' + err.message, true);
+    });
+
+    // override saveAboutChanges to write to Firestore
+    window.saveAboutChanges = function(){
+      var title = (document.getElementById('aboutTitleInput')||{}).value || '';
+      var desc  = (document.getElementById('aboutDescInput')||{}).value || '';
+      aboutRef.set({ title: title, desc: desc, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
+        .then(function(){ logStatus('About saved to Firestore'); })
+        .catch(function(err){ logStatus('About save failed: ' + err.message, true); });
+    };
+  }catch(e){
+    logStatus('About wiring failed: ' + e.message, true);
+  }
+
+  // ---------- ANNOUNCEMENTS (use EXISTING UI & buttons) ----------
+  (function(){
+    var ANN_DOCS = [];          // index -> { id, data }
+    var editingAnnouncementId = null;
+
+    function snapshotToList(snapshot){
+      ANN_DOCS = [];
+      var list = [];
+      snapshot.forEach(function(doc){
+        var data = doc.data() || {};
+        ANN_DOCS.push({ id: doc.id, data: data });
+        list.push({
+          title: data.title || '',
+          date:  data.date  || '',
+          text:  data.text  || '',
+          signed:data.signed|| ''
+        });
+      });
+      return list;
+    }
+
+    // override loadAnnouncements to listen to Firestore and feed the SAME render function
+    window.loadAnnouncements = function(){
+      try{
+        db.collection('announcements').orderBy('createdAt', 'desc').onSnapshot(function(snapshot){
+          var list = snapshotToList(snapshot);
+          if(typeof renderAnnouncements === 'function'){
+            renderAnnouncements(list); // keep your existing box/buttons look
+          }
+          logStatus('Announcements updated (realtime), count=' + snapshot.size);
+        }, function(err){
+          logStatus('Announcements load error: ' + err.message, true);
+        });
+      }catch(e){
+        logStatus('Announcements init failed: ' + e.message, true);
+      }
+    };
+
+    // override editAnnouncement to also store doc id (keeps your existing UI behavior)
+    window.editAnnouncement = function(index, ann){
+      if (!(typeof isAdmin !== "undefined" && isAdmin)) {
+        alert("Admin only."); return;
+      }
+      editingAnnouncementId = (ANN_DOCS[index] && ANN_DOCS[index].id) ? ANN_DOCS[index].id : null;
+
+      // original UI behavior:
+      window.editingAnnouncementIndex = index;
+      var container = document.getElementById("announcementFormContainer");
+      var form = document.getElementById("announcementForm");
+      if (!container || !form) return;
+      var h = container.querySelector("h3");
+      if (h) h.textContent = "Edit Announcement";
+      var submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.textContent = "Save";
+      (document.getElementById("aTitle")  || {}).value = (ann && ann.title)  ? ann.title  : "";
+      (document.getElementById("aDate")   || {}).value = (ann && ann.date)   ? ann.date   : "";
+      (document.getElementById("aText")   || {}).value = (ann && ann.text)   ? ann.text   : "";
+      (document.getElementById("aSigned") || {}).value = (ann && ann.signed) ? ann.signed : "";
+      container.style.display = "block";
+      try{ showPage('announcements'); }catch(_){}
+    };
+
+    // override deleteAnnouncement to delete by Firestore doc id if we have it
+    window.deleteAnnouncement = function(index){
+      if(!confirm("Are you sure you want to delete this announcement?")) return;
+      var id = (ANN_DOCS[index] && ANN_DOCS[index].id) ? ANN_DOCS[index].id : null;
+      if(id){
+        db.collection('announcements').doc(id).delete().then(function(){
+          logStatus('Announcement deleted: ' + id);
+        }).catch(function(err){
+          logStatus('Announcement delete failed: ' + err.message, true);
+        });
+      }else{
+        logStatus('No Firestore id for this announcement; delete skipped.', true);
+      }
+    };
+
+    // hijack the form submit to save to Firestore (stop other local handlers)
+    document.addEventListener('DOMContentLoaded', function(){
+      var form = document.getElementById('announcementForm');
+      if(!form) return;
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation(); // prevent older localStorage handler
+        var payload = {
+          title: (document.getElementById('aTitle')||{}).value || '',
+          date:  (document.getElementById('aDate')||{}).value  || '',
+          text:  (document.getElementById('aText')||{}).value  || '',
+          signed:(document.getElementById('aSigned')||{}).value|| ''
+        };
+        if(editingAnnouncementId){
+          db.collection('announcements').doc(editingAnnouncementId)
+            .set({ 
+              title: payload.title, date: payload.date, text: payload.text, signed: payload.signed,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true })
+            .then(function(){
+              logStatus('Announcement updated: ' + editingAnnouncementId);
+              editingAnnouncementId = null;
+              if (typeof cancelAnnouncementForm === 'function') cancelAnnouncementForm();
+            })
+            .catch(function(err){ logStatus('Announcement update failed: ' + err.message, true); });
+        }else{
+          db.collection('announcements').add({
+            title: payload.title, date: payload.date, text: payload.text, signed: payload.signed,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(function(ref){
+            logStatus('Announcement saved to Firestore (id=' + ref.id + ')');
+            if (typeof cancelAnnouncementForm === 'function') cancelAnnouncementForm();
+          }).catch(function(err){
+            logStatus('Announcement save failed: ' + err.message, true);
+          });
+        }
+      }, true); // use capture so stopImmediatePropagation is effective
+    });
+  })();
+
+})(); 
+</script>
+<script>
+// ===== Firestore POLLS v2 (Global votes + change vote + expiry) =====
+(function(){
+  if (!window.firebase || !window.db) {
+    console.warn('Firebase not ready for Polls');
+    return;
+  }
+  function qs(id){ return document.getElementById(id); }
+  function log(msg, err){ if (typeof logStatus === 'function') logStatus(msg, !!err); }
+
+  // Stable device id to allow one vote per device (no Auth)
+  function getDeviceId(){
+    try{
+      let id = localStorage.getItem('polls_device_id_v1');
+      if(!id){ id = 'd_' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('polls_device_id_v1', id); }
+      return id;
+    }catch(e){
+      return 'anon';
+    }
+  }
+  const DEVICE_ID = getDeviceId();
+
+  // Keep references to votes listeners per poll
+  const votesUnsubs = Object.create(null);
+  // Local cache
+  let pollsCache = []; // [{id, question, options: [{t}], createdAt, expiresAt}]
+  let myVotes = {};    // { [pollId]: optionIndex } based on DEVICE_ID
+
+  // ---- UI rendering (keep same classes for your water/percent animations) ----
+  function buildPreVoteCard(poll){
+    const card = document.createElement('div');
+    card.className = 'tutor-card';
+    card.dataset.id = poll.id;
+    const q = document.createElement('div');
+    q.className = 'tutor-q';
+    q.textContent = poll.question || '[Untitled Poll]';
+    card.appendChild(q);
+
+    (poll.options || []).forEach((opt, idx)=>{
+      const row = document.createElement('div');
+      row.className = 'tutor-click';
+      const label = document.createElement('span'); label.textContent = opt.t || '';
+      const mini = document.createElement('span'); mini.className = 'tutor-mini'; mini.textContent = (idx+1);
+      row.appendChild(label); row.appendChild(mini);
+      row.onclick = function(){ castVote(poll.id, idx); };
+      card.appendChild(row);
+    });
+
+    // Admin trash button (same look as before)
+    const actions = document.createElement('div');
+    actions.className = 'tutor-actions';
+    const del = document.createElement('button');
+    del.className = 'tutor-polls-btn tutor-del-btn';
+    del.textContent = '🗑️';
+    del.style.display = (window.isAdmin ? 'inline-block' : 'none');
+    del.onclick = function(){
+      if(!window.isAdmin){ alert('Admin only.'); return; }
+      if(confirm('Delete this poll?')){ window.db.collection('polls').doc(poll.id).delete().then(()=>log('Poll deleted: '+poll.id)).catch(err=>log('Poll delete failed: '+err.message,true)); }
+    };
+    actions.appendChild(del);
+    card.appendChild(actions);
+    return card;
+  }
+
+  function buildPostVoteCard(poll, counts, myIdx){
+    const card = document.createElement('div');
+    card.className = 'tutor-card';
+    card.dataset.id = poll.id;
+    const q = document.createElement('div');
+    q.className = 'tutor-q';
+    q.textContent = poll.question || '[Untitled Poll]';
+    card.appendChild(q);
+
+    const total = Object.values(counts).reduce((a,b)=>a+b,0) || 0;
+
+    (poll.options || []).forEach((opt, idx)=>{
+      const bar = document.createElement('div');
+      bar.className = 'tutor-bar';
+      const fill = document.createElement('div');
+      fill.className = 'tutor-bar-fill';
+      const inner = document.createElement('div');
+      inner.className = 'tutor-bar-inner';
+
+      const votes = counts[idx] || 0;
+      const pct = total ? Math.round(votes * 100 / total) : 0;
+      fill.style.width = pct + '%';
+
+      const l = document.createElement('span'); l.textContent = opt.t || '';
+      const pspan = document.createElement('span'); pspan.className = 'tutor-votes';
+      pspan.textContent = votes + ' ' + (votes===1?'vote':'votes');
+
+      bar.appendChild(fill); inner.appendChild(l); inner.appendChild(pspan); bar.appendChild(inner);
+
+      // Allow changing vote by clicking another bar
+      bar.style.cursor = 'pointer';
+      bar.onclick = function(){ castVote(poll.id, idx); };
+
+      // Optionally emphasize my choice
+      if (myIdx === idx) { bar.classList.add('tutor-bar-selected'); }
+
+      card.appendChild(bar);
+    });
+
+    // Admin delete
+    const actions = document.createElement('div');
+    actions.className = 'tutor-actions';
+    const del = document.createElement('button');
+    del.className = 'tutor-polls-btn tutor-del-btn';
+    del.textContent = '🗑️';
+    del.style.display = (window.isAdmin ? 'inline-block' : 'none');
+    del.onclick = function(){
+      if(!window.isAdmin){ alert('Admin only.'); return; }
+      if(confirm('Delete this poll?')){ window.db.collection('polls').doc(poll.id).delete().then(()=>log('Poll deleted: '+poll.id)).catch(err=>log('Poll delete failed: '+err.message,true)); }
+    };
+    actions.appendChild(del);
+    card.appendChild(actions);
+    return card;
+  }
+
+  function renderPolls(){
+    const list = qs('tp-list') || document.querySelector('#pollsInject #tp-list');
+    if(!list){ log('Polls list element not found', true); return; }
+    list.innerHTML = '';
+
+    const now = Date.now();
+    pollsCache.forEach(poll => {
+      // Hide expired polls for all users
+      if (poll.expiresAt && (new Date(poll.expiresAt)).getTime() < now) return;
+
+      const counts = poll._counts || {}; // per option index
+      const myIdx  = myVotes[poll.id];
+      const card = (myIdx === undefined) ? buildPreVoteCard(poll) : buildPostVoteCard(poll, counts, myIdx);
+      list.appendChild(card);
+    });
+
+    try{
+      if(typeof refreshPollButtons === 'function') refreshPollButtons();
+      if(typeof observeDynamicPolls === 'function') observeDynamicPolls();
+    }catch(e){}
+  }
+
+  // ---- Vote write (one vote per device per poll) ----
+  function castVote(pollId, optionIndex){
+    // write (or overwrite) votes/{DEVICE_ID}
+    window.db.collection('polls').doc(pollId).collection('votes').doc(DEVICE_ID).set({
+      optionIndex: optionIndex,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).then(function(){
+      log('Vote saved: poll=' + pollId + ' option=' + optionIndex);
+    }).catch(function(err){
+      log('Vote failed: ' + err.message, true);
+    });
+  }
+
+  // ---- Listen polls + per-poll votes ----
+  function watchVotesForPoll(pollId){
+    // Unsubscribe if already set
+    if (votesUnsubs[pollId]) { try { votesUnsubs[pollId](); } catch(e){} }
+    votesUnsubs[pollId] = window.db.collection('polls').doc(pollId).collection('votes')
+      .onSnapshot(function(vsnap){
+        const poll = pollsCache.find(p => p.id === pollId);
+        if(!poll) return;
+        const counts = {};
+        let myIdx = undefined;
+        vsnap.forEach(function(vdoc){
+          const vd = vdoc.data() || {};
+          const idx = vd.optionIndex;
+          if (typeof idx === 'number'){
+            counts[idx] = (counts[idx] || 0) + 1;
+          }
+          if (vdoc.id === DEVICE_ID) myIdx = idx;
+        });
+        poll._counts = counts;
+        myVotes[pollId] = myIdx;
+        renderPolls();
+      }, function(err){ log('Votes listener error: ' + err.message, true); });
+  }
+
+  function unwatchRemovedPolls(newIdsSet){
+    Object.keys(votesUnsubs).forEach(function(pollId){
+      if(!newIdsSet.has(pollId)){
+        try { votesUnsubs[pollId](); }catch(e){}
+        delete votesUnsubs[pollId];
+      }
+    });
+  }
+
+  // Auto-delete expired poll (admin only)
+  function tryAutoDeleteExpired(poll){
+    if (!window.isAdmin) return;
+    if (!poll.expiresAt) return;
+    const now = Date.now();
+    if ((new Date(poll.expiresAt)).getTime() < now){
+      window.db.collection('polls').doc(poll.id).delete()
+        .then(()=> log('Poll expired and deleted: ' + poll.id))
+        .catch(err=> log('Poll auto-delete failed: ' + err.message, true));
+    }
+  }
+
+  // Main listener
+  try{
+    window.db.collection('polls').orderBy('createdAt','desc').onSnapshot(function(psnap){
+      const newCache = [];
+      const idSet = new Set();
+      psnap.forEach(function(pdoc){
+        const d = pdoc.data() || {};
+        const poll = {
+          id: pdoc.id,
+          question: d.question || '',
+          options: (d.options || []).map(o => (typeof o === 'string' ? {t:o} : {t:(o&&o.t)||''})),
+          createdAt: d.createdAt || null,
+          expiresAt: d.expiresAt || null
+        };
+        newCache.push(poll);
+        idSet.add(poll.id);
+      });
+      pollsCache = newCache;
+
+      // attach votes listeners
+      const nowIds = new Set(pollsCache.map(p => p.id));
+      unwatchRemovedPolls(nowIds);
+      pollsCache.forEach(p => {
+        tryAutoDeleteExpired(p);
+        watchVotesForPoll(p.id);
+      });
+
+      renderPolls();
+      log('Polls updated (realtime), count=' + pollsCache.length);
+    }, function(err){ log('Polls listener error: ' + err.message, true); });
+  }catch(e){
+    log('Polls listener failed: ' + e.message, true);
+  }
+
+  // ---- Create Poll (intercept your Save button) ----
+  function collectOptions(){
+    const optsBox = qs('tp-opts');
+    if(!optsBox) return [];
+    const inputs = optsBox.querySelectorAll('input[type="text"]');
+    const arr = [];
+    inputs.forEach(inp=>{
+      const v = (inp.value||'').trim();
+      if(v) arr.push({ t: v });
+    });
+    return arr;
+  }
+  function clearCreateForm(){
+    const q = qs('tp-q'); if(q) q.value='';
+    const opts = qs('tp-opts'); if(opts) opts.innerHTML='';
+    const exp = qs('tp-expiry-mins'); if(exp) exp.value='';
+    const panel = qs('tp-create'); if(panel) panel.classList.add('tutor-polls-hidden');
+  }
+  function ensureSaveInterceptor(){
+    const saveBtn = qs('tp-save');
+    if(!saveBtn || saveBtn.dataset.firestoreHooked === '2') return;
+    saveBtn.dataset.firestoreHooked = '2';
+    saveBtn.addEventListener('click', function(ev){
+      try{ ev.preventDefault(); ev.stopImmediatePropagation(); }catch(_){}
+      if(!window.isAdmin){ alert('Admin only.'); return; }
+      const qInput = qs('tp-q');
+      const question = (qInput && qInput.value || '').trim();
+      const options = collectOptions();
+      if(!question){ alert('Enter a question'); return; }
+      if(options.length < 2){ alert('Need at least 2 options'); return; }
+
+      // expiry minutes from optional input #tp-expiry-mins (fallback 0 = no expiry)
+      let expiresAt = null;
+      const exp = qs('tp-expiry-mins') || qs('tp-expiry-hours');
+      if (exp){
+        const v = parseFloat(exp.value);
+        if(!isNaN(v) && v > 0){
+          const ms = exp.id === 'tp-expiry-hours' ? v*3600000 : v*60000;
+          expiresAt = new Date(Date.now() + ms);
+        }
+      }
+
+      const payload = {
+        question: question,
+        options: options,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      if (expiresAt) payload.expiresAt = expiresAt;
+
+      window.db.collection('polls').add(payload).then(function(ref){
+        log('Poll saved to Firestore (id=' + ref.id + ')');
+        clearCreateForm();
+      }).catch(function(err){
+        log('Poll save failed: ' + err.message, true);
+      });
+    }, true);
+  }
+
+  // Toolbar "Delete Poll" override (select by number) -> Firestore
+  const oldDeletePoll = window.deletePoll;
+  window.deletePoll = function(){
+    if(!window.isAdmin){ alert('Admin only.'); return; }
+    const cards = document.querySelectorAll('#tp-list .tutor-card');
+    if(!cards.length){ alert('No polls available.'); return; }
+    const choice = prompt('Enter poll number to delete (1-' + cards.length + '):');
+    const idx = parseInt(choice, 10) - 1;
+    if(isNaN(idx) || idx < 0 || idx >= cards.length){ alert('Invalid choice.'); return; }
+    const card = cards[idx];
+    const pid = card && card.dataset && card.dataset.id;
+    if(!pid){ alert('Missing poll id.'); return; }
+    if(confirm('Are you sure you want to delete this poll?')){
+      window.db.collection('polls').doc(pid).delete()
+        .then(()=> log('Poll deleted: ' + pid))
+        .catch(err=> log('Poll delete failed: ' + err.message, true));
+    }
+  };
+
+  // Keep admin buttons alive
+  function tick(){
+    ensureSaveInterceptor();
+    try{ if(typeof refreshPollButtons === 'function') refreshPollButtons(); }catch(e){}
+  }
+  setInterval(tick, 500);
+  document.addEventListener('DOMContentLoaded', tick);
+})();
+</script>
+<style id="hide-poll-expiry">
+/* Hide the separate Time limit field (All time / Custom / Amount / Minutes) */
+.tutor-field:has(#tp-exp-all){ display:none !important; }
+/* Hide the top 'Expires in hours (optional)' input row */
+div:has(> #tp-expiry-hours){ display:none !important; }
+/* Extra safety: if :has() unsupported, directly hide pieces */
+#tp-exp-all, #tp-exp-cus, #tp-exp-amt, #tp-exp-unit, #tp-expiry-hours { display:none !important; }
+</style>
+<script>
+// JS fallback in case :has() is not supported
+(function(){
+  try{
+    var eh = document.getElementById('tp-expiry-hours');
+    if (eh && eh.parentElement) { eh.parentElement.style.display = 'none'; }
+    var all = document.getElementById('tp-exp-all');
+    if (all) {
+      // Hide the whole Time limit field
+      var field = all.closest('.tutor-field');
+      if (field) field.style.display = 'none';
+      // Default to "All time"
+      all.checked = true;
+    }
+    var cus = document.getElementById('tp-exp-cus');
+    if (cus) cus.checked = false;
+    var amt = document.getElementById('tp-exp-amt'); if (amt) amt.value = "";
+    var unit = document.getElementById('tp-exp-unit'); if (unit) unit.value = "minutes";
+  }catch(e){ /* no-op */ }
+})();
+</script>
 </body>
 </html>
