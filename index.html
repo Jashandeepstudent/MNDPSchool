@@ -5388,30 +5388,58 @@ div:has(> #tp-expiry-hours){ display:none !important; }
 
   // Example knowledge base
   const knowledge = [
-    {
-      keywords: ["full form", "mndp"],
-      answer: "✨ The full form of *MNDP* is **Montessori Nargis Dutt Public School** 🌸."
-    },
-    {
-      keywords: ["eighth class timetable", "8th class timetable", "timetable of eighth class", "8th class schedule"],
-      answer: `<div style="margin:0;padding:0;line-height:1.2;">
+  {
+    keywords: ["full form", "mndp"],
+    answer: "✨ So you want the full form of *MNDP*? It’s **Montessori Nargis Dutt Public School** 🌸. Fancy, right? Time to flaunt it in front of friends 😎📚!"
+  },
+  {
+    keywords: ["eighth class timetable", "8th class timetable", "timetable of eighth class", "8th class schedule"],
+    answer: `<div style="margin:0;padding:0;line-height:1.2;">
 <table>
 <tr style="background:#f2f2f2;">
 <th>Period</th><th>Subject / Book</th>
 </tr>
-<tr><td>1️⃣ First</td><td>Text Book - Science</td></tr>
-<tr><td>2️⃣ Second</td><td>English Book & Notebook</td></tr>
-<tr><td>3️⃣ Third</td><td>GK Notebook</td></tr>
-<tr><td>4️⃣ Fourth</td><td>Geography Book & Notebook</td></tr>
-<tr><td>5️⃣ Fifth</td><td>Newspaper</td></tr>
-<tr><td>6️⃣ Sixth</td><td>Maths Book & Notebook</td></tr>
-<tr><td>7️⃣ Seventh</td><td>Our Past History Book</td></tr>
-<tr><td>8️⃣ Eighth</td><td>Hindi Book & Notebook</td></tr>
+<tr><td>1️⃣ First</td><td>Science 🔬 – get those brains working!</td></tr>
+<tr><td>2️⃣ Second</td><td>English 📖 – time to shine in grammar!</td></tr>
+<tr><td>3️⃣ Third</td><td>GK 🌍 – impress everyone with random facts!</td></tr>
+<tr><td>4️⃣ Fourth</td><td>Geography 🗺️ – map your way to glory!</td></tr>
+<tr><td>5️⃣ Fifth</td><td>Newspaper 📰 – catch all the gossip…oops, news!</td></tr>
+<tr><td>6️⃣ Sixth</td><td>Maths ➗ – don’t let numbers scare you 😏</td></tr>
+<tr><td>7️⃣ Seventh</td><td>History 🏰 – travel back in time without a time machine!</td></tr>
+<tr><td>8️⃣ Eighth</td><td>Hindi 📝 – write like a pro!</td></tr>
 </table>
 </div>
-<p style="margin:0;padding:0;font-weight:bold;">⚠️ Here is the timetable of eighth class. Don’t forget to pack your bag completely, or you might be in trouble! 😎</p>`
-    }
-  ];
+<p style="margin:0;padding:0;font-weight:bold;">⚠️ Pack your bag properly, or you’ll be running around like crazy 😜🎒!</p>`
+  },
+  {
+    keywords: ["who is principal", "principal of our school", "principal of mndp school", "principal of montessori nargis dutt public school"],
+    answer: "🎓 Meet **Mr. Anil Choudhary**! He’s the boss with eyes sharper than hawks 👀💼. Be nice, or you’ll be on the naughty list 😉."
+  },
+  {
+    keywords: ["upcoming event", "school upcoming event", "next event in school"],
+    answer: "📅 Oh, you mean the big buzz? **Teachers' Day** is coming! 🍎🎉 Time to turn tables and show the teachers who’s boss (just for fun 😏)!"
+  },
+  {
+    keywords: ["what will happen on teachers day", "teachers day program", "teachers day celebration"],
+    answer: "👩‍🏫 Brace yourself! Students become teachers for the day. Skits, dances, speeches… chaos with style 😜💃🕺. Don’t be shy, join the fun!"
+  },
+  {
+    keywords: ["who is vice principal", "vice principal of school"],
+    answer: "✨ Say hello to **Happy Gupta Mam** 😇. Sweet smile, strict rules, and always catching those sneaky latecomers 👀. Don’t test her patience!"
+  },
+  {
+    keywords: ["who is best boy", "best boy in school"],
+    answer: "🏆 The ultimate cool guy? **CEO Jashandeep Singh** 😎💼. Charm, brains, swag… basically the full package! Don’t be jealous 😏."
+  },
+  {
+    keywords: ["best class", "best class in school", "best class of our school"],
+    answer: "🎉 The crown goes to **8th B Class** 👑📖. Full of energy, full of fun, and maybe a little mischief 😜. Watch out, they rule the school!"
+  },
+  {
+    keywords: ["school timing", "timing of school", "what is school timing"],
+    answer: "⏰ School kicks off at **8:00 AM** sharp! Nursery to 4th finish at **1:45 PM**, and 5th to 10th wrap up at **2:00 PM**. Don’t be late, or Mr. Choudhary’s eagle eyes will spot you 👀📚!"
+  }
+];
 
   // Find answer
   function findAnswer(q){
