@@ -499,6 +499,52 @@ body.is-admin .tutor-del-btn {
 /* Show for admin via body class */
 body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: center; gap: 6px; }
 </style>
+
+<style id="mobile-whitebar-fix">
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain; /* stop overscroll glow */
+}
+
+/* Keep your wallpaper always */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("school-bg.png") no-repeat center center fixed;
+  background-size: cover;
+  z-index: -1;
+  pointer-events: none;
+  min-height: 100dvh; /* dynamic vh */
+}
+
+/* Chrome/Android fallback */
+@supports (height: 100svh) {
+  body, body::before { min-height: 100svh; }
+}
+
+/* Older browsers fallback */
+@supports not (height: 100dvh) {
+  body, body::before { min-height: 100vh; }
+}
+
+/* iOS safe-area fix */
+@supports (padding: env(safe-area-inset-bottom)) {
+  body::after {
+    content: "";
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: env(safe-area-inset-bottom);
+    background: transparent; /* transparent so wallpaper shows */
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+</style>
+</style>
 </head>
 <body>
 <!-- Admin menu (3 dots) -->
