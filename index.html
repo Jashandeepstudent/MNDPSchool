@@ -5255,18 +5255,113 @@ div:has(> #tp-expiry-hours){ display:none !important; }
 
 <style id="mndp-gpt-styles">
 /* === MNDP GPT Fullscreen Assistant === */
-.mndp-gpt-overlay{position:fixed;inset:0;background:#ffffff;display:none;z-index:100000;}
-.mndp-gpt-overlay.open{display:block;}
-.mndp-gpt-fullscreen{position:absolute;inset:0;display:flex;flex-direction:column;background:#ffffff;}
-.mndp-gpt-center{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:24px;color:#2a5298;padding:24px;}
-.mndp-gpt-messages{flex:1;display:none;overflow-y:auto;padding:16px;gap:10px;flex-direction:column;display:flex;}
-.mndp-gpt-inputbar{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #e5e7eb;box-shadow:0 -2px 8px rgba(0,0,0,0.04);}
-.mndp-gpt-inputbar input{flex:1;padding:10px 12px;border:1px solid #d1d5db;border-radius:9999px;font-size:16px;outline:none;}
-.mndp-gpt-btn{padding:10px 14px;border:none;border-radius:10px;background:#e5e7eb;cursor:pointer;}
-.mndp-gpt-send{padding:10px 14px;border:none;border-radius:9999px;background:#2a5298;color:#fff;font-weight:bold;cursor:pointer;}
-.mndp-gpt-bubble{max-width:80%;padding:10px 12px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
-.mndp-gpt-bubble.user{margin-left:auto;background:#e0ecff;}
-.mndp-gpt-bubble.bot{margin-right:auto;background:#f3f4f6;white-space:pre-wrap;}
+.mndp-gpt-overlay {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  display: none;
+  z-index: 100000;
+}
+.mndp-gpt-overlay.open { display: block; }
+
+.mndp-gpt-fullscreen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+.mndp-gpt-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 24px;
+  color: #2a5298;
+  padding: 24px;
+}
+.mndp-gpt-messages {
+  flex: 1;
+  display: none;
+  overflow-y: auto;
+  padding: 16px;
+  gap: 10px;
+  flex-direction: column;
+  display: flex;
+}
+.mndp-gpt-inputbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+}
+.mndp-gpt-inputbar input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  font-size: 16px;
+  outline: none;
+}
+.mndp-gpt-btn {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #e5e7eb;
+  cursor: pointer;
+}
+.mndp-gpt-send {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 9999px;
+  background: #2a5298;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+.mndp-gpt-bubble {
+  max-width: 80%;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.mndp-gpt-bubble.user {
+  margin-left: auto;
+  background: #e0ecff;
+  padding: 10px 12px;
+}
+.mndp-gpt-bubble.bot {
+  margin-right: auto;
+  background: #f3f4f6;
+  line-height: 1.2;
+  padding: 0 12px 8px 12px !important;
+  display: block;
+}
+.mndp-gpt-bubble.bot > *:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+/* Fix table spacing inside bot bubble */
+.mndp-gpt-bubble.bot table {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+.mndp-gpt-bubble.bot table td,
+.mndp-gpt-bubble.bot table th {
+  border: 1px solid #000;
+  padding: 2px 4px;
+  font-size: 14px;
+  text-align: center;
+}
+.mndp-gpt-bubble.bot p {
+  margin: 0 !important;
+  padding: 0 !important;
+}
 @media (max-width:520px){
   .mndp-gpt-center{font-size:20px;padding:18px;}
   .mndp-gpt-inputbar input{font-size:16px;}
@@ -5289,103 +5384,63 @@ div:has(> #tp-expiry-hours){ display:none !important; }
 (function(){
   function el(id){ return document.getElementById(id); }
 
-  // --- Fixed Conversational Q&A knowledge base ---
   const knowledge = [
     {
       keywords: ["full form", "mndp"],
-      answer: "✨ The full form of *MNDP* is **Montessori Nargis Dutt Public School** 🌸. Proud to be part of it, right? 😃"
+      answer: "✨ The full form of *MNDP* is **Montessori Nargis Dutt Public School** 🌸."
     },
     {
       keywords: ["principal", "head", "who is principal"],
-      answer: "👨‍🏫 Our respected principal is **Mr. Anil Choudhary**. He always inspires us to learn and grow 🚀📚."
+      answer: "👨‍🏫 Our respected principal is **Mr. Anil Choudhary**."
     },
     {
       keywords: ["upcoming event", "next event", "what is next"],
-      answer: "📅 The upcoming event is **Teacher’s Day on 5th September** 🎉. Get ready for celebrations! 🥳"
+      answer: "📅 The upcoming event is **Teacher’s Day on 5th September** 🎉."
     },
     {
       keywords: ["5th september", "september 5"],
-      answer: "🎭 On *5th September*, students will become teachers for a day 👩‍🏫👨‍🏫, plus there will be **dances 💃, skits 🎬, and lots of fun**!"
+      answer: "🎭 On *5th September*, students will become teachers for a day 👩‍🏫👨‍🏫."
     },
     {
       keywords: ["how many classes", "number of classes", "classes in school"],
-      answer: "🏫 Our school has classes from **Nursery to 10th** 🌟. That’s a whole journey of learning 📖✏️!"
+      answer: "🏫 Our school has classes from **Nursery to 10th** 🌟."
     },
     {
-      keywords: [
-        "what do students wear on friday", 
-        "what do students have to wear on friday",
-        "students uniform friday",
-        "friday dress code",
-        "friday uniform"
-      ],
-      answer: "⚠️ On Fridays, students have to wear **red and white uniform** with **white shoes 👟, white belt, ID card 🆔, and white socks**. Don’t forget to wear all these, or you might get in trouble!"
+      keywords: ["friday uniform", "friday dress code", "what do students wear on friday"],
+      answer: "⚠️ On Fridays, students must wear **red and white uniform** with **white shoes, belt, ID card, and socks**."
     },
-{
+  {
   keywords: ["eighth class timetable", "8th class timetable", "timetable of eighth class", "8th class schedule"],
-  answer: `<div style="margin:0; padding:0; line-height:1.2;">
-<table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size:14px;">
-  <tr style="background:#f2f2f2;">
-    <th style="border: 1px solid #000; padding:2px 4px;">Period</th>
-    <th style="border: 1px solid #000; padding:2px 4px;">Subject / Book</th>
-  </tr>
-  <tr>
-    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">1️⃣ First</td>
-    <td style="border: 1px solid #000; padding:2px 4px;">Text Book - Science</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">2️⃣ Second</td>
-    <td style="border: 1px solid #000; padding:2px 4px;">English Book & Notebook</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">3️⃣ Third</td>
-    <td style="border: 1px solid #000; padding:2px 4px;">GK Notebook</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">4️⃣ Fourth</td>
-    <td style="border: 1px solid #000; padding:2px 4px;">Geography Book & Notebook</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">5️⃣ Fifth</td>
-    <td style="border: 1px solid #000; padding:2px 4px;">Newspaper</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">6️⃣ Sixth</td>
-    <td style="border: 1px solid #000; padding:2px 4px;">Maths Book & Notebook</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">7️⃣ Seventh</td>
-    <td style="border: 1px solid #000; padding:2px 4px;">Our Past History Book</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">8️⃣ Eighth</td>
-    <td style="border: 1px solid #000; padding:2px 4px;">Hindi Book & Notebook</td>
-  </tr>
-</table>
-<p style="margin:4px 0 0 0; padding:0; font-weight:bold;">⚠️ Here is the timetable of eighth class. Don’t forget to pack your bag completely, or you might be in trouble!😎</p>
-</div>`
+  answer: `<div style="margin:0;padding:0;line-height:0;">
+  <table style="line-height:1.2;">
+    <tr style="background:#f2f2f2;">
+      <th>Period</th>
+      <th>Subject / Book</th>
+    </tr>
+    <tr><td>1️⃣ First</td><td>Text Book - Science</td></tr>
+    <tr><td>2️⃣ Second</td><td>English Book & Notebook</td></tr>
+    <tr><td>3️⃣ Third</td><td>GK Notebook</td></tr>
+    <tr><td>4️⃣ Fourth</td><td>Geography Book & Notebook</td></tr>
+    <tr><td>5️⃣ Fifth</td><td>Newspaper</td></tr>
+    <tr><td>6️⃣ Sixth</td><td>Maths Book & Notebook</td></tr>
+    <tr><td>7️⃣ Seventh</td><td>Our Past History Book</td></tr>
+    <tr><td>8️⃣ Eighth</td><td>Hindi Book & Notebook</td></tr>
+  </table>
+</div>
+<p style="margin:0;padding:0;font-weight:bold;">⚠️ Here is the timetable of eighth class. Don’t forget to pack your bag completely, or you might be in trouble! 😎</p>`
 }
-
-
-
-
 
   ];
 
   function findAnswer(q){
     const lowerQ = q.toLowerCase();
     for (let item of knowledge){
-      if (item.keywords.some(k => lowerQ.includes(k))) {
-        return item.answer;
-      }
+      if (item.keywords.some(k => lowerQ.includes(k))) return item.answer;
     }
     return "🤔 Hmm… I’m not sure about that yet. Maybe try asking in a different way? 😊";
   }
 
-  function openOverlay(){
-    el('mndpGptOverlay').classList.add('open');
-  }
-
+  function openOverlay(){ el('mndpGptOverlay').classList.add('open'); }
   function closeOverlay(){
     el('mndpGptOverlay').classList.remove('open');
     el('mndpGptMessages').innerHTML = '';
@@ -5403,18 +5458,22 @@ div:has(> #tp-expiry-hours){ display:none !important; }
     var msgs = el('mndpGptMessages');
     msgs.style.display='flex';
 
-    // User bubble
     var ub = document.createElement('div');
     ub.className='mndp-gpt-bubble user';
     ub.textContent = text;
     msgs.appendChild(ub);
 
-    // Bot bubble
     setTimeout(()=>{
       var bb = document.createElement('div');
       bb.className='mndp-gpt-bubble bot';
-      // Use innerHTML and replace \n with <br> to preserve timetable formatting
-      bb.innerHTML = findAnswer(text).replace(/\n/g,"<br>");
+
+      let answerText = findAnswer(text)
+                         .split('\n')
+                         .map(line => line.trim())
+                         .filter(line => line)
+                         .join('<br>');
+
+      bb.innerHTML = answerText;
       msgs.appendChild(bb);
       msgs.scrollTop = msgs.scrollHeight;
     }, 500);
@@ -5422,17 +5481,21 @@ div:has(> #tp-expiry-hours){ display:none !important; }
     input.value='';
   }
 
-  // Event listeners
   document.addEventListener('click', function(e){
     if (e.target && e.target.id === 'mndpGptOption'){ e.preventDefault(); openOverlay(); }
   });
+
   document.addEventListener('DOMContentLoaded', function(){
     el('mndpGptBack').addEventListener('click', closeOverlay);
     el('mndpGptSend').addEventListener('click', sendMessage);
-    el('mndpGptInput').addEventListener('keydown', function(ev){ if(ev.key==='Enter'){ev.preventDefault();sendMessage();}});
+    el('mndpGptInput').addEventListener('keydown', function(ev){ 
+      if(ev.key==='Enter'){ ev.preventDefault(); sendMessage(); }
+    });
   });
 
 })();
 </script>
+
+
 </body>
 </html>
