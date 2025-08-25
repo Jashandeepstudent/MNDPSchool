@@ -499,52 +499,6 @@ body.is-admin .tutor-del-btn {
 /* Show for admin via body class */
 body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: center; gap: 6px; }
 </style>
-
-<style id="mobile-whitebar-fix">
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  -webkit-tap-highlight-color: transparent;
-  overscroll-behavior-y: contain; /* stop overscroll glow */
-}
-
-/* Keep your wallpaper always */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: url("school-bg.png") no-repeat center center fixed;
-  background-size: cover;
-  z-index: -1;
-  pointer-events: none;
-  min-height: 100dvh; /* dynamic vh */
-}
-
-/* Chrome/Android fallback */
-@supports (height: 100svh) {
-  body, body::before { min-height: 100svh; }
-}
-
-/* Older browsers fallback */
-@supports not (height: 100dvh) {
-  body, body::before { min-height: 100vh; }
-}
-
-/* iOS safe-area fix */
-@supports (padding: env(safe-area-inset-bottom)) {
-  body::after {
-    content: "";
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: env(safe-area-inset-bottom);
-    background: transparent; /* transparent so wallpaper shows */
-    pointer-events: none;
-    z-index: -1;
-  }
-}
-</style>
-</style>
 </head>
 <body>
 <!-- Admin menu (3 dots) -->
@@ -2107,9 +2061,7 @@ function updateAdminUI(){
         // Start countdown immediately for feedback
         startCountdown(WAIT_TIME); // 24 hours (production)
         return _oldSubmitLeaveForm.apply(this, arguments);
-      } catch (e) {
-
-      } catch (e) {
+      } catch (e) {} catch (e) {
         // If something threw before countdown begins, bring the form back
         showLeaveForm();
         throw e;
@@ -2505,40 +2457,6 @@ function updateAdminUI(){
     }
   });
 })();
-</script>
-<!-- Mobile Bottom Tab Bar -->
-<style>
-  .mobile-tabbar { position: fixed; bottom: 0; left: 0; right: 0; display: flex; gap: 8px;
-    padding: 8px; background: rgba(255,255,255,0.95); backdrop-filter: blur(6px);
-    border-top: 1px solid #e5e7eb; z-index: 9999; }
-  .mobile-tabbar button { flex: 1; padding: 10px 8px; border: 1px solid #e5e7eb; border-radius: 12px;
-    background: #fff; font-weight: 600; }
-  .mobile-tabbar .active { outline: 2px solid #6366f1; }
-  @media (min-width: 769px) { .mobile-tabbar { display: none; } }
-  body { padding-bottom: 70px; } /* space so content isn't hidden behind tabbar on mobile */
-</style>
-<div class="mobile-tabbar" id="mobileTabbar">
-<button id="tabHome" onclick="showPage('home'); setActiveTab(this)">Home</button>
-<button id="tabAbout" onclick="showPage('about'); setActiveTab(this)">About Us</button>
-<button id="tabLeave" onclick="showPage('leave'); setActiveTab(this)">Leave System</button>
-</div>
-<script>
-  function setActiveTab(btn){
-    document.querySelectorAll('#mobileTabbar button').forEach(b=>b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-  }
-  // Initialize selected tab based on the visible section
-  document.addEventListener('DOMContentLoaded', function(){
-    var active = document.querySelector('section.active');
-    if (active){
-      var id = active.id;
-      if (id === 'home') setActiveTab(document.getElementById('tabHome'));
-      else if (id === 'about') setActiveTab(document.getElementById('tabAbout'));
-      else if (id === 'leave') setActiveTab(document.getElementById('tabLeave'));
-    } else {
-      setActiveTab(document.getElementById('tabHome'));
-    }
-  });
 </script>
 <!-- Fixed Leave Submit + 24h Countdown (aug-2025 patch) -->
 <script>
@@ -3500,7 +3418,7 @@ body.is-admin .video-delete-btn {
 }
 
 </style>
-<div id="tp-toast">Please select a poll first</div>
+<div id="tp-toast"></div>
 <script>
 (function(){
   'use strict';
@@ -3514,7 +3432,7 @@ body.is-admin .video-delete-btn {
   function showToast(msg){
     var t = document.getElementById('tp-toast');
     if(!t) return;
-    t.textContent = msg || 'Please select a poll first';
+    t.textContent = msg || alert("Please select a poll first");
     t.classList.add('show');
     setTimeout(function(){ t.classList.remove('show'); }, 1600);
   }
@@ -3569,7 +3487,7 @@ body.is-admin .video-delete-btn {
     // EDIT: open the create form prefilled for the selected poll (using beginEdit from the original script)
     resetOne('tp-editBtn', function(){
       if(!selectedCard){
-        showToast('Please select a poll first');
+        showToast(alert("Please select a poll first"));
         return;
       }
       var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
@@ -3596,7 +3514,7 @@ body.is-admin .video-delete-btn {
     // DELETE: ask confirm, then trigger the original delete flow programmatically
     resetOne('tp-delBtn', function(){
       if(!selectedCard){
-        showToast('Please select a poll first');
+        showToast(alert("Please select a poll first"));
         return;
       }
       if(!window.confirm('Are you sure you want to delete this poll?')) return;
@@ -3682,7 +3600,7 @@ body.is-admin .video-delete-btn {
     if(!t) {
       t = document.createElement('div');
       t.id = 'tp-toast';
-      t.textContent = msg || 'Please select a poll first';
+      t.textContent = msg || alert("Please select a poll first");
       t.style.position = 'fixed';
       t.style.left = '50%';
       t.style.transform = 'translateX(-50%)';
@@ -3695,7 +3613,7 @@ body.is-admin .video-delete-btn {
       t.style.zIndex = '10001';
       document.body.appendChild(t);
     } else {
-      t.textContent = msg || 'Please select a poll first';
+      t.textContent = msg || alert("Please select a poll first");
     }
     t.style.display = 'block';
     setTimeout(function(){ t.style.display = 'none'; }, 1400);
@@ -3758,7 +3676,7 @@ body.is-admin .video-delete-btn {
     var e = document.getElementById('tp-editBtn');
     var d = document.getElementById('tp-delBtn');
     wireButton(e, function(){
-      if(!selectedCard){ showToast('Please select a poll first'); return; }
+      if(!selectedCard){ showToast(alert("Please select a poll first")); return; }
       var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
       if(!pid){ showToast('Could not determine poll id'); return; }
       try{
@@ -3773,7 +3691,7 @@ body.is-admin .video-delete-btn {
       }catch(e){ try{ console.error(e);}catch(_){} }
     });
     wireButton(d, function(){
-      if(!selectedCard){ showToast('Please select a poll first'); return; }
+      if(!selectedCard){ showToast(alert("Please select a poll first")); return; }
       if(!window.confirm('Are you sure you want to delete this poll?')) return;
       var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
       try{
@@ -3892,7 +3810,7 @@ body.is-admin .video-delete-btn {
       t.style.zIndex = '10001';
       document.body.appendChild(t);
     }
-    t.textContent = msg || 'Please select a poll first';
+    t.textContent = msg || alert("Please select a poll first");
     t.style.display = 'block';
     setTimeout(function(){ t.style.display = 'none'; }, 1400);
   }
@@ -3955,7 +3873,7 @@ body.is-admin .video-delete-btn {
     var d = document.getElementById('tp-delBtn');
 
     wireButton(e, function(){
-      if(!selectedCard){ showToast('Please select a poll first'); return; }
+      if(!selectedCard){ showToast(alert("Please select a poll first")); return; }
       var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
       if(!pid){ showToast('Could not determine poll id'); return; }
       try{
@@ -3971,7 +3889,7 @@ body.is-admin .video-delete-btn {
     });
 
     wireButton(d, function(){
-      if(!selectedCard){ showToast('Please select a poll first'); return; }
+      if(!selectedCard){ showToast(alert("Please select a poll first")); return; }
       var pid = selectedCard && selectedCard.dataset ? selectedCard.dataset.id : null;
       if(!pid){ showToast('Could not determine poll id'); return; }
       if(!window.confirm('Are you sure you want to delete this poll?')) return;
@@ -4104,7 +4022,7 @@ body.is-admin .video-delete-btn {
       tb.addEventListener("click", function(ev){
         var card = getSelectedCard();
         var id = card && card.dataset ? card.dataset.id : null;
-        if(!id){ alert("Please select a poll first"); return; }
+        if(!id){ alert(alert("Please select a poll first")); return; }
         if (!callBeginEdit(id)) alert("Edit form not available");
       });
     }
