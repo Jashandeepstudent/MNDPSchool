@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -510,6 +511,8 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 <a href="#" id="adminOption">
      Admin
     </a>
+
+    <a href="#" id="mndpGptOption">MNDP GPT</a>
 </div>
 </div>
 <!-- Admin panel -->
@@ -5247,6 +5250,188 @@ div:has(> #tp-expiry-hours){ display:none !important; }
     var amt = document.getElementById('tp-exp-amt'); if (amt) amt.value = "";
     var unit = document.getElementById('tp-exp-unit'); if (unit) unit.value = "minutes";
   }catch(e){ /* no-op */ }
+})();
+</script>
+
+<style id="mndp-gpt-styles">
+/* === MNDP GPT Fullscreen Assistant === */
+.mndp-gpt-overlay{position:fixed;inset:0;background:#ffffff;display:none;z-index:100000;}
+.mndp-gpt-overlay.open{display:block;}
+.mndp-gpt-fullscreen{position:absolute;inset:0;display:flex;flex-direction:column;background:#ffffff;}
+.mndp-gpt-center{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:24px;color:#2a5298;padding:24px;}
+.mndp-gpt-messages{flex:1;display:none;overflow-y:auto;padding:16px;gap:10px;flex-direction:column;display:flex;}
+.mndp-gpt-inputbar{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #e5e7eb;box-shadow:0 -2px 8px rgba(0,0,0,0.04);}
+.mndp-gpt-inputbar input{flex:1;padding:10px 12px;border:1px solid #d1d5db;border-radius:9999px;font-size:16px;outline:none;}
+.mndp-gpt-btn{padding:10px 14px;border:none;border-radius:10px;background:#e5e7eb;cursor:pointer;}
+.mndp-gpt-send{padding:10px 14px;border:none;border-radius:9999px;background:#2a5298;color:#fff;font-weight:bold;cursor:pointer;}
+.mndp-gpt-bubble{max-width:80%;padding:10px 12px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.mndp-gpt-bubble.user{margin-left:auto;background:#e0ecff;}
+.mndp-gpt-bubble.bot{margin-right:auto;background:#f3f4f6;white-space:pre-wrap;}
+@media (max-width:520px){
+  .mndp-gpt-center{font-size:20px;padding:18px;}
+  .mndp-gpt-inputbar input{font-size:16px;}
+}
+</style>
+
+<div id="mndpGptOverlay" class="mndp-gpt-overlay" aria-hidden="true">
+  <div class="mndp-gpt-fullscreen">
+    <div id="mndpGptCenter" class="mndp-gpt-center">What can I help with?</div>
+    <div id="mndpGptMessages" class="mndp-gpt-messages"></div>
+    <div class="mndp-gpt-inputbar">
+      <button id="mndpGptBack" class="mndp-gpt-btn" type="button">Back</button>
+      <input id="mndpGptInput" type="text" placeholder="Type a message..." />
+      <button id="mndpGptSend" class="mndp-gpt-send" type="button" aria-label="Send">➤</button>
+    </div>
+  </div>
+</div>
+
+<script id="mndp-gpt-script">
+(function(){
+  function el(id){ return document.getElementById(id); }
+
+  // --- Fixed Conversational Q&A knowledge base ---
+  const knowledge = [
+    {
+      keywords: ["full form", "mndp"],
+      answer: "✨ The full form of *MNDP* is **Montessori Nargis Dutt Public School** 🌸. Proud to be part of it, right? 😃"
+    },
+    {
+      keywords: ["principal", "head", "who is principal"],
+      answer: "👨‍🏫 Our respected principal is **Mr. Anil Choudhary**. He always inspires us to learn and grow 🚀📚."
+    },
+    {
+      keywords: ["upcoming event", "next event", "what is next"],
+      answer: "📅 The upcoming event is **Teacher’s Day on 5th September** 🎉. Get ready for celebrations! 🥳"
+    },
+    {
+      keywords: ["5th september", "september 5"],
+      answer: "🎭 On *5th September*, students will become teachers for a day 👩‍🏫👨‍🏫, plus there will be **dances 💃, skits 🎬, and lots of fun**!"
+    },
+    {
+      keywords: ["how many classes", "number of classes", "classes in school"],
+      answer: "🏫 Our school has classes from **Nursery to 10th** 🌟. That’s a whole journey of learning 📖✏️!"
+    },
+    {
+      keywords: [
+        "what do students wear on friday", 
+        "what do students have to wear on friday",
+        "students uniform friday",
+        "friday dress code",
+        "friday uniform"
+      ],
+      answer: "⚠️ On Fridays, students have to wear **red and white uniform** with **white shoes 👟, white belt, ID card 🆔, and white socks**. Don’t forget to wear all these, or you might get in trouble!"
+    },
+{
+  keywords: ["eighth class timetable", "8th class timetable", "timetable of eighth class", "8th class schedule"],
+  answer: `<div style="margin:0; padding:0; line-height:1.2;">
+<table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size:14px;">
+  <tr style="background:#f2f2f2;">
+    <th style="border: 1px solid #000; padding:2px 4px;">Period</th>
+    <th style="border: 1px solid #000; padding:2px 4px;">Subject / Book</th>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">1️⃣ First</td>
+    <td style="border: 1px solid #000; padding:2px 4px;">Text Book - Science</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">2️⃣ Second</td>
+    <td style="border: 1px solid #000; padding:2px 4px;">English Book & Notebook</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">3️⃣ Third</td>
+    <td style="border: 1px solid #000; padding:2px 4px;">GK Notebook</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">4️⃣ Fourth</td>
+    <td style="border: 1px solid #000; padding:2px 4px;">Geography Book & Notebook</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">5️⃣ Fifth</td>
+    <td style="border: 1px solid #000; padding:2px 4px;">Newspaper</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">6️⃣ Sixth</td>
+    <td style="border: 1px solid #000; padding:2px 4px;">Maths Book & Notebook</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">7️⃣ Seventh</td>
+    <td style="border: 1px solid #000; padding:2px 4px;">Our Past History Book</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #000; padding:2px 4px; text-align:center;">8️⃣ Eighth</td>
+    <td style="border: 1px solid #000; padding:2px 4px;">Hindi Book & Notebook</td>
+  </tr>
+</table>
+<p style="margin:4px 0 0 0; padding:0; font-weight:bold;">⚠️ Here is the timetable of eighth class. Don’t forget to pack your bag completely, or you might be in trouble!😎</p>
+</div>`
+}
+
+
+
+
+
+  ];
+
+  function findAnswer(q){
+    const lowerQ = q.toLowerCase();
+    for (let item of knowledge){
+      if (item.keywords.some(k => lowerQ.includes(k))) {
+        return item.answer;
+      }
+    }
+    return "🤔 Hmm… I’m not sure about that yet. Maybe try asking in a different way? 😊";
+  }
+
+  function openOverlay(){
+    el('mndpGptOverlay').classList.add('open');
+  }
+
+  function closeOverlay(){
+    el('mndpGptOverlay').classList.remove('open');
+    el('mndpGptMessages').innerHTML = '';
+    el('mndpGptCenter').style.display = 'flex';
+    el('mndpGptMessages').style.display = 'none';
+    el('mndpGptInput').value = '';
+  }
+
+  function sendMessage(){
+    var input = el('mndpGptInput');
+    var text = input.value.trim();
+    if (!text) return;
+
+    el('mndpGptCenter').style.display='none';
+    var msgs = el('mndpGptMessages');
+    msgs.style.display='flex';
+
+    // User bubble
+    var ub = document.createElement('div');
+    ub.className='mndp-gpt-bubble user';
+    ub.textContent = text;
+    msgs.appendChild(ub);
+
+    // Bot bubble
+    setTimeout(()=>{
+      var bb = document.createElement('div');
+      bb.className='mndp-gpt-bubble bot';
+      // Use innerHTML and replace \n with <br> to preserve timetable formatting
+      bb.innerHTML = findAnswer(text).replace(/\n/g,"<br>");
+      msgs.appendChild(bb);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 500);
+
+    input.value='';
+  }
+
+  // Event listeners
+  document.addEventListener('click', function(e){
+    if (e.target && e.target.id === 'mndpGptOption'){ e.preventDefault(); openOverlay(); }
+  });
+  document.addEventListener('DOMContentLoaded', function(){
+    el('mndpGptBack').addEventListener('click', closeOverlay);
+    el('mndpGptSend').addEventListener('click', sendMessage);
+    el('mndpGptInput').addEventListener('keydown', function(ev){ if(ev.key==='Enter'){ev.preventDefault();sendMessage();}});
+  });
+
 })();
 </script>
 </body>
