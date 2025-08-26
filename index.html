@@ -501,6 +501,67 @@ body.is-admin .tutor-del-btn {
 /* Show for admin via body class */
 body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: center; gap: 6px; }
 </style>
+
+<!-- MNDP GPT fixes: logo circle + send->stop button behavior -->
+<style id="mndp-gpt-fixes">
+/* Logo circle: force perfect circle and inline placement */
+.mndp-logo-circle{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:34px !important;
+  height:34px !important;
+  border-radius:50% !important;
+  background:#0b69ff !important;
+  color:#fff !important;
+  font-weight:800 !important;
+  font-size:13px !important;
+  line-height:1 !important;
+  padding:0 !important;
+  margin-right:8px !important;
+  flex-shrink:0 !important;
+  box-shadow:0 3px 12px rgba(11,105,255,0.18) !important;
+  box-sizing:border-box !important;
+}
+
+/* Ensure the MNDP GPT dropdown anchor holds logo inline */
+.menu-container #dropdown a#mndpGptOption,
+.menu-container a#mndpGptOption {
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  padding:6px 8px !important;
+  white-space:nowrap !important;
+}
+
+/* Send button stop style - forced to square */
+.mndp-gpt-send.stop{
+  border-radius:6px !important;
+  background:#000 !important;
+  color:#fff !important;
+  font-weight:700 !important;
+  font-size:18px !important;
+  width:42px !important;
+  height:42px !important;
+  padding:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  line-height:1 !important;
+  box-shadow:0 4px 12px rgba(0,0,0,0.12) !important;
+}
+
+/* Make normal send button consistent size */
+.mndp-gpt-send{ min-width:42px !important; min-height:42px !important; padding:0 10px !important; display:inline-flex !important; align-items:center !important; justify-content:center !important; }
+
+/* If the overlay has a header area, allow logo there too */
+.mndp-gpt-fullscreen .mndp-gpt-header{ display:flex; align-items:center; gap:12px; padding:12px 16px; }
+.mndp-gpt-fullscreen .mndp-gpt-header .mndp-logo-circle{ width:36px !important; height:36px !important; margin-right:0 !important; }
+
+/* Some protective resets to avoid ovaling */
+.mndp-logo-circle *{ line-height:1 !important; }
+</style>
+
 </head>
 <body>
 <!-- Admin menu (3 dots) -->
@@ -513,7 +574,7 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
      Admin
     </a>
 
-    <a href="#" id="mndpGptOption">MNDP GPT</a>
+    <a href="#" id="mndpGptOption"><span class="mndp-logo-circle" aria-hidden="true">MG</span>MNDP GPT</a>
 </div>
 </div>
 <!-- Admin panel -->
@@ -5545,5 +5606,250 @@ window.fixedSubmitLeave = function(event){
   return false;
 };
 </script>
+
+<!-- MNDP GPT behaviour override: reliable open + send->stop -->
+<script id="mndp-gpt-behaviour-override">
+(function(){
+  if(window.__mndp_behaviour_installed) return;
+  window.__mndp_behaviour_installed = true;
+
+  function q(id){ return document.getElementById(id); }
+  function once(fn){ if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', fn); } else fn(); }
+
+  once(function(){
+    // Ensure logo exists and is inline
+    try{
+      const anchor = q('mndpGptOption');
+      if(anchor){
+        anchor.style.display = 'inline-flex';
+        anchor.style.alignItems = 'center';
+        // Insert logo if missing
+        if(!anchor.querySelector('.mndp-logo-circle')){
+          const sp = document.createElement('span');
+          sp.className = 'mndp-logo-circle';
+          sp.setAttribute('aria-hidden','true');
+          sp.textContent = 'MG';
+          anchor.insertBefore(sp, anchor.firstChild);
+        } else {
+          const sp = anchor.querySelector('.mndp-logo-circle');
+          sp.style.width='34px'; sp.style.height='34px'; sp.style.lineHeight='1';
+        }
+      }
+    }catch(e){ console.error('logo injection error', e); }
+
+    // Open overlay reliably when clicking the anchor or its children
+    function openOverlayHandler(ev){
+      try{
+        if(ev && ev.preventDefault) ev.preventDefault();
+        const overlay = q('mndpGptOverlay');
+        if(overlay) overlay.classList.add('open');
+        const msgs = q('mndpGptMessages'); if(msgs){ msgs.innerHTML=''; msgs.style.display='none'; }
+        const center = q('mndpGptCenter'); if(center) center.style.display='flex';
+        const dropdown = q('dropdown'); if(dropdown) dropdown.style.display = 'none';
+        setTimeout(function(){ try{ const inp=q('mndpGptInput'); if(inp) inp.focus(); }catch(e){} }, 90);
+      }catch(e){ console.error(e); }
+    }
+
+    const anchor = q('mndpGptOption');
+    if(anchor) {
+      anchor.addEventListener('click', openOverlayHandler);
+      // ensure child clicks bubble to anchor
+      anchor.querySelectorAll('*').forEach(function(child){ child.style.pointerEvents = 'auto'; });
+    }
+    // if dropdown exists, delegate
+    const dd = q('dropdown');
+    if(dd){
+      dd.addEventListener('click', function(ev){
+        const a = ev.target.closest && ev.target.closest('#mndpGptOption');
+        if(a){ openOverlayHandler(ev); }
+      });
+    }
+
+    // Typing generation control
+    window._mndp_runtime = window._mndp_runtime || { generating:false, timers:[], stopRequested:false, processing:false };
+
+    function clearTimers(){ try{ window._mndp_runtime.timers.forEach(t=>clearTimeout(t)); }catch(e){} window._mndp_runtime.timers = []; }
+
+    
+    function setBtnToStop(){
+      const btn = q('mndpGptSend');
+      if(!btn) return;
+      try{
+        // change visible icon
+        btn.textContent = '■';
+        btn.classList.add('stop');
+        btn.onclick = stopGeneration;
+        // FORCE inline styles to override any CSS that keeps it circular
+        btn.style.borderRadius = '6px';
+        btn.style.width = '42px';
+        btn.style.height = '42px';
+        btn.style.padding = '0';
+        btn.style.background = '#000';
+        btn.style.color = '#fff';
+        btn.style.border = 'none';
+        btn.style.display = 'inline-flex';
+        btn.style.alignItems = 'center';
+        btn.style.justifyContent = 'center';
+        btn.style.fontSize = '18px';
+        btn.style.lineHeight = '1';
+        btn.style.boxSizing = 'border-box';
+      }catch(e){}
+    }
+catch(e){}
+    }
+    
+    function setBtnToSend(){
+      const btn = q('mndpGptSend');
+      if(!btn) return;
+      try{
+        btn.textContent = '➤';
+        btn.classList.remove('stop');
+        btn.onclick = sendHandler;
+        // restore to rounded look (or clear inline overrides)
+        btn.style.borderRadius = '9999px';
+        btn.style.width = '';
+        btn.style.height = '';
+        btn.style.padding = '';
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.border = '';
+        btn.style.display = '';
+        btn.style.alignItems = '';
+        btn.style.justifyContent = '';
+        btn.style.fontSize = '';
+        btn.style.lineHeight = '';
+        btn.style.boxSizing = '';
+      }catch(e){}
+    }
+catch(e){}
+    }
+
+    function stopGeneration(){
+      window._mndp_runtime.stopRequested = true;
+      clearTimers();
+      window._mndp_runtime.generating = false;
+      setBtnToSend();
+      // add stopped note
+      try{
+        const msgs = q('mndpGptMessages');
+        if(msgs){
+          const bots = msgs.querySelectorAll('.mndp-gpt-bubble.bot');
+          if(bots.length){
+            const last = bots[bots.length-1];
+            const stamp = document.createElement('div');
+            stamp.style.opacity = '0.7'; stamp.style.fontStyle = 'italic'; stamp.style.marginTop = '6px';
+            stamp.textContent = '(stopped)';
+            last.appendChild(stamp);
+          }
+        }
+      }catch(e){}
+    }
+
+    function sendHandler(){
+      // if currently generating, act as stop toggle
+      if(window._mndp_runtime.generating){ stopGeneration(); return; }
+      if(window._mndp_runtime.processing) return;
+      window._mndp_runtime.processing = true;
+      setTimeout(function(){ window._mndp_runtime.processing = false; }, 60);
+
+      const inp = q('mndpGptInput');
+      if(!inp) return;
+      const text = (inp.value || '').trim();
+      if(!text) return;
+
+      window._mndp_runtime.generating = true;
+      window._mndp_runtime.stopRequested = false;
+      clearTimers();
+
+      const center = q('mndpGptCenter'); if(center) center.style.display='none';
+      const msgs = q('mndpGptMessages'); if(msgs) msgs.style.display='flex';
+
+      // user bubble
+      const ub = document.createElement('div'); ub.className='mndp-gpt-bubble user'; ub.textContent = text; msgs.appendChild(ub);
+
+      // bot bubble
+      const bb = document.createElement('div'); bb.className='mndp-gpt-bubble bot'; msgs.appendChild(bb);
+
+      // change send to stop
+      setBtnToStop();
+
+      // get answer HTML safely (use findAnswer if exists)
+      let answerHTML = '';
+      try{ if(typeof findAnswer === 'function') answerHTML = findAnswer(text); else answerHTML = 'Sorry, I don\\'t have an answer right now.'; }catch(e){ answerHTML = 'Error generating answer.'; }
+
+      // type by nodes, stoppable
+      const tmp = document.createElement('div'); tmp.innerHTML = answerHTML;
+      const nodes = Array.from(tmp.childNodes);
+      let idx = 0;
+
+      function finish(){
+        clearTimers();
+        window._mndp_runtime.generating = false;
+        window._mndp_runtime.stopRequested = false;
+        setBtnToSend();
+      }
+
+      function typeNode(){
+        if(window._mndp_runtime.stopRequested){ finish(); return; }
+        if(idx < nodes.length){
+          const node = nodes[idx];
+          if(node.nodeType === Node.TEXT_NODE){
+            let i = 0;
+            function typeChar(){
+              if(window._mndp_runtime.stopRequested){ finish(); return; }
+              if(i < node.textContent.length){
+                bb.innerHTML += node.textContent[i] === '\\n' ? '<br>' : node.textContent[i];
+                i++;
+                if(msgs) msgs.scrollTop = msgs.scrollHeight;
+                const t = setTimeout(typeChar, 18);
+                window._mndp_runtime.timers.push(t);
+              } else {
+                idx++; typeNode();
+              }
+            }
+            typeChar();
+          } else {
+            bb.appendChild(node.cloneNode(true));
+            if(msgs) msgs.scrollTop = msgs.scrollHeight;
+            const t = setTimeout(function(){ idx++; typeNode(); }, 260);
+            window._mndp_runtime.timers.push(t);
+          }
+        } else {
+          finish();
+        }
+      }
+
+      typeNode();
+      inp.value = '';
+    }
+
+    // bind controls
+    function bindControls(){
+      const btn = q('mndpGptSend');
+      const inp = q('mndpGptInput');
+      if(btn){ btn.onclick = sendHandler; btn.setAttribute('aria-label','Send'); }
+      if(inp){
+        try{
+          // replace input element to remove previous keydown handlers
+          const newInp = inp.cloneNode(true);
+          inp.parentNode.replaceChild(newInp, inp);
+          newInp.addEventListener('keydown', function(ev){ if(ev.key === 'Enter'){ ev.preventDefault(); sendHandler(); } });
+        }catch(e){
+          inp.addEventListener('keydown', function(ev){ if(ev.key === 'Enter'){ ev.preventDefault(); sendHandler(); } });
+        }
+      }
+    }
+
+    // run initial bindings
+    bindControls();
+
+    // also re-bind on overlay open (in case UI is dynamically rebuilt)
+    document.addEventListener('click', function(ev){
+      if(ev.target && ev.target.id === 'mndpGptOption') setTimeout(bindControls, 50);
+    });
+  }); // once
+})(); 
+</script>
+
 </body>
 </html>
