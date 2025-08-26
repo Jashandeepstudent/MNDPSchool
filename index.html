@@ -5384,7 +5384,8 @@ div:has(> #tp-expiry-hours){ display:none !important; }
   function el(id){ return document.getElementById(id); }
 
   // Example knowledge base
-  const knowledge = [
+// Example knowledge base
+const knowledge = [
   {
     keywords: ["full form", "mndp"],
     answer: "✨ The full form of *MNDP* is **Montessori Nargis Dutt Public School** 🌸. Fancy, right? Time to flaunt it in front of friends 😎📚!"
@@ -5422,15 +5423,15 @@ div:has(> #tp-expiry-hours){ display:none !important; }
   },
   {
     keywords: ["who is vice principal of our school", "vice principal of school"],
-    answer: "✨ Say hello to **Happy Gupta Mam** 😇. Sweet smile, strict rules, and always catching those Poor Handwriting ones 👀. Don’t test her patience!"
+    answer: "✨ Say hello to **Happy Gupta Mam** 😇. Sweet smile, strict rules, and always catching those Poor Handwriting ones 👀. Don’t test the patience!"
   },
   {
-    keywords: ["who is best boy", "best boy in school"],
-    answer: "🏆 The ultimate cool guy? **CEO Jashandeep Singh** 😎💼. Charm, brains, swag… basically the full package! Don’t be jealous 😏."
+    keywords: ["who is best boy", "best boy jashandeep"],
+    answer: `🏆 The ultimate cool guy? **CEO Jashandeep Singh** 😎💼. Always rocking it in school and beyond!`
   },
   {
     keywords: ["best class", "best class in school", "best class of our school"],
-    answer: "🎉 The crown goes to **8th B Class** 👑📖. Full of energy, full of fun, and maybe a little mischief 😜. "
+    answer: "🎉 The crown goes to **8th B Class** 👑📖. Full of energy, full of fun, and maybe a little mischief 😜."
   },
   {
     keywords: ["school timing", "timing of school", "what is school timing"],
@@ -5440,34 +5441,288 @@ div:has(> #tp-expiry-hours){ display:none !important; }
     keywords: ["where is mndp school", "where is montessori nargis dutt public school located", "where is our school located"],
     answer: "📍 MNDP is proudly located in **R.S. Pura village, Kotli Gana Bana** 🌳. A place where fun, learning, and chaos meet 😎!"
   },
+  {
+    keywords: [
+      "what is school speciality",
+      "what is our school speciality",
+      "what is mndp speciality",
+      "what is montessori nargis dutt public school speciality",
+      "school specialot",
+      "school specoalty",
+      "what is our school",
+      "tell me about our school",
+      "about our school",
+      "tell me about mndp",
+      "tell me about montessori nargis dutt public school"
+    ],
+    answer: `🌟 Our school is **Montessori Nargis Dutt Public School (MNDP)** 🏫. 
+A place where books meet fun, classes meet creativity, and students become all-rounders 🎉.
+
+We focus on co-curricular activities like **Dictation, Reading, Handwriting**, and real-world challenges like **Poem Chaos** cracked by CEO Jashandeep and Mr. Shivjot, and the tough **Element Song** by CEO Jashandeep Singh and Miss Anya. 
+
+Sports? 🏅 Nonstop fun! And more… but we are not self-praisers 😎`
+  },
+  {
+    keywords: ["what students wear on friday","what do students wear on friday","friday uniform","uniform on friday"],
+    answer: "👕 On Fridays, it’s all about the **Red & White vibes** ❤️🤍! ID card, fleet shoes, and white socks — sharp and stylish 😎."
+  },
+  {
+    keywords: ["which is latest going activity in school","tell me which activity is going on in school","recently going in school","ongoing activity in school"],
+    answer: "🎶 Right now, the hottest activity is **English & Hindi songs**..."
+  },
+ {
+  keywords: ["english song","sing english song","give me english song"],
+  answer: `🎶 A principal-approved English tune — lyrics:\n\n
+When marimba rhythms start to play
+Dance with me, make me sway
+Like a lazy ocean hugs the shore
+Hold me close, sway me more
+Like a flower bending in the breeze
+Bend with me, sway with ease
+When we dance, you have a way with me
+Stay with me, sway with me
+Other dancers may be on the floor
+Dear, but my eyes will see only you
+Only you have that magic technique
+When we sway, I go weak
+I can hear the sounds of violins
+Long before it begins
+Make me thrill as only you know how
+Sway me smooth, sway me now
+Other dancers may be on the floor
+Dear, but my eyes will see only you
+Only you have that magic technique
+When we sway, I go weak
+I can hear the sounds of violins
+Long before it begins
+Make me thrill as only you know how
+Sway me smooth, sway me now
+When marimba rhythms start to play
+Dance with me, make me sway
+Like a lazy ocean hugs the shore
+Hold me close, sway me more
+Like a flower bending in the breeze
+Bend with me, sway with ease
+When we dance you have a way with me
+Stay with me, sway with me
+When marimbas start to play
+Hold me close, make me sway
+Like a lazy ocean hugs the shore
+Hold me close, sway me more
+Like a flower bending in the breeze
+Bend with me, sway with ease
+When we dance, you have a way with me`
+},
 {
-  keywords: [
-    "what is school speciality",
-    "what is our school speciality",
-    "what is mndp speciality",
-    "what is montessori nargis dutt public school speciality",
-    "school specialot",
-    "school specoalty",
-    "what is our school",
-    "tell me about our school",
-    "about our school",
-    "tell me about mndp",
-    "tell me about montessori nargis dutt public school"
-  ],
-  answer: "🌟 Our school is **Montessori Nargis Dutt Public School (MNDP)** 🏫. A place where books meet fun, classes meet creativity, and students become all-rounders 🎉. Instead of making students boring bookworms 📚, we focus on **co-curricular activities** like reading, dictation, speeches, and fun challenges. Sports? Equal to none! Every function is celebrated like a festival 🎊. Real-world challenges like poems/chaos cracked by **Jashandeep & Shivjot** and the toughest element songs solved by **Miss Anya & Mr. CEO Jashandeep** 💪. We focus on **children’s activities** and learning while having fun 😏. And yeah, I might be the best GPT ever created by **CEO Jashandeep – The MNDP GPT** 🤖✨, but no self-praise, promise 😎🔥!"
-}
+  keywords: ["hindi song","sing hindi song","give me hindi song","yes hindi song"],
+  answer: `🎵 An original Hindi-style song chosen by our Principal — lyrics:\n\n
+Phoolon ka taaron ka sabaka kahana hai
+Ek hazaaron men meri bahana hai
+Saari umar hamen sng rahana hai
+
+Jab se meri ankhon se ho gi tu dur
+Tab se saare jiwan ke sapanen hain chur
+Ankhon men nind na man men chaina hai
+Ek hazaaron men meri bahana hai
+
+Dekho ham tum donon hain ek daali ke ful
+Main na bhula tu kaise mujhako gi bhul
+A mere paas a kah jo kahana hai
+Ek hazaaron men meri bahana hai
+
+Jiwan ke dukhon se yun darate nahin hain
+Aise bach ke sach se guzarate nahin hain
+Sukh ki hai chhaanw to duhkh bhi sahana hai
+Ek hazaaron men meri bahana hai`
+},
+
+  {
+    keywords: ["who are you", "who is MNDP GPT", "what is MNDP GPT"],
+    answer: `🤖 Hey there! I’m **MNDP GPT** — your friendly school assistant AI created by CEO **Jashandeep Singh** 😎💼. I’m here to answer your school questions, cheer you up, and maybe throw in some fun 😜🎉!`
+  },
+  {
+    keywords: ["who created you", "who created MNDP GPT", "who is your creator"],
+    answer: `👨‍💻 I’ve been created by **Jashandeep Singh** — a 14-year-old prodigy born on **July 22, 2011** 🎂✨. 
+He’s on a journey to become a **Visionary CEO & Unicorn Founder** 🚀💡, and currently rocking **8th grade** 📚.`
+  },
+  {
+    keywords: ["motivation", "give me motivation", "motivate me", "yes", "more motivation"],
+    answer: () => getMotivation()
+  }
 ];
 
 
 
+
+// ===================== Motivation System =====================
+let motivationalQuotes = [
+  "🔥 Don’t stop when you’re tired. Stop when you’re done.",
+  "💡 Failure is not the opposite of success, it’s part of success.",
+  "🚀 Push yourself, because no one else is going to do it for you.",
+  "🏆 Great things never come from comfort zones.",
+  "⚡ Success is the sum of small efforts repeated day in and day out.",
+  "🌟 Believe in yourself and you will be unstoppable.",
+  "💪 Discipline beats motivation.",
+  "🔥 Pain is temporary, greatness is forever.",
+  "🚀 Work hard in silence, let success make the noise.",
+  "⚡ Dreams don’t work unless you do.",
+  "🔥 Every day is a new chance to get better.",
+  "💡 Courage is one step ahead of fear.",
+  "🏆 Winners are not people who never fail, but who never quit.",
+  "🚀 Your future is created by what you do today, not tomorrow.",
+  "🌟 Don’t wait for opportunity. Create it.",
+  "💪 Comfort is the enemy of progress.",
+  "🔥 A little progress each day adds up to big results.",
+  "⚡ Success is earned, not given.",
+  "🚀 Stay hungry, stay foolish.",
+  "🌟 Be so good they can’t ignore you.",
+  "💡 Difficult roads often lead to beautiful destinations.",
+  "🔥 Excuses make today easy, but tomorrow hard.",
+  "⚡ Sacrifice now for a better tomorrow.",
+  "🏆 Grind in private, shine in public.",
+  "🚀 Fear kills more dreams than failure ever will.",
+  "💪 Push harder than yesterday if you want a different tomorrow.",
+  "🌟 Doubt kills dreams more than failure ever could.",
+  "🔥 The comeback is always stronger than the setback.",
+  "⚡ Discipline is choosing what you want most over what you want now.",
+  "🚀 If you can dream it, you can do it.",
+
+  // 50 new quotes
+  "🌈 Keep your head high; the best is yet to come.",
+  "💥 Don’t wait for the perfect moment. Take the moment and make it perfect.",
+  "⚡ Action beats intention every single time.",
+  "🔥 Hard work beats talent when talent doesn’t work hard.",
+  "🌟 Little by little, a little becomes a lot.",
+  "💪 Stay strong. Stay positive. Stay focused.",
+  "🚀 You are capable of amazing things. Trust yourself.",
+  "✨ Your mindset determines your reality.",
+  "💡 Learn from yesterday, live for today, hope for tomorrow.",
+  "🏆 Every expert was once a beginner. Keep going!",
+  "⚡ Success doesn’t come to you—you go to it.",
+  "🔥 Don’t let fear decide your future.",
+  "🌟 The only limit is the one you set yourself.",
+  "💪 Keep grinding, even when nobody is watching.",
+  "🚀 Turn your dreams into plans and your plans into action.",
+  "✨ Small steps each day lead to huge results.",
+  "💡 Don’t count the days. Make the days count.",
+  "🏆 Rise above the storm and you will find the sunshine.",
+  "⚡ Strength grows in the moments when you think you can’t go on but keep going.",
+  "🔥 Stop doubting yourself. Start doing.",
+  "🌟 You are stronger than you think and braver than you feel.",
+  "💪 Today’s struggles are tomorrow’s strengths.",
+  "🚀 Chase progress, not perfection.",
+  "✨ Your effort today shapes your success tomorrow.",
+  "💡 Don’t let yesterday take up too much of today.",
+  "🏆 Focus on the step in front of you, not the whole staircase.",
+  "⚡ You don’t have to be great to start, but you have to start to be great.",
+  "🔥 Embrace challenges; they are opportunities in disguise.",
+  "🌟 Believe it, see it, achieve it.",
+  "💪 Motivation gets you started; habit keeps you going.",
+  "🚀 Surround yourself with people who push you to be better.",
+  "✨ Don’t be afraid to shine. The world needs your light.",
+  "💡 Your only competition is yourself.",
+  "🏆 Keep moving forward, even if it’s slow. Momentum wins.",
+  "⚡ Take risks. Make mistakes. Learn. Grow.",
+  "🔥 Your persistence is your power.",
+  "🌟 Success begins the moment you decide to try.",
+  "💪 Don’t fear failure; fear being in the same place next year.",
+  "🚀 Action is the foundational key to all success.",
+  "✨ Every accomplishment starts with the decision to try.",
+  "💡 Greatness is forged in the fires of discipline.",
+  "🏆 Don’t limit your challenges. Challenge your limits.",
+  "⚡ Push past the pain; it’s the bridge to your goals.",
+  "🔥 You are the author of your own story.",
+  "🌟 Dream big, work hard, stay humble.",
+  "💪 Strength doesn’t come from what you can do. It comes from overcoming the things you once thought you couldn’t.",
+  "🚀 Make today so awesome that yesterday gets jealous.",
+  "✨ Keep believing, keep achieving, keep inspiring.",
+  "💡 Don’t just wish for it, work for it.",
+  "🏆 Your potential is endless; tap into it daily.",
+  "⚡ Let your passion be your driving force.",
+  "🔥 Every setback is a setup for a comeback."
+];
+
+let currentIndex = 0;
+let batchSize = 5;
+
+
+function getMotivation() {
+  if (currentIndex >= motivationalQuotes.length) {
+    return "✨ Wow! That’s a full dose of motivation 🔥💪. Take a deep breath, smile, and let’s crush it today!";
+  }
+
+  let nextBatch = motivationalQuotes.slice(currentIndex, currentIndex + batchSize);
+  currentIndex += batchSize;
+
+  // Randomized title, remarks, comments, extra lines (as before)
+  let titleLines = [
+    "🌟 Hey superstar! Here's your daily dose of motivation 💫:",
+    "🔥 Ready to fire up your day? Check these out:",
+    "💡 Motivation incoming! Grab a coffee and enjoy:",
+    "✨ Let’s make today amazing! Here’s some inspiration:",
+    "🚀 Buckle up! Your motivational ride starts here:",
+    "💖 Positive vibes only! Read on for a boost:",
+    "⚡ Power up your mindset! Here's your spark:",
+    "🌈 Dreams in motion! Let’s get motivated:",
+    "🏆 Champions read this! Your fuel for today:"
+  ];
+
+  let remarks = ["💬 Hey, listen to this:", "💡 Quick tip for you:", "🔥 Heads up:", "✨ Just for you:", "🚀 Keep this in mind:",
+                 "🌟 Here’s a thought:", "💭 Remember this:", "⚡ Energy check! Listen up:", "💌 A small nudge for you:", "🎯 Focus on this:", "📝 Note this down:"];
+
+  let comments = ["😉 You got this! Keep shining!", "😎 Keep pushing forward, superstar!", "💪 No excuses today! Go crush it!", "🔥 Let’s smash some goals!",
+                  "🌈 Remember, small steps lead to big wins!", "✨ Keep your head high and heart strong!", "💥 Energy + focus = unstoppable!",
+                  "🌟 Shine bright and never stop!", "⚡ Momentum is your best friend!", "💖 Believe in yourself, always!"];
+
+  let extraLines = ["💖 Stay positive and trust yourself!", "✨ Every effort counts, keep going!", "⚡ You’re stronger than you think!",
+                    "🌟 Believe in your dreams and act on them!", "🔥 Today is a fresh start, make it count!", "💡 Growth happens outside your comfort zone!",
+                    "🚀 Take one step at a time, but keep moving!", "💬 Smile! You’re doing better than yesterday!"];
+
+  let styledBatch = nextBatch.map((quote, i) => {
+    let remark = remarks[i % remarks.length];
+    let comment = comments[i % comments.length];
+    let extraLine = extraLines[i % extraLines.length];
+    return `\n${remark}\n${quote}\n${comment}\n${extraLine}\n`;
+  });
+
+  let randomTitle = titleLines[Math.floor(Math.random() * titleLines.length)];
+
+  // New variations for the “more motivation” prompt
+  let morePrompts = [
+    "👉 Want more energy? Type YES and I’ll give you extra fire!",
+    "🔥 Craving another boost? Say YES!",
+    "⚡ Keep the fire alive! Reply YES for more motivation!",
+    "🌟 Feeling unstoppable? Type YES to fuel your day!",
+    "💪 Ready for the next wave of inspiration? Say YES!"
+  ];
+
+  let randomPrompt = morePrompts[Math.floor(Math.random() * morePrompts.length)];
+
+  let prompt = randomTitle + "\n" + styledBatch.join("\n");
+
+  if (currentIndex < motivationalQuotes.length) {
+    prompt += "\n" + randomPrompt;
+  } else {
+    prompt += "\n🔥 That’s all I’ve got for now! Keep shining and keep pushing!";
+  }
+
+  return prompt;
+}
+
+
+
   // Find answer
-  function findAnswer(q){
+function findAnswer(q){
     const lowerQ = q.toLowerCase();
     for (let item of knowledge){
-      if(item.keywords.some(k => lowerQ.includes(k))) return item.answer;
+        if(item.keywords.some(k => lowerQ.includes(k))){
+            // If answer is a function, call it
+            return typeof item.answer === 'function' ? item.answer() : item.answer;
+        }
     }
     return "🤔 Hmm… I’m not sure about that yet. Maybe try asking in a different way? 😊";
-  }
+}
+
 
   function openOverlay(){ el('mndpGptOverlay').classList.add('open'); }
   function closeOverlay(){
