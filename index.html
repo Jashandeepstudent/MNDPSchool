@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -543,7 +544,7 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
     Online Admission
    </a>
 <a href="#" onclick="showPage('leave')">
-    Leave Record System
+    Leave Request
    </a>
 <a href="#" onclick="showPage('announcements')">Announcements</a>
 <a href="#" onclick="showPage('polls')">
@@ -745,9 +746,7 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 <button onclick="prevLeaveStep()">
      Back
     </button>
-<button id="leaveSubmitButton" onclick="fixedSubmitLeave(event)">
-     Submit Leave
-    </button>
+<button id="leaveSubmitButton" onclick="fixedSubmitLeave(event)" onclick="fixedSubmitLeave(event)">Leave Request</button>
 </div>
 <div id="leaveRecordDisplay" style="margin-top: 20px;">
 </div>
@@ -1484,7 +1483,7 @@ window.addEventListener("load", () => {
       const timePassed = now - parseInt(lastSubmit);
       const waitTime = WAIT_TIME;
       if (timePassed < waitTime) {
-        startCountdown(waitTime - timePassed);
+        /* removed cooldown call */
       }
     }
   }
@@ -1544,7 +1543,7 @@ function submitLeaveForm() {
     localStorage.setItem('lastLeaveName', name);
     localStorage.setItem('lastLeaveRoll', roll);
     resetLeaveForm();
-    startCountdown(WAIT_TIME);
+    /* removed cooldown call */
     if (submitBtn) submitBtn.style.display = "none";
   }, function(error) {
     console.error("FAILED...", error);
@@ -1566,19 +1565,7 @@ function submitLeaveForm() {
   }
 }
 
-function startCountdown(duration) {
-  const formElement = document.getElementById("leaveFormStep1");
-  const recordDisplay = document.getElementById("leaveRecordDisplay");
-  if (formElement) formElement.style.display = "none";
-  let countdownEl = document.getElementById("leaveCountdownTimer");
-  if (!countdownEl) {
-    countdownEl = document.createElement("div");
-    countdownEl.id = "leaveCountdownTimer";
-    countdownEl.style.margin = "20px";
-    countdownEl.style.fontWeight = "bold";
-    countdownEl.style.fontSize = "16px";
-    recordDisplay.parentNode.insertBefore(countdownEl, recordDisplay);
-  }
+
   let timeLeft = Math.floor(duration / 1000);
   updateCountdownText(timeLeft);
   const interval = setInterval(() => {
@@ -1602,10 +1589,7 @@ function startCountdown(duration) {
   }
 }
 
-function disableLeaveFormIfNeeded() {
-  const name = localStorage.getItem("lastLeaveName");
-  const roll = localStorage.getItem("lastLeaveRoll");
-  const key = name && roll ? `${name}_${roll}` : null;
+_${roll}` : null;
   if (key) {
     const lastSubmit = localStorage.getItem(`leaveSubmit_${key}`);
     if (lastSubmit) {
@@ -1614,15 +1598,15 @@ function disableLeaveFormIfNeeded() {
       const waitTime = WAIT_TIME;
       if (timePassed < waitTime) {
         const remaining = waitTime - timePassed;
-        startCountdown(remaining);
+        /* removed cooldown call */
         const form = document.getElementById("leaveFormStep1");
         if (form) form.style.display = "none";
-        document.getElementById("leaveSubmitButton").style.display = "none";
+        
       }
     }
   }
 }
-window.addEventListener("load", disableLeaveFormIfNeeded);
+/* removed disableLeaveFormIfNeeded listener */
 
 
 
@@ -1848,7 +1832,7 @@ function submitLeaveForm() {
     localStorage.setItem('lastLeaveName', name);
     localStorage.setItem('lastLeaveRoll', roll);
     resetLeaveForm();
-    startCountdown(WAIT_TIME);
+    /* removed cooldown call */
     if (submitBtn) submitBtn.style.display = "none";
   }, function(error) {
     console.error("FAILED...", error);
@@ -2062,7 +2046,7 @@ function updateAdminUI(){
         
       try {
         // Start countdown immediately for feedback
-        startCountdown(WAIT_TIME); // 24 hours (production)
+        /* removed cooldown call */ // 24 hours (production)
         return _oldSubmitLeaveForm.apply(this, arguments);
       } catch (e) {} catch (e) {
         // If something threw before countdown begins, bring the form back
@@ -2196,20 +2180,7 @@ function updateAdminUI(){
   function fmt2(n){ return String(n).padStart(2, "0"); }
 
   /* ---------- Countdown Controller ---------- */
-  function startCountdownTo(endTs){
-    hideLeaveForms();
-    clearInterval(leaveCountdownInterval);
-    const el = ensureCountdownEl();
-
-    function render(){
-      const now = Date.now();
-      let ms = endTs - now;
-      if (ms <= 0){
-        clearInterval(leaveCountdownInterval);
-        localStorage.removeItem(STORAGE_PREFIX + getUserKey());
-        removeCountdownEl();
-        showLeaveForm();
-        try { alert("You can now submit a new leave request."); } catch(_){}
+   catch(_){}
         return;
       }
       const totalSeconds = Math.floor(ms / 1000);
@@ -2223,12 +2194,7 @@ function updateAdminUI(){
     leaveCountdownInterval = setInterval(render, 1000);
   }
 
-  function beginCooldownNow(duration){
-    const endTs = Date.now() + duration;
-    const key = STORAGE_PREFIX + getUserKey();
-    localStorage.setItem(key, String(endTs));
-    startCountdownTo(endTs);
-  }
+  
 
   function cancelCooldown(){
     clearInterval(leaveCountdownInterval);
@@ -2237,14 +2203,7 @@ function updateAdminUI(){
     showLeaveForm();
   }
 
-  function restoreCooldownIfAny(){
-    const key = STORAGE_PREFIX + getUserKey();
-    const v = localStorage.getItem(key);
-    if (!v) return;
-    const endTs = parseInt(v, 10);
-    if (Number.isFinite(endTs) && endTs > Date.now()){
-      startCountdownTo(endTs);
-    } else {
+   else {
       // Expired or invalid
       localStorage.removeItem(key);
       showLeaveForm();
@@ -2268,7 +2227,7 @@ function updateAdminUI(){
       const _oldSubmit = window.submitLeaveForm;
       window.submitLeaveForm = function(){
         // Start countdown right away for feedback
-        beginCooldownNow(WAIT_TIME);
+        /* removed cooldown call */
         try {
           const result = _oldSubmit.apply(this, arguments);
           // If it returns a promise, handle rejection to rollback UI
@@ -2291,7 +2250,7 @@ function updateAdminUI(){
     }
 
     // Restore countdown if the user reloads while cooling down
-    restoreCooldownIfAny();
+    /* removed cooldown call */
   });
 
   /* ---------- Admin logout: ensure admin forms are hidden/reset ---------- */
@@ -2508,20 +2467,7 @@ function updateAdminUI(){
     if (btn) btn.style.display = "inline-block";
   }
 
-  function startCountdownTo(endTs){
-    hideLeaveForm();
-    const el = ensureCountdownEl();
-    function render(){
-      const now = Date.now();
-      const diff = endTs - now;
-      if (diff <= 0) {
-        clearInterval(countdownTimerId);
-        localStorage.removeItem(STORAGE_PREFIX + getUserKey());
-        if (el && el.parentNode) el.parentNode.removeChild(el);
-        showLeaveForm();
-        alert("You can now submit a new leave request.");
-        return;
-      }
+  
       const total = Math.floor(diff/1000);
       const h = Math.floor(total/3600);
       const m = Math.floor((total%3600)/60);
@@ -2534,19 +2480,9 @@ function updateAdminUI(){
     countdownTimerId = setInterval(render, 1000);
   }
 
-  function beginCooldownNow(){
-    const endTs = Date.now() + WAIT_TIME;
-    localStorage.setItem(STORAGE_PREFIX + getUserKey(), String(endTs));
-    startCountdownTo(endTs);
-  }
+  
 
-  function restoreCooldown(){
-    const v = localStorage.getItem(STORAGE_PREFIX + getUserKey());
-    if (!v) return;
-    const endTs = parseInt(v, 10);
-    if (Number.isFinite(endTs) && endTs > Date.now()) startCountdownTo(endTs);
-    else localStorage.removeItem(STORAGE_PREFIX + getUserKey());
-  }
+  
 
   // Our fixed submit handler
   window.fixedSubmitLeave = function(ev){
@@ -2569,7 +2505,7 @@ function updateAdminUI(){
     if (v && parseInt(v,10) > Date.now()){ startCountdownTo(parseInt(v,10)); return; }
 
     // Start cooldown immediately so UI always shows countdown
-    beginCooldownNow();
+    /* removed cooldown call */
 
     const submitBtn = $("leaveSubmitButton");
     if (submitBtn) submitBtn.disabled = true;
@@ -2607,7 +2543,7 @@ function updateAdminUI(){
   };
 
   document.addEventListener("DOMContentLoaded", function(){
-    restoreCooldown();
+    /* removed cooldown call */
   });
 })();
 </script>
@@ -5424,8 +5360,8 @@ div:has(> #tp-expiry-hours){ display:none !important; }
     answer: "👩‍🏫 Brace yourself! Students become teachers for the day. Skits, dances, speeches… chaos with style 😜💃🕺. Don’t be shy, join the fun!"
   },
   {
-    keywords: ["who is vice principal", "vice principal of school"],
-    answer: "✨ Say hello to **Happy Gupta Mam** 😇. Sweet smile, strict rules, and always catching those sneaky latecomers 👀. Don’t test her patience!"
+    keywords: ["who is vice principal of our school", "vice principal of school"],
+    answer: "✨ Say hello to **Happy Gupta Mam** 😇. Sweet smile, strict rules, and always catching those Poor Handwriting ones 👀. Don’t test her patience!"
   },
   {
     keywords: ["who is best boy", "best boy in school"],
@@ -5433,7 +5369,7 @@ div:has(> #tp-expiry-hours){ display:none !important; }
   },
   {
     keywords: ["best class", "best class in school", "best class of our school"],
-    answer: "🎉 The crown goes to **8th B Class** 👑📖. Full of energy, full of fun, and maybe a little mischief 😜. Watch out, they rule the school!"
+    answer: "🎉 The crown goes to **8th B Class** 👑📖. Full of energy, full of fun, and maybe a little mischief 😜. "
   },
   {
     keywords: ["school timing", "timing of school", "what is school timing"],
@@ -5563,5 +5499,51 @@ div:has(> #tp-expiry-hours){ display:none !important; }
 
 
 
+
+<script>
+window.fixedSubmitLeave = function(event){
+  if (event && event.preventDefault) event.preventDefault();
+  var btn = document.getElementById("leaveSubmitButton");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+  }
+  try {
+    var name = (document.getElementById("leaveName")||{}).value || "";
+    var date = (document.getElementById("leaveDate")||{}).value || "";
+    var className = (document.getElementById("leaveClass")||{}).value || "";
+    var section = (document.getElementById("leaveSection")||{}).value || "";
+    var roll = (document.getElementById("leaveRoll")||{}).value || "";
+    var reason = (document.getElementById("leaveReason")||{}).value || "";
+    var days = (document.getElementById("leaveDays")||{}).value || "";
+    if (!reason || !days) { alert("Please provide a reason and number of days."); resetBtn(); return false; }
+    if (!window.emailjs || !emailjs.send) { alert("Email service not ready."); resetBtn(); return false; }
+    // Reset form immediately to prevent spam
+    var form = document.getElementById("leaveForm");
+    if (form && form.reset) form.reset();
+    emailjs.send("service_zjp0c7m", "template_14sd7cg", {
+      name, class: className, section, roll, reason, days, email_to: "mrjolox@gmail.com"
+    }).then(function(){
+      alert("Leave request submitted successfully!");
+      resetBtn();
+    }, function(err){
+      console.error(err);
+      alert("Failed to submit leave request.");
+      resetBtn();
+    });
+  } catch(e){
+    console.error(e);
+    alert("Unexpected error.");
+    resetBtn();
+  }
+  function resetBtn(){
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Leave Request";
+    }
+  }
+  return false;
+};
+</script>
 </body>
 </html>
