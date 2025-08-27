@@ -5373,7 +5373,7 @@ div:has(> #tp-expiry-hours){ display:none !important; }
     <div id="mndpGptMessages" class="mndp-gpt-messages"></div>
     <div class="mndp-gpt-inputbar">
       <button id="mndpGptBack" class="mndp-gpt-btn" type="button">Back</button>
-      <input id="mndpGptInput" type="text" placeholder="Type a message..." />
+      <input id="mndpGptInput" type="text" placeholder="Ask Anything About School" />
       <button id="mndpGptSend" class="mndp-gpt-send" type="button" aria-label="Send">➤</button>
     </div>
   </div>
@@ -5425,6 +5425,14 @@ const knowledge = [
     keywords: ["who is vice principal of our school", "vice principal of school"],
     answer: "✨ Say hello to **Happy Gupta Mam** 😇. Sweet smile, strict rules, and always catching those Poor Handwriting ones 👀. Don’t test the patience!"
   },
+  {
+  keywords: ["hi", "hlo", "Hello"],
+  answer: "👋 Hey there! I’m **MNDP GPT** 😎 Nice to meet you! How’s your day going? 🌟"
+},
+{
+  keywords: ["good", "i am fine", "fine", "i am good"],
+  answer: "😊 Yay! That’s great to hear! ✨"
+},
   {
     keywords: ["who is best boy", "best boy jashandeep"],
     answer: `🏆 The ultimate cool guy? **CEO Jashandeep Singh** 😎💼. Always rocking it in school and beyond!`
@@ -5514,7 +5522,7 @@ Bend with me, sway with ease
 When we dance, you have a way with me`
 },
 {
-  keywords: ["hindi song","sing hindi song","give me hindi song","yes hindi song"],
+  keywords: ["hindi song","sing hindi song","give me hindi song","yes hindi song","sing a beautiful hindi song for me"],
   answer: `🎵 An original Hindi-style song chosen by our Principal — lyrics:\n\n
 Phoolon ka taaron ka sabaka kahana hai
 Ek hazaaron men meri bahana hai
@@ -5550,9 +5558,15 @@ He’s on a journey to become a **Visionary CEO & Unicorn Founder** 🚀💡, an
     answer: () => getMotivation()
   },
 {
-    keywords: ["joke", "tell me a joke", "funny", "more", "yes"],
+    keywords: ["joke", "tell me a joke", "funny", "more jokes", "yes"],
     answer: () => getJokes()
-  }
+   },
+
+{
+  keywords: ["gk", "give me general knowledge questions", "ask me gk questions", "general knowledge question", "gk questions", "more gk questions", "more questions", "gk more"],
+  answer: () => getGKQuestions()
+}
+
 ];
 
 
@@ -5726,7 +5740,38 @@ let jokeRemarks = [ "💬 Quick laugh for you:", "💡 Joke alert:", "🔥 Heads
 let jokeComments = [ "😉 Hope that made you chuckle!", "😎 Keep smiling, superstar!", "💡 Laughter is the best medicine!", "🔥 Enjoyed that? There’s more if you type 'more'!", "🌟 Keep laughing, it’s good for the soul!", "💖 That’s a good one, right?", "✨ More laughs coming soon!", "💪 Keep the fun going!", "🚀 Let’s keep those smiles up!", "🎉 Humor level +1!", "💬 Laughs make the world better!", "🌈 Giggle achieved!", "🔥 Laughter boost applied!", "😆 Keep those smiles coming!", "💡 Fun never stops here!", "😉 Chuckle complete!", "😎 Smile powered up!", "💖 That tickled your funny bone!", "✨ Ready for another one?", "🚀 Keep that energy high!", "🎯 Another joke, another smile!", "💬 Fun mission accomplished!", "🌟 Keep giggling!", "💪 Laughter unlocked!", "🔥 Smiles in progress!", "🎉 More fun ahead!", "😆 Joke successfully delivered!", "💡 Humor injected!", "😉 Smile maintenance ongoing!", "✨ Keep laughing, superstar!" ];
 
 
-let jokePrompts = [ "👉 Want more jokes? Type 'more' and I’ll serve you the next batch!", "😂 Craving another laugh? Reply 'more'!", "🤣 Keep the giggles coming! Type 'more'!", "😆 Feeling funny? Type 'more' for more jokes!", "✨ Ready for round two? Say 'more'!", "🔥 Don’t stop laughing! Type 'more'!", "💡 More chuckles ahead! Reply 'more'!", "🎉 Need more humor? Type 'more'!", "😄 Keep the fun rolling! Say 'more'!", "🚀 Another batch of jokes? Type 'more'!", "💬 More laughter coming! Reply 'more'!", "🌟 Don’t quit now! Type 'more'!", "😉 Next batch ready! Type 'more'!", "💪 Keep your smile up! Say 'more'!", "🎯 More jokes ahead! Reply 'more'!", "🔥 Fuel your funny bone! Type 'more'!", "💡 Ready for extra laughs? Say 'more'!", "🎉 Chuckles incoming! Type 'more'!", "😎 Humor mode activated! Reply 'more'!", "✨ Keep giggling! Say 'more'!", "🤣 Want more fun? Type 'more'!", "😂 Don’t stop now! Reply 'more'!", "💬 More smiles await! Type 'more'!", "🌟 Laughter round two? Say 'more'!", "😄 Keep the jokes flowing! Type 'more'!", "🚀 Fun continues! Reply 'more'!", "😉 Next laugh batch? Type 'more'!", "💪 More humor for you! Say 'more'!", "🎯 Chuckle refill ready! Type 'more'!", "🔥 Joke injection #2! Reply 'more'!" ];
+let jokePrompts = [
+  "👉 Want more jokes? Type 'More Jokes' and I’ll serve you the next batch!",
+  "😂 Craving another laugh? Reply 'More Jokes'!",
+  "🤣 Keep the giggles coming! Type 'More Jokes'!",
+  "😆 Feeling funny? Type 'More Jokes' for more jokes!",
+  "✨ Ready for round two? Say 'More Jokes'!",
+  "🔥 Don’t stop laughing! Type 'More Jokes'!",
+  "💡 More chuckles ahead! Reply 'More Jokes'!",
+  "🎉 Need more humor? Type 'More Jokes'!",
+  "😄 Keep the fun rolling! Say 'More Jokes'!",
+  "🚀 Another batch of jokes? Type 'More Jokes'!",
+  "💬 More laughter coming! Reply 'More Jokes'!",
+  "🌟 Don’t quit now! Type 'More Jokes'!",
+  "😉 Next batch ready! Type 'More Jokes'!",
+  "💪 Keep your smile up! Say 'More Jokes'!",
+  "🎯 More jokes ahead! Reply 'More Jokes'!",
+  "🔥 Fuel your funny bone! Type 'More Jokes'!",
+  "💡 Ready for extra laughs? Say 'More Jokes'!",
+  "🎉 Chuckles incoming! Type 'More Jokes'!",
+  "😎 Humor mode activated! Reply 'More Jokes'!",
+  "✨ Keep giggling! Say 'More Jokes'!",
+  "🤣 Want more fun? Type 'More Jokes'!",
+  "😂 Don’t stop now! Reply 'More Jokes'!",
+  "💬 More smiles await! Type 'More Jokes'!",
+  "🌟 Laughter round two? Say 'More Jokes'!",
+  "😄 Keep the jokes flowing! Type 'More Jokes'!",
+  "🚀 Fun continues! Reply 'More Jokes'!",
+  "😉 Next laugh batch? Type 'More Jokes'!",
+  "💪 More humor for you! Say 'More Jokes'!",
+  "🎯 Chuckle refill ready! Type 'More Jokes'!",
+  "🔥 Joke injection #2! Reply 'More Jokes'!"
+];
 
 function getJokes() {
   if (jokeIndex >= jokeList.length) {
@@ -5751,6 +5796,209 @@ function getJokes() {
   }
 
   return randomTitle + "\n\n" + styledBatch.join("\n\n") + (morePrompt ? "\n\n" + morePrompt : "");
+}
+
+let gkQuestions = [
+  { q: "What is the capital of India?", a: "New Delhi" },
+  { q: "Who is known as the Father of the Nation in India?", a: "Mahatma Gandhi" },
+  { q: "Which is the national animal of India?", a: "Bengal Tiger" },
+  { q: "Who was the first Prime Minister of India?", a: "Jawaharlal Nehru" },
+  { q: "What is the national flower of India?", a: "Lotus" },
+  { q: "In which year did India gain independence?", a: "1947" },
+  { q: "Who wrote the national anthem of India?", a: "Rabindranath Tagore" },
+  { q: "What is the national sport of India?", a: "Field Hockey" },
+  { q: "Who was the first President of India?", a: "Dr. Rajendra Prasad" },
+  { q: "What is the national bird of India?", a: "Indian Peacock" },
+  { q: "Which river is the longest in India?", a: "Ganga" },
+  { q: "Who drafted the Indian Constitution?", a: "Dr. B.R. Ambedkar" },
+  { q: "Which festival is known as the Festival of Lights?", a: "Diwali" },
+  { q: "Which is the smallest state in India by area?", a: "Goa" },
+  { q: "Which is the largest state in India by area?", a: "Rajasthan" },
+  { q: "Which Indian city is called the Pink City?", a: "Jaipur" },
+  { q: "Which Indian city is called the Silicon Valley of India?", a: "Bangalore" },
+  { q: "Who discovered the laws of gravity?", a: "Isaac Newton" },
+  { q: "Which is the largest planet in our solar system?", a: "Jupiter" },
+  { q: "Which planet is known as the Red Planet?", a: "Mars" },
+  { q: "Who wrote 'Romeo and Juliet'?", a: "William Shakespeare" },
+  { q: "Who painted the Mona Lisa?", a: "Leonardo da Vinci" },
+  { q: "What is the largest mammal in the world?", a: "Blue Whale" },
+  { q: "What is the chemical symbol for water?", a: "H2O" },
+  { q: "Who discovered penicillin?", a: "Alexander Fleming" },
+  { q: "Which country is known as the Land of the Rising Sun?", a: "Japan" },
+  { q: "What is the hardest natural substance on Earth?", a: "Diamond" },
+  { q: "Which is the longest river in the world?", a: "Nile" },
+  { q: "Who is known as the Father of Computers?", a: "Charles Babbage" },
+  { q: "What is the smallest prime number?", a: "2" },
+  { q: "Which gas do plants absorb from the atmosphere?", a: "Carbon Dioxide" },
+  { q: "Who invented the telephone?", a: "Alexander Graham Bell" },
+  { q: "What is the currency of Japan?", a: "Yen" },
+  { q: "Which planet has the most moons?", a: "Saturn" },
+  { q: "Who wrote the 'Harry Potter' series?", a: "J.K. Rowling" },
+  { q: "What is the boiling point of water at sea level?", a: "100°C (212°F)" },
+  { q: "Which organ purifies our blood?", a: "Kidneys" },
+  { q: "What is the largest desert in the world?", a: "Sahara Desert" },
+  { q: "Who painted 'Starry Night'?", a: "Vincent van Gogh" },
+  { q: "Which is the smallest continent by area?", a: "Australia" },
+  { q: "Which element has the chemical symbol 'O'?", a: "Oxygen" },
+  { q: "How many planets are in our solar system?", a: "8" },
+  { q: "Who developed the theory of relativity?", a: "Albert Einstein" },
+  { q: "What is the tallest mountain in the world?", a: "Mount Everest" },
+  { q: "Which country hosted the 2016 Summer Olympics?", a: "Brazil" },
+  { q: "What is the largest ocean on Earth?", a: "Pacific Ocean" },
+  { q: "Who invented the light bulb?", a: "Thomas Edison" },
+  { q: "What is the main gas found in the air we breathe?", a: "Nitrogen" },
+  { q: "Which planet is closest to the Sun?", a: "Mercury" },
+  { q: "Who is known as the Father of Geometry?", a: "Euclid" },
+  { q: "Which blood type is called the universal donor?", a: "O Negative" },
+  { q: "What is the fastest land animal?", a: "Cheetah" },
+  { q: "Which is the largest planet in our solar system?", a: "Jupiter" },
+  { q: "Who discovered gravity?", a: "Isaac Newton" },
+  { q: "Which city is known as the Big Apple?", a: "New York City" },
+  { q: "Which vitamin is produced when exposed to sunlight?", a: "Vitamin D" },
+  { q: "What is the square root of 144?", a: "12" },
+  { q: "Who painted the ceiling of the Sistine Chapel?", a: "Michelangelo" },
+  { q: "Which is the longest bone in the human body?", a: "Femur" },
+  { q: "Which planet is known for its rings?", a: "Saturn" },
+  { q: "What is the largest organ in the human body?", a: "Skin" },
+  { q: "Which language has the most native speakers?", a: "Mandarin Chinese" },
+  { q: "Who wrote 'The Odyssey'?", a: "Homer" },
+  { q: "Which country is known as the Land of the Midnight Sun?", a: "Norway" },
+  { q: "What is the most abundant element in the universe?", a: "Hydrogen" },
+  { q: "Which animal is known as the Ship of the Desert?", a: "Camel" },
+  { q: "What is the freezing point of water?", a: "0°C (32°F)" },
+  { q: "Which organ produces insulin?", a: "Pancreas" },
+  { q: "Which city is called the City of Canals?", a: "Venice" },
+  { q: "Which is the largest island in the world?", a: "Greenland" },
+  { q: "Who was the first man to walk on the moon?", a: "Neil Armstrong" },
+  { q: "What is the capital of Australia?", a: "Canberra" },
+  { q: "Which is the smallest country in the world?", a: "Vatican City" },
+  { q: "Which is the largest volcano in the world?", a: "Mauna Loa" },
+  { q: "What is the main ingredient in sushi?", a: "Rice" },
+  { q: "Which metal is liquid at room temperature?", a: "Mercury" },
+  { q: "What is the currency of the USA?", a: "Dollar" },
+  { q: "Which planet is called the Morning Star?", a: "Venus" },
+  { q: "Which animal lays the largest eggs?", a: "Ostrich" },
+  { q: "Which is the deepest ocean trench in the world?", a: "Mariana Trench" },
+  { q: "What is the fastest bird in the world?", a: "Peregrine Falcon" },
+  { q: "Who invented the printing press?", a: "Johannes Gutenberg" },
+  { q: "Which is the largest rainforest in the world?", a: "Amazon" },
+  { q: "Which country is called the Land of Fire and Ice?", a: "Iceland" },
+  { q: "Which organ controls hormones in the human body?", a: "Pituitary Gland" },
+  { q: "Which sea creature has 9 brains?", a: "Octopus" },
+  { q: "Which is the smallest planet in our solar system?", a: "Mercury" },
+  { q: "Which animal is known as the King of the Jungle?", a: "Lion" },
+  { q: "Who discovered America?", a: "Christopher Columbus" },
+  { q: "Which instrument measures atmospheric pressure?", a: "Barometer" },
+  { q: "Which is the largest country in the world by area?", a: "Russia" },
+  { q: "Which country gifted the Statue of Liberty to the USA?", a: "France" },
+  { q: "Which gas is essential for human respiration?", a: "Oxygen" },
+  { q: "Which is the smallest bird in the world?", a: "Bee Hummingbird" },
+  { q: "What is the national fruit of India?", a: "Mango" },
+  { q: "Which organ is responsible for balance in the human body?", a: "Inner Ear" },
+  { q: "Which country is known for the Great Wall?", a: "China" },
+  { q: "What is the main gas in the Sun?", a: "Hydrogen" },
+  { q: "Which planet spins on its side?", a: "Uranus" },
+  { q: "Which country is called the Land of the Thunder Dragon?", a: "Bhutan" },
+  { q: "Which bird can mimic human speech?", a: "Parrot" },
+  { q: "Which is the largest species of shark?", a: "Whale Shark" },
+  { q: "Which is the largest desert in Asia?", a: "Gobi Desert" },
+  { q: "Which organ stores bile?", a: "Gallbladder" },
+  { q: "Which continent has the most countries?", a: "Africa" },
+  { q: "Which metal is used in electric wires?", a: "Copper" },
+  { q: "Which is the smallest ocean in the world?", a: "Arctic Ocean" },
+  { q: "Which is the national tree of India?", a: "Banyan Tree" },
+  { q: "Which is the tallest building in the world?", a: "Burj Khalifa" },
+  { q: "Which is the fastest land animal in the world?", a: "Cheetah" },
+  { q: "Which planet is known as the Earth’s twin?", a: "Venus" },
+  { q: "Which is the largest lake in the world?", a: "Caspian Sea" },
+  { q: "Which vitamin is essential for blood clotting?", a: "Vitamin K" },
+  { q: "Which organ in the human body stores urine?", a: "Bladder" },
+  { q: "Which is the highest waterfall in the world?", a: "Angel Falls" },
+  { q: "Which bird has the largest wingspan?", a: "Wandering Albatross" },
+  { q: "Which planet has the shortest day?", a: "Jupiter" },
+  { q: "Which is the most spoken language in the world?", a: "Mandarin Chinese" }
+];
+
+// ===================== GK System Logic =====================
+let gkCurrentIndex = 0;
+let gkBatchSize = 5;
+
+let gkTitleLines = [
+  "🧠 Brain boost incoming! Here are your 5 GK questions:",
+  "💡 Ready to learn something new? Check these out:",
+  "🌟 Let’s test your knowledge! Here’s a batch of GK questions:",
+  "⚡ Knowledge time! Answer these:",
+  "🔥 GK challenge ahead! Try these questions:",
+  "✨ Your next trivia round is here:",
+  "🚀 Time to sharpen your mind! Here are 5 questions:",
+  "🎯 Test your brain power with these:",
+  "💬 Quick GK session! Try these out:",
+  "🎉 Learn something new! Here’s a set of questions:"
+];
+
+let gkFacts = [
+  "Octopuses have three hearts.",
+  "Bananas are berries, but strawberries aren't.",
+  "Honey never spoils.",
+  "Sharks existed before trees.",
+  "A day on Venus is longer than a year on Venus.",
+  "Koalas sleep up to 22 hours a day.",
+  "Sloths can hold their breath longer than dolphins.",
+  "Butterflies taste with their feet.",
+  "There are more stars in the universe than grains of sand on Earth.",
+  "Wombat poop is cube-shaped.",
+  "Sea otters hold hands while sleeping.",
+  "Some turtles can breathe through their butts.",
+  "Cows have best friends.",
+  "A group of flamingos is called a 'flamboyance'.",
+  "Otters have a favorite rock they keep in a pouch.",
+  "Sharks are immune to most diseases.",
+  "Octopuses can change color and texture.",
+  "Pineapples take about two years to grow.",
+  "The heart of a shrimp is located in its head.",
+  "Slugs have four noses.",
+  "Some cats are allergic to humans.",
+  "Rats laugh when tickled.",
+  "Turtles can live without their shells for a few hours.",
+  "An ostrich's eye is bigger than its brain.",
+  "Elephants are the only mammals that can't jump."
+];
+
+let gkPrompts = [
+  "👉 Want more knowledge? Type 'More GK Questions' for the next batch!",
+  "💡 Craving brain power? Reply 'More GK Questions'!",
+  "🌟 Keep learning! Type 'More GK Questions' for more!",
+  "🔥 Ready for another round? Say 'More GK Questions'!",
+  "🚀 Expand your mind! Reply 'More GK Questions'!"
+];
+
+function getGKQuestions() {
+  if (gkCurrentIndex >= gkQuestions.length) {
+    gkCurrentIndex = 0; // reset to start
+    return "✨ Wow! You’ve completed all GK questions! Take a break and come back for more 🌟";
+  }
+
+  let nextBatch = gkQuestions.slice(gkCurrentIndex, gkCurrentIndex + gkBatchSize);
+  gkCurrentIndex += gkBatchSize;
+
+  let batchText = nextBatch.map((item, i) => `${i + 1}. ${item.q}\n   Answer: ${item.a}`).join("\n\n");
+
+  let randomTitle = gkTitleLines[Math.floor(Math.random() * gkTitleLines.length)];
+  let randomFact = gkFacts[Math.floor(Math.random() * gkFacts.length)];
+  let randomPrompt = gkPrompts[Math.floor(Math.random() * gkPrompts.length)];
+
+  return `${randomTitle}\n\n${batchText}\n\n💡 Fun Fact: ${randomFact}\n\n${randomPrompt}`;
+}
+// ===================== Keywords setup =====================
+
+
+// Example: usage
+function handleUserInput(input) {
+  if (gkKeywords.includes(input.toLowerCase())) {
+    return getGKQuestions();
+  } else {
+    return "I don’t have a response for that.";
+  }
 }
 
    
