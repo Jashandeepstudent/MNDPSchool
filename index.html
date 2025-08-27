@@ -5653,6 +5653,21 @@ Honestly, to my **CEO Jashandeep**, they are like mom and dad 💖. And if they 
 So really, it’s impossible to pick just one — **every teacher shines at their own spot**! 😎`
 },
 
+{
+  keywords: [
+    "hi",
+    "hello",
+    "hlo",
+    "hey",
+    "yo",
+    "good morning",
+    "good afternoon",
+    "good evening"
+  ],
+  answer: `👋 Hey there! Glad you dropped by 😃✨ How’s your day going?`
+},
+
+
   {
     keywords: ["ok", "okay", "k"],
     answer: `😎 Cool! Got it, buddy! Keep those questions coming, or I might start telling more secret funny teacher stories 🤫😂.  
@@ -6320,8 +6335,7 @@ const synonyms = {
 // 🏆 Role Priority (Principal beats Vice Principal etc.)
 const rolePriority = ["principal", "vice principal", "teachers", "best boy", "best girl", "best class"];
 
-// 🔢 Number word → digit normalization
-// 🔢 Number words mapping (extendable)
+// 🔢 Number words mapping
 const numberMap = {
   "first": "1st",
   "second": "2nd",
@@ -6335,6 +6349,223 @@ const numberMap = {
   "tenth": "10th"
 };
 
+// 🎓 Profiles (teachers + special people)
+const profiles = {
+  "mamta mam": "📚✍️ Mamta Mam is the **SST & Hindi Teacher** of Class 8th A. Strict, disciplined, and ranked among the most feared by students 👑.",
+  "bharti mam": "🔬 Bharti Mam is the **Science Teacher** of Class 8th A. Known for her bio expertise and a calm, sleepy vibe 😴.",
+  "kashika mam": "📖 Kashika Mam teaches **English & Geography** in Class 8th A. Cute, cool, and an English pro 💕.",
+  "gurwinder mam": "🌍 Gurwinder Mam is the legendary **GK Teacher** of Class 8th A. She’s taught students from nursery till now 👑.",
+  "sudama sir": "➗ Sudama Sir teaches **Science/Maths** in Class 8th A & B. Once feared, now calm with a no-beating oath 😂.",
+  "deepika mam": "📖 Deepika Mam is the **English & Geography Teacher** of Class 8th B. Looks strict but is the coolest one 😎.",
+  "shivani mam": "🌍 Shivani Mam teaches **GK** in Class 8th B. Soft-hearted, rarely gets angry, even when books are missing 🙈.",
+  "dheeraj sir": "📚 Dheeraj Sir is the **Maths & SST Teacher** of Class 8th B. A favourite of boys, but scary when angry 😅.",
+  "bindu mam": "✍️ Bindu Mam is the **Hindi Teacher** of Class 8th B. Always advising, but the last period is usually chaos 🎉.",
+"brij bala mam": "👩‍🏫 Brij Bala Mam — the cool and quiet **7th-grade teacher**. Calm most of the time, but when she gets angry… oh boy 😏🔥, everyone pays attention!",
+
+
+  // New playful teachers
+  "aman sir": "🏃 Aman Sir — the mysterious **sports teacher** of the school. Nobody really knows his subjects, but his expressions alone are legendary ⚡.",
+  "manju mam": "🕰️ Manju Mam — **weekend period specialist**, mostly seen operating alongside Aman Sir. She rules the weekend like a gentle queen 👑.",
+  "rasheem sir": "🎭 Rasheem Sir — nobody knows exactly what he teaches, but his actions and expressions make everyone laugh unintentionally 😂.",
+  "sumegha mam": "🌸 Sumegha Mam — teacher of the CEO's sister Jashandeep’s class. Cute, approachable, and the talk of the school for charming vibes 💕.",
+
+  // Special People
+  "anil choudhary": "🎓 **Anil Choudhary Sir** is the guiding force of MNDP School. A respected personality who shapes the vision of the institution 🙏.",
+  "happy gupta": "😎 **Happy Gupta** — known as the entertainer of the class 🎤. Always spreading smiles, jokes, and fun energy everywhere ✨.",
+  "jashandeep singh": "👑 **Jashandeep Singh** — the CEO himself 🚀. Legendary status in MNDP, mentioned in countless stories, battles, and history lines 📜🔥."
+};
+
+
+// 📘 Subject/Class → Teacher mapping
+const teacherBySubject = {
+  "1st a": {
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+  "1st b": {
+    "science": "hannah mam",
+    "english": "ian sir",
+    "geography": "jane mam",
+    "gk": "kevin sir",
+    "maths": "linda mam",
+    "sst": "mike sir",
+    "hindi": "nina mam"
+  },
+  "2nd a": {
+    "science": "oliver sir",
+    "english": "patricia mam",
+    "geography": "quentin sir",
+    "gk": "rachel mam",
+    "maths": "sam sir",
+    "sst": "tina mam",
+    "hindi": "uma mam"
+  },
+  "2nd b": {
+    "science": "victor sir",
+    "english": "wendy mam",
+    "geography": "xander sir",
+    "gk": "yara mam",
+    "maths": "zane sir",
+    "sst": "amy mam",
+    "hindi": "brian sir"
+  },
+  "3rd a": {
+    "science": "carl sir",
+    "english": "diana mam",
+    "geography": "eric sir",
+    "gk": "fiona mam",
+    "maths": "george sir",
+    "sst": "helen mam",
+    "hindi": "ian sir"
+  },
+  "3rd b": {
+    "science": "julia mam",
+    "english": "karl sir",
+    "geography": "laura mam",
+    "gk": "matt sir",
+    "maths": "nora mam",
+    "sst": "oscar sir",
+    "hindi": "paula mam"
+  },
+  "4th a": {
+    "science": "quentin sir",
+    "english": "rachel mam",
+    "geography": "steve sir",
+    "gk": "tina mam",
+    "maths": "ulysses sir",
+    "sst": "victoria mam",
+    "hindi": "will sir"
+  },
+  "4th b": {
+    "science": "xena mam",
+    "english": "yusuf sir",
+    "geography": "zoe mam",
+    "gk": "alice sir",
+    "maths": "bob mam",
+    "sst": "carol sir",
+    "hindi": "dave mam"
+  },
+  "5th a": {
+    "science": "eve sir",
+    "english": "frank mam",
+    "geography": "grace sir",
+    "gk": "hannah mam",
+    "maths": "ian sir",
+    "sst": "jane mam",
+    "hindi": "kevin sir"
+  },
+  "5th b": {
+    "science": "linda mam",
+    "english": "mike sir",
+    "geography": "nina mam",
+    "gk": "oliver sir",
+    "maths": "patricia mam",
+    "sst": "quentin sir",
+    "hindi": "rachel mam"
+  },
+  "6th a": {
+    "science": "sam sir",
+    "english": "tina mam",
+    "geography": "uma mam",
+    "gk": "victor sir",
+    "maths": "wendy mam",
+    "sst": "xander sir",
+    "hindi": "yara mam"
+  },
+  "6th b": {
+    "science": "zane sir",
+    "english": "amy mam",
+    "geography": "brian sir",
+    "gk": "carl sir",
+    "maths": "diana mam",
+    "sst": "eric sir",
+    "hindi": "fiona mam"
+  },
+  "7th a": {
+    "science": "george sir",
+    "english": "helen mam",
+    "geography": "ian sir",
+    "gk": "julia mam",
+    "maths": "karl sir",
+    "sst": "laura mam",
+    "hindi": "matt sir"
+  },
+  "7th b": {
+    "science": "nora mam",
+    "english": "oscar sir",
+    "geography": "paula mam",
+    "gk": "quentin sir",
+    "maths": "rachel mam",
+    "sst": "steve sir",
+    "hindi": "tina mam"
+  },
+  "8th a": {
+    "science": "bharti mam",
+    "english": "kashika mam",
+    "geography": "kashika mam",
+    "gk": "gurwinder mam",
+    "maths": "sudama sir",
+    "sst": "mamta mam",
+    "hindi": "mamta mam"
+  },
+  "8th b": {
+    "science": "sudama sir",
+    "english": "deepika mam",
+    "geography": "deepika mam",
+    "gk": "shivani mam",
+    "maths": "dheeraj sir",
+    "sst": "dheeraj sir",
+    "hindi": "bindu mam"
+  },
+  "9th a": {
+    "science": "alice sir",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+  "9th b": {
+    "science": "hannah mam",
+    "english": "ian sir",
+    "geography": "jane mam",
+    "gk": "kevin sir",
+    "maths": "linda mam",
+    "sst": "mike sir",
+    "hindi": "nina mam"
+  },
+  "10th a": {
+    "science": "oliver sir",
+    "english": "patricia mam",
+    "geography": "quentin sir",
+    "gk": "rachel mam",
+    "maths": "sam sir",
+    "sst": "tina mam",
+    "hindi": "uma mam"
+  },
+  "10th b": {
+    "science": "victor sir",
+    "english": "wendy mam",
+    "geography": "xander sir",
+    "gk": "yara mam",
+    "maths": "zane sir",
+    "sst": "amy mam",
+    "hindi": "brian sir"
+  }
+};
+
+
+// 🔤 Greeting detection
+function isGreeting(str) {
+  return /\b(hi|hello|hlo|hey|yo|good morning|good afternoon|good evening)\b/i.test(str);
+}
+
 // 🔍 Normalize numbers & letters
 function normalizeNumbers(str) {
   for (let word in numberMap) {
@@ -6343,12 +6574,12 @@ function normalizeNumbers(str) {
   return str;
 }
 
-// 🔍 Text Normalizer (case, numbers, trim, collapse spaces)
+// 🔍 Text Normalizer
 function normalize(str) {
   return normalizeNumbers(str.toLowerCase().trim().replace(/\s+/g, " "));
 }
 
-// 🔍 Dice coefficient similarity
+// 🔍 Dice similarity
 function diceSimilarity(s1, s2) {
   s1 = normalize(s1); s2 = normalize(s2);
   let pairs1 = [];
@@ -6371,7 +6602,6 @@ function levenshteinSimilarity(a, b) {
   const lenA = a.length, lenB = b.length;
   for (let i = 0; i <= lenB; i++) matrix[i] = [i];
   for (let j = 0; j <= lenA; j++) matrix[0][j] = j;
-
   for (let i = 1; i <= lenB; i++) {
     for (let j = 1; j <= lenA; j++) {
       if (b.charAt(i - 1) === a.charAt(j - 1)) {
@@ -6400,45 +6630,37 @@ function tokenOverlapSimilarity(a, b) {
 function findAnswer(q) {
   let lowerQ = normalize(q);
 
-  // ✅ Step 1: Synonym normalization
-  for (let key in synonyms) {
-    let normKey = normalize(key);
-    if (lowerQ.includes(normKey)) {
-      lowerQ = lowerQ.replace(normKey, synonyms[key].toLowerCase());
+  // ✅ Step 0: Greeting
+  if (isGreeting(q)) return "Hello! How can I help you today? 😊";
+
+  // ✅ Step 1: Check if asking about a specific person
+  for (let person in profiles) {
+    if (lowerQ.includes(normalize(person))) {
+      return profiles[person];
     }
   }
 
-  // ✅ Step 2: Exact keyword lock
-  for (let item of knowledge) {
-    for (let k of item.keywords) {
-      if (normalize(lowerQ) === normalize(k)) {
-        return typeof item.answer === "function" ? item.answer() : item.answer;
-      }
+  // ✅ Step 2: Check if asking about subject/class teacher
+  const subjectRegex = /(science|english|geography|gk|maths|sst|hindi)/i;
+  const subjectMatch = q.match(subjectRegex);
+
+  // Dynamically match class from teacherBySubject
+  const classKeys = Object.keys(teacherBySubject).map(k => normalize(k));
+  let classMatch = null;
+  for (let cls of classKeys) {
+    if (lowerQ.includes(cls)) {
+      classMatch = cls;
+      break;
     }
   }
 
-  // ✅ Step 3: Strong partial lock (startsWith or contains)
-  for (let item of knowledge) {
-    for (let k of item.keywords) {
-      let normK = normalize(k);
-      if (lowerQ.startsWith(normK) || lowerQ.includes(normK)) {
-        return typeof item.answer === "function" ? item.answer() : item.answer;
-      }
-    }
+  if (classMatch && subjectMatch) {
+    const subject = subjectMatch[0].toLowerCase();
+    const teacher = teacherBySubject[classMatch]?.[subject];
+    if (teacher) return profiles[teacher] || `The teacher for ${subject} in ${classMatch.toUpperCase()} is ${teacher}.`;
   }
 
-  // ✅ Step 4: Role priority check
-  for (let role of rolePriority) {
-    if (lowerQ.includes(role)) {
-      for (let item of knowledge) {
-        if (item.keywords.some(k => normalize(k).includes(role))) {
-          return typeof item.answer === "function" ? item.answer() : item.answer;
-        }
-      }
-    }
-  }
-
-  // ✅ Step 5: Weighted hybrid fuzzy
+  // ✅ Step 3: Role priority and knowledge-based fuzzy search
   let bestMatch = { score: 0, answer: null };
   for (let item of knowledge) {
     for (let k of item.keywords) {
@@ -6446,30 +6668,24 @@ function findAnswer(q) {
       let lev = levenshteinSimilarity(lowerQ, k);
       let token = tokenOverlapSimilarity(lowerQ, k);
 
-      // Weighted scoring
       let score = (dice * 0.4) + (lev * 0.4) + (token * 0.2);
 
-      // Stronger anti-crossing bias for 8th A / 8th B
-      if (lowerQ.includes("8th a") && k.includes("8th b")) score -= 0.3;
-      if (lowerQ.includes("8th b") && k.includes("8th a")) score -= 0.3;
-
-      // Prefer longer keywords on tie
-      if (score > bestMatch.score || 
-         (score === bestMatch.score && k.length > (bestMatch.keyword?.length || 0))) {
-        bestMatch = { score, answer: item.answer, keyword: k };
+      // Role priority bias
+      for (let role of rolePriority) {
+        if (lowerQ.includes(role) && k.includes(role)) score += 0.1;
       }
+
+      if (score > bestMatch.score) bestMatch = { score, answer: item.answer };
     }
   }
 
-  // ✅ Step 6: Dynamic threshold
-  let threshold = lowerQ.length > 15 ? 0.55 : 0.7;
-
-  if (bestMatch.score > threshold) {
+  if (bestMatch.score > 0.55) {
     return typeof bestMatch.answer === "function" ? bestMatch.answer() : bestMatch.answer;
   }
 
   return "🤔 Hmm… I’m not sure about that yet. Maybe try asking in another way? 😊";
 }
+
 
    
 
