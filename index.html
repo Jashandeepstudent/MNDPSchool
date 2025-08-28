@@ -5886,7 +5886,8 @@ Ek hazaaron mein meri behna hai`
   keywords: [
     "where i can get information of school",
     "where i can get info of school",
-    "where i can get latest updates of school"
+    "where i can get latest updates of school",
+    " how to get latest updates of school"
   ],
   answer: `📢 You can get all the **latest school info & updates** from:  
 - ✅ Our official *WhatsApp group*  
@@ -5902,6 +5903,7 @@ Ek hazaaron mein meri behna hai`
     "give me school web link",
     "school website",
     "school url",
+     "school web",
     "website link",
     "site",
     "website pls",
@@ -6704,7 +6706,7 @@ const profiles = {
 
   // Special People
   "anil choudhary": "🎓 **Anil Choudhary Sir** is the guiding force of MNDP School. A respected personality who shapes the vision of the institution 🙏.",
-  "happy gupta": "😎 **Happy Gupta** — known as the entertainer of the class 🎤. Always spreading smiles, jokes, and fun energy everywhere ✨.",
+  "happy gupta": "😎 **Happy Gupta** — known as the Handwriting Athena of the class 🎤. Always spreading smiles, jokes, and fun energy everywhere ✨.",
   "jashandeep singh": "👑 **Jashandeep Singh** — the CEO himself 🚀. Legendary status in MNDP, mentioned in countless stories, battles, and history lines 📜🔥."
 };
 
@@ -6963,27 +6965,33 @@ function tokenOverlapSimilarity(a, b) {
 
 // Fun/friendly templates for single GK answer
 const gkSingleTemplates = [
-  ans => `Hmm… I think it’s probably **${ans}** 😏`,
-  ans => `Oh! That should be **${ans}**, I guess 😄`,
-  ans => `From what I know… **${ans}** is the answer 😎`,
-  ans => `Could it be **${ans}**? 🤔`,
-  ans => `Haha, this one’s easy — it’s **${ans}**! 😆`,
-  ans => `I’d say **${ans}**… unless I’m mistaken 😅`,
-  ans => `Ah! Pretty sure it’s **${ans}** 😃`,
-  ans => `If I had to guess… **${ans}**! 😎`,
-  ans => `You’ll love this — it’s **${ans}** 😄`,
-  ans => `Well, from my brain files… **${ans}** 😏`,
-  ans => `Looks like the answer is **${ans}**! 😎`,
-  ans => `Could it possibly be **${ans}**? 😄`,
-  ans => `From my info… it should be **${ans}** 😏`,
-  ans => `Ah! The answer comes to mind: **${ans}** 😄`,
-  ans => `I’d guess **${ans}**, just saying 😎`,
-  ans => `This one’s fun — it’s **${ans}**! 😄`,
-  ans => `I think it might be **${ans}** 😏`,
-  ans => `Checking my brain… it’s **${ans}** 😃`,
-  ans => `I’m fairly sure it’s **${ans}** 😄`,
-  ans => `Here’s my take: **${ans}** 😎`
+  ans => `The answer is **${ans}** 😎`,
+  ans => `It’s definitely **${ans}**! 😄`,
+  ans => `I know this — it’s **${ans}** 😏`,
+  ans => `Here’s the answer: **${ans}** 😃`,
+  ans => `Absolutely, it’s **${ans}**! 😆`,
+  ans => `No doubt, the answer is **${ans}** 😄`,
+  ans => `Check this out — **${ans}**! 😎`,
+  ans => `That’s right, it’s **${ans}** 😃`,
+  ans => `Confirmed — **${ans}** 😄`,
+  ans => `This one’s easy — **${ans}**! 😏`,
+  ans => `Spot on — **${ans}**! 😎`,
+  ans => `You got it — **${ans}** 😄`,
+  ans => `Here’s the correct answer: **${ans}** 😃`,
+  ans => `Exactly, it’s **${ans}**! 😆`,
+  ans => `For sure — **${ans}** 😄`,
+  ans => `I can tell you — **${ans}** 😏`,
+  ans => `No question about it, it’s **${ans}** 😎`,
+  ans => `Right on — **${ans}**! 😃`,
+  ans => `Absolutely correct — **${ans}** 😄`,
+  ans => `The fact is — **${ans}** 😏`,
+  ans => `This is clear — **${ans}**! 😎`,
+  ans => `Totally, it’s **${ans}** 😄`,
+  ans => `Can confirm — **${ans}** 😃`,
+  ans => `Everyone knows it’s **${ans}**! 😏`,
+  ans => `For certain — **${ans}** 😄`
 ];
+
 
 // Fun/friendly templates for multiple GK answers (intro + answers)
 const gkMultipleIntros = [
@@ -7014,10 +7022,93 @@ function randomMultipleIntro() {
 }
 
 // ------------------- GK Fuzzy Search -------------------
+// ------------------- GK Fuzzy Search (Multi-question friendly) -------------------
 function getGkAnswersFromQuery(query) {
   let lowerQ = normalize(query);
-  let parts = lowerQ.split(/\band\b|,|\?|;/).map(p => p.trim()).filter(p => p);
+
+  // Split query into parts for multi-question detection
+  let parts = lowerQ.split(/\band\b|,|\?|;/)
+    .map(p => p.trim())
+    .filter(p => p);
+
   let gkMatches = [];
+
+  for (let part of parts) {
+    let bestMatch = { score: 0, answer: null, question: null };
+
+    for (let item of gkQuestions) {
+      const questionNormalized = normalize(item.q);
+
+      // Compute fuzzy similarity
+      let score = Math.max(
+        diceSimilarity(part, questionNormalized),
+        levenshteinSimilarity(part, questionNormalized),
+        tokenOverlapSimilarity(part, questionNormalized)
+      );
+
+      if (score > bestMatch.score) {
+        bestMatch = { score, answer: item.a, question: item.q };
+      }
+    }
+
+    // Only include matches with decent confidence
+    if (bestMatch.score > 0.5) gkMatches.push(bestMatch);
+  }
+
+  if (gkMatches.length === 0) return null;
+
+  // If only one match, return single template
+  if (gkMatches.length === 1) {
+    return randomSingleTemplate(gkMatches[0].answer);
+  }
+
+  // Multiple matches → use intro + list of answers
+  let answers = gkMatches.map(m => `• ${m.question} → ${randomSingleTemplate(m.answer)}`);
+  return randomMultipleIntro() + answers.join("\n") + " 😄";
+}
+
+function findAnswer(q) {
+  let lowerQ = normalize(q);
+
+  // Step 0: Greeting
+  if (isGreeting(q)) return "Hello! How can I help you today? 😊";
+
+  // Step 0.5: Commands
+  const isMotivation = ["motivation","give me motivation","motivate me","yes","more motivation"].some(kw => lowerQ.includes(kw));
+  const isJoke = ["joke","tell me a joke","funny","more jokes","yes"].some(kw => lowerQ.includes(kw));
+  const isGkCommand = ["give me general knowledge questions","ask me general questions","general knowledge question","gk questions","more gk questions","more questions","gk more"].some(kw => lowerQ.includes(kw));
+
+  if (isMotivation) return getMotivation();
+  if (isJoke) return getJokes();
+  if (isGkCommand) return getGKQuestions();
+
+  // Step 1: Person profiles
+  for (let person in profiles) {
+    if (lowerQ.includes(normalize(person))) {
+      if (lowerQ.includes("survive") || lowerQ.includes("tips") || lowerQ.includes("period")) break;
+      return profiles[person] || null;
+    }
+  }
+
+  // Step 2: Teacher by subject
+  const subjectRegex = /(science|english|geography|gk|maths|sst|hindi)/i;
+  const subjectMatch = q.match(subjectRegex);
+  let classKeys = Object.keys(teacherBySubject);
+  let classMatch = classKeys.find(cls => lowerQ.includes(normalize(cls)));
+  if (classMatch && subjectMatch) {
+    const subject = subjectMatch[0].toLowerCase();
+    const teacher = teacherBySubject[classMatch]?.[subject];
+    if (teacher) {
+      if (subject === "gk" && /teacher|sir|mam/.test(lowerQ)) {
+        return `📘 The **GK Teacher** for ${classMatch.toUpperCase()} is **${teacher}** 👩‍🏫👨‍🏫`;
+      }
+      return profiles[teacher] || `Hmm, the teacher for **${subject.toUpperCase()}** in **${classMatch.toUpperCase()}** is ${teacher}.`;
+    }
+  }
+
+  // Step 3: GK fuzzy search
+  let gkMatches = [];
+  let parts = lowerQ.split(/\band\b|,|\?|;/).map(p => p.trim()).filter(p => p);
 
   for (let part of parts) {
     let bestMatch = { score: 0, answer: null, question: null };
@@ -7036,128 +7127,58 @@ function getGkAnswersFromQuery(query) {
   if (gkMatches.length > 0) {
     if (gkMatches.length === 1) {
       return randomSingleTemplate(gkMatches[0].answer);
-    }
-    let answers = gkMatches.map(m => `• ${m.question} → ${randomSingleTemplate(m.answer)}`);
-    return randomMultipleIntro() + answers.join("\n") + " 😄";
-  }
-
-  return null;
-}
-
-// ------------------- Main findAnswer -------------------
-function findAnswer(q) {
-  let lowerQ = normalize(q);
-
-  // ------------------- Step 0: Greeting -------------------
-  if (isGreeting(q)) return "Hello! How can I help you today? 😊";
-
-  // ------------------- Step 0.5: Commands -------------------
-// ------------------- Step 0.5: Commands -------------------
-const isMotivation = ["motivation", "give me motivation", "motivate me", "yes", "more motivation"].some(kw => lowerQ.includes(kw));
-const isJoke = ["joke", "tell me a joke", "funny", "more jokes", "yes"].some(kw => lowerQ.includes(kw));
-const isGkCommand = ["give me general knowledge questions", "ask me general questions", "general knowledge question", "gk questions", "more gk questions", "more questions", "gk more"].some(kw => lowerQ.includes(kw));
-
-if (isMotivation) return getMotivation();  
-if (isJoke) return getJokes();
-if (isGkCommand) return getGKQuestions();
-
-
-  // ------------------- Step 1: Person profiles -------------------
-  for (let person in profiles) {
-    if (lowerQ.includes(normalize(person))) {
-      if (lowerQ.includes("survive") || lowerQ.includes("tips") || lowerQ.includes("period")) break;
-      return profiles[person] || null;
-    }
-  }
-
-  // ------------------- Step 2: Teacher by subject -------------------
-  const subjectRegex = /(science|english|geography|gk|maths|sst|hindi)/i;
-  const subjectMatch = q.match(subjectRegex);
-  const classKeys = Object.keys(teacherBySubject);
-  let classMatch = classKeys.find(cls => lowerQ.includes(normalize(cls)));
-
-  if (classMatch && subjectMatch) {
-    const subject = subjectMatch[0].toLowerCase();
-    const teacher = teacherBySubject[classMatch]?.[subject];
-    if (teacher) {
-      if (subject === "gk" && /teacher|sir|mam/.test(lowerQ)) {
-        return `📘 The **GK Teacher** for ${classMatch.toUpperCase()} is **${teacher}** 👩‍🏫👨‍🏫`;
-      }
-      return profiles[teacher] || `Hmm, the teacher for **${subject.toUpperCase()}** in **${classMatch.toUpperCase()}** is ${teacher}.`;
-    }
-  }
-
-  // ------------------- Step 3: Knowledge base search -------------------
-  let bestMatch = { score: 0, answer: null };
-
-  for (let item of knowledge) {
-    for (let k of item.keywords) {
-      if (lowerQ.includes(normalize(k))) {
-        return typeof item.answer === "function" ? item.answer() : item.answer;
-      }
-    }
-  }
-
-  for (let item of knowledge) {
-    for (let k of item.keywords) {
-      let dice = diceSimilarity(lowerQ, k);
-      let lev = levenshteinSimilarity(lowerQ, k);
-      let token = tokenOverlapSimilarity(lowerQ, k);
-
-      let score = (dice * 0.4) + (lev * 0.4) + (token * 0.2);
-      for (let role of rolePriority) if (lowerQ.includes(role) && k.includes(role)) score += 0.1;
-
-      if (score > bestMatch.score) bestMatch = { score, answer: item.answer };
-    }
-  }
-
-  if (bestMatch.score > 0.55) {
-    const ans = typeof bestMatch.answer === "function" ? bestMatch.answer() : bestMatch.answer;
-    return randomTemplate(generalAnswerTemplates, ans);
-  }
-
-  // ------------------- Step 4: GK questions fuzzy search -------------------
-  let gkResponse = (function getGkAnswersFromQuery(query) {
-    let lowerQ = normalize(query);
-    if (teacherKeywords.some(kw => lowerQ.includes(kw))) return null;
-
-    let parts = lowerQ.split(/\band\b|,|\?|;/).map(p => p.trim()).filter(p => p);
-    let gkMatches = [];
-
-    for (let part of parts) {
-      let bestMatch = { score: 0, answer: null, question: null };
-      for (let item of gkQuestions) {
-        const questionNormalized = normalize(item.q);
-        let score = Math.max(
-          diceSimilarity(part, questionNormalized),
-          levenshteinSimilarity(part, questionNormalized),
-          tokenOverlapSimilarity(part, questionNormalized)
-        );
-        if (score > bestMatch.score) bestMatch = { score, answer: item.a, question: item.q };
-      }
-      if (bestMatch.score > 0.5) gkMatches.push(bestMatch);
-    }
-
-    if (gkMatches.length > 0) {
-      if (gkMatches.length === 1) return randomSingleTemplate(gkMatches[0].answer);
+    } else {
       let answers = gkMatches.map(m => `• ${m.question} → ${randomSingleTemplate(m.answer)}`);
       return randomMultipleIntro() + answers.join("\n") + " 😄";
     }
-    return null;
-  })(q);
+  }
 
-  if (gkResponse) return gkResponse;
+  // Step 4: Knowledge array search (strict keyword match + fuzzy backup)
+  let bestKnowledge = { score: 0, answer: null };
 
-// ------------------- Final Fallback (Universal) -------------------//
-const fallbacks = [
-  "🤔 Sorry, I don’t have an answer for that yet. Try asking in a different way!",
-];
+  for (let item of knowledge) {
+    for (let k of item.keywords) {
+      const keywordNormalized = normalize(k);
 
-return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+      // Exact match first
+      if (lowerQ === keywordNormalized || lowerQ.includes(keywordNormalized)) {
+        return typeof item.answer === "function" ? item.answer() : item.answer;
+      }
+
+      // Fuzzy matching
+      let qTokens = lowerQ.split(/\s+/);
+      let kTokens = keywordNormalized.split(/\s+/);
+      let tokenScore = 0;
+      for (let qt of qTokens) {
+        let bestToken = 0;
+        for (let kt of kTokens) {
+          let combined = (diceSimilarity(qt, kt) + levenshteinSimilarity(qt, kt) + tokenOverlapSimilarity(qt, kt)) / 3;
+          if (combined > bestToken) bestToken = combined;
+        }
+        tokenScore += bestToken;
+      }
+      tokenScore = tokenScore / qTokens.length;
+
+      let globalScore = (diceSimilarity(lowerQ, keywordNormalized) * 0.4)
+                      + (levenshteinSimilarity(lowerQ, keywordNormalized) * 0.4)
+                      + (tokenOverlapSimilarity(lowerQ, keywordNormalized) * 0.2);
+
+      let score = globalScore * 0.6 + tokenScore * 0.4;
+
+      if (score > bestKnowledge.score) bestKnowledge = { score, answer: item.answer };
+    }
+  }
+
+  let threshold = 0.45; // Lowered to catch short queries
+  if (bestKnowledge.score > threshold) {
+    const ans = typeof bestKnowledge.answer === "function" ? bestKnowledge.answer() : bestKnowledge.answer;
+    return randomTemplate(generalAnswerTemplates, ans);
+  }
+
+  // Step 5: Fallback
+  const fallbacks = ["🤔 Sorry, I don’t have an answer for that yet. Try asking in a different way!"];
+  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
 }
-
-
-
 
 
 
