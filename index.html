@@ -6853,52 +6853,145 @@ function tokenOverlapSimilarity(a, b) {
   return common.length / Math.max(tokensA.size, tokensB.size);
 }
 
-// 🎯 Intelligent Answer Finder
+// ------------------- GK Answer Templates -------------------
+
+// Fun/friendly templates for single GK answer
+const gkSingleTemplates = [
+  ans => `Hmm… I think it’s probably **${ans}** 😏`,
+  ans => `Oh! That should be **${ans}**, I guess 😄`,
+  ans => `From what I know… **${ans}** is the answer 😎`,
+  ans => `Could it be **${ans}**? 🤔`,
+  ans => `Haha, this one’s easy — it’s **${ans}**! 😆`,
+  ans => `I’d say **${ans}**… unless I’m mistaken 😅`,
+  ans => `Ah! Pretty sure it’s **${ans}** 😃`,
+  ans => `If I had to guess… **${ans}**! 😎`,
+  ans => `You’ll love this — it’s **${ans}** 😄`,
+  ans => `Well, from my brain files… **${ans}** 😏`,
+  ans => `Looks like the answer is **${ans}**! 😎`,
+  ans => `Could it possibly be **${ans}**? 😄`,
+  ans => `From my info… it should be **${ans}** 😏`,
+  ans => `Ah! The answer comes to mind: **${ans}** 😄`,
+  ans => `I’d guess **${ans}**, just saying 😎`,
+  ans => `This one’s fun — it’s **${ans}**! 😄`,
+  ans => `I think it might be **${ans}** 😏`,
+  ans => `Checking my brain… it’s **${ans}** 😃`,
+  ans => `I’m fairly sure it’s **${ans}** 😄`,
+  ans => `Here’s my take: **${ans}** 😎`
+];
+
+// Fun/friendly templates for multiple GK answers (intro + answers)
+const gkMultipleIntros = [
+  "Whoa, you asked many things! Here’s what I got for you 🤓:\n",
+  "Alright! Let’s tackle all your questions 😎:\n",
+  "Multiple questions detected! Here are my fun answers 😄:\n",
+  "Hold tight! I’ve got answers for all these 😏:\n",
+  "Here’s the scoop for your batch of questions 😆:\n",
+  "Let’s roll with these answers, one by one 😃:\n",
+  "Time to reveal the knowledge nuggets 😎:\n",
+  "I checked my brain for all of these 😄:\n",
+  "Here’s a fun list of answers for you 😏:\n",
+  "Many questions, one bot — let’s go! 🤓:\n",
+  "Ready for some fun answers? 😄:\n",
+  "I’ve got a few knowledge bombs for you 😎:\n",
+  "Multiple answers coming your way! 😏:\n",
+  "Here’s a round of answers, with a twist 😄:\n",
+  "Get ready for some answers 😃:\n"
+];
+
+// ------------------- Random Helpers -------------------
+function randomSingleTemplate(ans) {
+  const template = gkSingleTemplates[Math.floor(Math.random() * gkSingleTemplates.length)];
+  return template(ans);
+}
+function randomMultipleIntro() {
+  return gkMultipleIntros[Math.floor(Math.random() * gkMultipleIntros.length)];
+}
+
+// ------------------- GK Fuzzy Search -------------------
+function getGkAnswersFromQuery(query) {
+  let lowerQ = normalize(query);
+  let parts = lowerQ.split(/\band\b|,|\?|;/).map(p => p.trim()).filter(p => p);
+  let gkMatches = [];
+
+  for (let part of parts) {
+    let bestMatch = { score: 0, answer: null, question: null };
+    for (let item of gkQuestions) {
+      const questionNormalized = normalize(item.q);
+      let score = Math.max(
+        diceSimilarity(part, questionNormalized),
+        levenshteinSimilarity(part, questionNormalized),
+        tokenOverlapSimilarity(part, questionNormalized)
+      );
+      if (score > bestMatch.score) bestMatch = { score, answer: item.a, question: item.q };
+    }
+    if (bestMatch.score > 0.5) gkMatches.push(bestMatch);
+  }
+
+  if (gkMatches.length > 0) {
+    if (gkMatches.length === 1) {
+      return randomSingleTemplate(gkMatches[0].answer);
+    }
+    let answers = gkMatches.map(m => `• ${m.question} → ${randomSingleTemplate(m.answer)}`);
+    return randomMultipleIntro() + answers.join("\n") + " 😄";
+  }
+
+  return null;
+}
+
+// ------------------- Main findAnswer -------------------
 function findAnswer(q) {
   let lowerQ = normalize(q);
 
-  // ✅ Step 0: Greeting
+  // ------------------- Step 0: Greeting -------------------
   if (isGreeting(q)) return "Hello! How can I help you today? 😊";
 
-// ✅ Step 1: Check if asking about a specific person
-for (let person in profiles) {
-  if (lowerQ.includes(normalize(person))) {
-    // 🚨 Only return profile if it's NOT a survival-type question
-    if (
-      lowerQ.includes("survive") || 
-      lowerQ.includes("tips") || 
-      lowerQ.includes("period")
-    ) {
-      // Don't return here, let it fall through to Step 3 (knowledge search)
-      break;
+  // ------------------- Step 0.5: Commands -------------------
+// ------------------- Step 0.5: Commands -------------------
+const isMotivation = ["motivation", "give me motivation", "motivate me", "yes", "more motivation"].some(kw => lowerQ.includes(kw));
+const isJoke = ["joke", "tell me a joke", "funny", "more jokes", "yes"].some(kw => lowerQ.includes(kw));
+const isGkCommand = ["give me general knowledge questions", "ask me general questions", "general knowledge question", "gk questions", "more gk questions", "more questions", "gk more"].some(kw => lowerQ.includes(kw));
+
+if (isMotivation) return getMotivation();  
+if (isJoke) return getJokes();
+if (isGkCommand) return getGKQuestions();
+
+
+  // ------------------- Step 1: Person profiles -------------------
+  for (let person in profiles) {
+    if (lowerQ.includes(normalize(person))) {
+      if (lowerQ.includes("survive") || lowerQ.includes("tips") || lowerQ.includes("period")) break;
+      return profiles[person] || null;
     }
-    return profiles[person];
   }
-}
 
-
-  // ✅ Step 2: Check if asking about subject/class teacher
+  // ------------------- Step 2: Teacher by subject -------------------
   const subjectRegex = /(science|english|geography|gk|maths|sst|hindi)/i;
   const subjectMatch = q.match(subjectRegex);
-
-  // Dynamically match class from teacherBySubject
-  const classKeys = Object.keys(teacherBySubject).map(k => normalize(k));
-  let classMatch = null;
-  for (let cls of classKeys) {
-    if (lowerQ.includes(cls)) {
-      classMatch = cls;
-      break;
-    }
-  }
+  const classKeys = Object.keys(teacherBySubject);
+  let classMatch = classKeys.find(cls => lowerQ.includes(normalize(cls)));
 
   if (classMatch && subjectMatch) {
     const subject = subjectMatch[0].toLowerCase();
     const teacher = teacherBySubject[classMatch]?.[subject];
-    if (teacher) return profiles[teacher] || `The teacher for ${subject} in ${classMatch.toUpperCase()} is ${teacher}.`;
+    if (teacher) {
+      if (subject === "gk" && /teacher|sir|mam/.test(lowerQ)) {
+        return `📘 The **GK Teacher** for ${classMatch.toUpperCase()} is **${teacher}** 👩‍🏫👨‍🏫`;
+      }
+      return profiles[teacher] || `Hmm, the teacher for **${subject.toUpperCase()}** in **${classMatch.toUpperCase()}** is ${teacher}.`;
+    }
   }
 
-  // ✅ Step 3: Role priority and knowledge-based fuzzy search
+  // ------------------- Step 3: Knowledge base search -------------------
   let bestMatch = { score: 0, answer: null };
+
+  for (let item of knowledge) {
+    for (let k of item.keywords) {
+      if (lowerQ.includes(normalize(k))) {
+        return typeof item.answer === "function" ? item.answer() : item.answer;
+      }
+    }
+  }
+
   for (let item of knowledge) {
     for (let k of item.keywords) {
       let dice = diceSimilarity(lowerQ, k);
@@ -6906,25 +6999,59 @@ for (let person in profiles) {
       let token = tokenOverlapSimilarity(lowerQ, k);
 
       let score = (dice * 0.4) + (lev * 0.4) + (token * 0.2);
-
-      // Role priority bias
-      for (let role of rolePriority) {
-        if (lowerQ.includes(role) && k.includes(role)) score += 0.1;
-      }
+      for (let role of rolePriority) if (lowerQ.includes(role) && k.includes(role)) score += 0.1;
 
       if (score > bestMatch.score) bestMatch = { score, answer: item.answer };
     }
   }
 
   if (bestMatch.score > 0.55) {
-    return typeof bestMatch.answer === "function" ? bestMatch.answer() : bestMatch.answer;
+    const ans = typeof bestMatch.answer === "function" ? bestMatch.answer() : bestMatch.answer;
+    return randomTemplate(generalAnswerTemplates, ans);
   }
 
-  return "🤔 Hmm… I’m not sure about that yet. Maybe try asking in another way? 😊";
+  // ------------------- Step 4: GK questions fuzzy search -------------------
+  let gkResponse = (function getGkAnswersFromQuery(query) {
+    let lowerQ = normalize(query);
+    if (teacherKeywords.some(kw => lowerQ.includes(kw))) return null;
+
+    let parts = lowerQ.split(/\band\b|,|\?|;/).map(p => p.trim()).filter(p => p);
+    let gkMatches = [];
+
+    for (let part of parts) {
+      let bestMatch = { score: 0, answer: null, question: null };
+      for (let item of gkQuestions) {
+        const questionNormalized = normalize(item.q);
+        let score = Math.max(
+          diceSimilarity(part, questionNormalized),
+          levenshteinSimilarity(part, questionNormalized),
+          tokenOverlapSimilarity(part, questionNormalized)
+        );
+        if (score > bestMatch.score) bestMatch = { score, answer: item.a, question: item.q };
+      }
+      if (bestMatch.score > 0.5) gkMatches.push(bestMatch);
+    }
+
+    if (gkMatches.length > 0) {
+      if (gkMatches.length === 1) return randomSingleTemplate(gkMatches[0].answer);
+      let answers = gkMatches.map(m => `• ${m.question} → ${randomSingleTemplate(m.answer)}`);
+      return randomMultipleIntro() + answers.join("\n") + " 😄";
+    }
+    return null;
+  })(q);
+
+  if (gkResponse) return gkResponse;
+
+// ------------------- Final Fallback (Universal) -------------------//
+const fallbacks = [
+  "🤔 Sorry, I don’t have an answer for that yet. Try asking in a different way!",
+];
+
+return fallbacks[Math.floor(Math.random() * fallbacks.length)];
 }
 
 
-   
+
 
 
 
@@ -6937,8 +7064,11 @@ for (let person in profiles) {
     el('mndpGptInput').value='';
   }
 
-  // Send message with typing effect
- function sendMessage(){
+let isBotTyping = false;  // 🚫 Prevent spam flag
+
+function sendMessage(){
+    if(isBotTyping) return; // 🚫 If bot is already typing, ignore new input
+
     var input = el('mndpGptInput');
     var text = input.value.trim();
     if(!text) return;
@@ -6966,11 +7096,11 @@ for (let person in profiles) {
         // Function to type one node at a time
         let nodes = Array.from(tempDiv.childNodes);
         let idx = 0;
+        isBotTyping = true; // 🚀 Bot started typing
 
         function typeNode(){
             if(idx < nodes.length){
                 let node = nodes[idx];
-                // If text node, type character by character
                 if(node.nodeType === Node.TEXT_NODE){
                     let i = 0;
                     function typeChar(){
@@ -6986,12 +7116,13 @@ for (let person in profiles) {
                     }
                     typeChar();
                 } else {
-                    // If element node (like table, div, p), append whole node at once
                     bb.appendChild(node.cloneNode(true));
                     idx++;
                     msgs.scrollTop = msgs.scrollHeight;
-                    setTimeout(typeNode, 300); // small delay between blocks
+                    setTimeout(typeNode, 300);
                 }
+            } else {
+                isBotTyping = false; // ✅ Bot finished typing, allow next message
             }
         }
 
