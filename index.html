@@ -808,7 +808,7 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 <button onclick="prevLeaveStep()">
      Back
     </button>
-<button id="leaveSubmitButton" onclick="fixedSubmitLeave(event)" onclick="fixedSubmitLeave(event)">Leave Request</button>
+<button id="leaveSubmitButton" onclick="fixedSubmitLeave(event)">Leave Request</button>
 </div>
 <div id="leaveRecordDisplay" style="margin-top: 20px;">
 </div>
@@ -7845,5 +7845,69 @@ catch(e){}
 })(); 
 </script>
 
+
+<!-- === FINAL OVERRIDE: Leave Request submission === -->
+<script>
+(function(){
+  window.fixedSubmitLeave = function(event){
+    if (event && event.preventDefault) event.preventDefault();
+
+    var btn = document.getElementById("leaveSubmitButton");
+    if (btn){
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+    }
+
+    var name = document.getElementById("leaveName").value.trim();
+    var date = document.getElementById("leaveDate").value.trim();
+    var className = document.getElementById("leaveClass").value.trim();
+    var section = document.getElementById("leaveSection").value.trim();
+    var roll = document.getElementById("leaveRoll").value.trim();
+    var reason = document.getElementById("leaveReason").value.trim();
+    var days = document.getElementById("leaveDays").value.trim();
+
+    if (!reason || !days){
+      alert("Please provide a reason and number of days.");
+      if (btn){ btn.disabled = false; btn.textContent = "Leave Request"; }
+      return false;
+    }
+
+    emailjs.send("service_zjp0c7m", "template_14sd7cg", {
+      name,
+      class: className,
+      section,
+      roll,
+      reason,
+      days,
+      email_to: "mrjolox@gmail.com"
+    }).then(function(){
+      // ✅ Alert once
+      alert("Your leave request has been submitted!");
+
+      // ✅ Reset all inputs
+      document.getElementById("leaveName").value = "";
+      document.getElementById("leaveDate").value = "";
+      document.getElementById("leaveClass").value = "";
+      document.getElementById("leaveSection").value = "";
+      document.getElementById("leaveRoll").value = "";
+      document.getElementById("leaveReason").value = "";
+      document.getElementById("leaveDays").value = "";
+
+      // ✅ Return to Step 1
+      leaveStep = 1;
+      if (typeof updateLeaveForm === "function") { updateLeaveForm(); } { var s1 = document.getElementById("leaveFormStep1");  var s2 = document.getElementById("leaveFormStep2");  if (s1) { s1.classList.add("active-step"); s1.style.display = "block"; }  if (s2) { s2.classList.remove("active-step"); s2.style.display = "none"; } }
+
+      if (btn){ btn.disabled = false; btn.textContent = "Leave Request"; }
+    }, function(error){
+      console.error("FAILED...", error);
+      alert("Error sending email. Please try again.");
+      if (btn){ btn.disabled = false; btn.textContent = "Leave Request"; }
+    });
+
+    return false;
+  };
+})();
+</script>
+<!-- === END FINAL OVERRIDE === -->
 </body>
 </html>
