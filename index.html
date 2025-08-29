@@ -7841,16 +7841,23 @@ function findAnswer(q) {
     return "⚠️ Could not parse or compute that expression.";
   }
 
-  // ------------------- Rest of your steps -------------------
-  // Step 1: Person profiles
-  for (let person in profiles) {
-    const normKey = normalize(person);
-    if (lowerQ.includes(normKey)) {
-      const ans = profiles[person];
-      if (Array.isArray(ans)) return randomPick(ans);
-      return ans;
-    }
-  }  
+// ------------------- Profile Check -------------------
+// Step 1: Person profiles
+for (let person in profiles) {
+  const normKey = normalize(person);
+
+  // Strict matching conditions
+  if (
+    lowerQ === normKey || // exact match (just the name)
+    lowerQ === `who is ${normKey}` ||
+    lowerQ === `tell me about ${normKey}`
+  ) {
+    const ans = profiles[person];
+    if (Array.isArray(ans)) return randomPick(ans);
+    return ans;
+  }
+}
+ 
 
   // Step 2: Teacher by subject
   const subjectRegex = /(science|english|geography|gk|maths|sst|hindi)/i;
