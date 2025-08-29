@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -6004,7 +6005,7 @@ So really, it’s impossible to pick just one — **every teacher shines at thei
   },
 
 {
-  keywords: ["what students wear on friday","what do students wear on friday","friday uniform","uniform on friday"],
+  keywords: ["what students wear on friday","what do students wear on friday","friday uniform","uniform on friday","what to wear on friday"],
   answer: `👕 On Fridays, students wear the **Friday uniform**:
 - 👦 Boys → Red pants + White T-shirt
 - 👧 Girls → Red skirt + White T-shirt
@@ -6129,11 +6130,7 @@ If you are a real student, you already have it — it’s stamped in your **note
 - **Girls:** Black skirt, white shirt, ribbon, black socks, black shoes, ID card (if gotten), tie (if gotten).  
 
 ✨ This is the dress you need to wear all day.  
-👉 If you want details about **Friday uniform**, just ask: "Friday uniform".  
-
-⚡ Special Rule: For our CEO **Jashandeep Singh**, wearing a tie is always mandatory — it gives him that true CEO vibe 😎👔  
-
-😅 Why I sugarcoat my CEO too much… ah man, but he deserves it! 💼✨`
+👉 If you want details about **Friday uniform**, just ask: "Friday uniform".`
 },
 
   {
@@ -7155,6 +7152,87 @@ function tokenOverlapSimilarity(a, b) {
   return common.length / Math.max(tokensA.size, tokensB.size);
 }
 
+
+
+// --- Semantic-Lite helpers (sync, no external models) ---
+const STOPWORDS = new Set(["the","a","an","is","are","am","to","of","in","on","for","with","and","or","by","at","from","it","that","this","as","be","was","were","do","does","did","have","has","had","what","which","who","whom","when","where","why","how","tell","me","about"]);
+
+const SEM_SYNONYMS = {
+  "expand": ["full", "form", "stand", "for", "meaning", "expand", "expansion", "abbreviation"],
+  "meaning": ["define", "definition", "meaning", "stand", "for"],
+  "uniform": ["uniform", "dress", "clothes", "outfit", "wear"],
+  "wear": ["wear", "uniform", "dress", "outfit"],
+  "friday": ["friday","fri"],
+  "teacher": ["teacher","sir","mam","ma'am","madam","instructor","professor","prof"],
+  "gk": ["gk","general","knowledge","trivia"],
+  "timetable": ["timetable","schedule","routine","periods"],
+  "holiday": ["holiday","vacation","break","off"],
+  "fees": ["fees","fee","payment"],
+  "admission": ["admission","enrollment","apply","admit"],
+  "contact": ["contact","phone","call","email","inquiry"],
+  "leave": ["leave","absence","absent","permission"],
+  "announcement": ["announcement","notice","circular","update"],
+  "canteen": ["canteen","food","mess","lunch"],
+  "exam": ["exam","test","assessment","paper"],
+  "result": ["result","marks","grades","score"],
+  "principal": ["principal","headmaster","headmistress"]
+};
+
+function normalizeTextLite(t) {
+  return (t || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stemLite(w) {
+  // crude stemmer for english school terms
+  return w
+    .replace(/(ing|ed|ly|es|s)$/g, "")
+    .replace(/(ment|tion|ions|ness)$/g, "");
+}
+
+function expandTokens(text) {
+  const tokens = normalizeTextLite(text).split(" ").filter(Boolean);
+  const bag = new Set();
+  for (let tok of tokens) {
+    if (STOPWORDS.has(tok)) continue;
+    const stem = stemLite(tok);
+    bag.add(tok);
+    bag.add(stem);
+    // add synonyms if available (both direct key and reverse lookup)
+    if (SEM_SYNONYMS[tok]) {
+      for (let v of SEM_SYNONYMS[tok]) bag.add(v);
+    }
+    for (const [k, arr] of Object.entries(SEM_SYNONYMS)) {
+      if (arr.includes(tok)) bag.add(k);
+    }
+  }
+  // add bigrams for phrase intent matching
+  for (let i = 0; i < tokens.length - 1; i++) {
+    const a = tokens[i], b = tokens[i + 1];
+    if (!STOPWORDS.has(a) && !STOPWORDS.has(b)) {
+      bag.add(a + "_" + b);
+    }
+  }
+  return bag;
+}
+
+function jaccard(setA, setB) {
+  let inter = 0;
+  for (const x of setA) if (setB.has(x)) inter++;
+  const union = setA.size + setB.size - inter;
+  if (union === 0) return 0;
+  return inter / union;
+}
+
+function semanticLiteSimilarity(a, b) {
+  const A = expandTokens(a);
+  const B = expandTokens(b);
+  return jaccard(A, B);
+}
+// --- end Semantic-Lite helpers ---
 // ------------------- GK Answer Templates -------------------
 
 // Fun/friendly templates for single GK answer
@@ -7327,7 +7405,9 @@ function findAnswer(q) {
     }
   }
 
-  // Step 4: Knowledge array search (strict keyword match + fuzzy backup)
+  
+  
+  // Step 4: Knowledge array search (strict keyword match + fuzzy + semantic-lite)
   let bestKnowledge = { score: 0, answer: null };
 
   for (let item of knowledge) {
@@ -7339,7 +7419,7 @@ function findAnswer(q) {
         return typeof item.answer === "function" ? item.answer() : item.answer;
       }
 
-      // Fuzzy matching
+      // Fuzzy matching (existing)
       let qTokens = lowerQ.split(/\s+/);
       let kTokens = keywordNormalized.split(/\s+/);
       let tokenScore = 0;
@@ -7351,25 +7431,28 @@ function findAnswer(q) {
         }
         tokenScore += bestToken;
       }
-      tokenScore = tokenScore / qTokens.length;
+      tokenScore = tokenScore / Math.max(1, qTokens.length);
 
-      let globalScore = (diceSimilarity(lowerQ, keywordNormalized) * 0.4)
-                      + (levenshteinSimilarity(lowerQ, keywordNormalized) * 0.4)
-                      + (tokenOverlapSimilarity(lowerQ, keywordNormalized) * 0.2);
+      let globalScore = (diceSimilarity(lowerQ, keywordNormalized) * 0.35)
+                      + (levenshteinSimilarity(lowerQ, keywordNormalized) * 0.35)
+                      + (tokenOverlapSimilarity(lowerQ, keywordNormalized) * 0.15);
 
-      let score = globalScore * 0.6 + tokenScore * 0.4;
+      // Semantic-lite score (sync, no models)
+      let semLite = semanticLiteSimilarity(lowerQ, keywordNormalized);
+
+      // Combine
+      let score = globalScore * 0.5 + tokenScore * 0.2 + semLite * 0.3;
 
       if (score > bestKnowledge.score) bestKnowledge = { score, answer: item.answer };
     }
   }
 
-  let threshold = 0.45; // Lowered to catch short queries
+  let threshold = 0.5; // tuned for semantic-lite
   if (bestKnowledge.score > threshold) {
     const ans = typeof bestKnowledge.answer === "function" ? bestKnowledge.answer() : bestKnowledge.answer;
     return randomTemplate(generalAnswerTemplates, ans);
   }
-
-  // Step 5: Fallback
+// Step 5: Fallback
   const fallbacks = ["🤔 Sorry, I don’t have an answer for that yet. Try asking in a different way!"];
   return fallbacks[Math.floor(Math.random() * fallbacks.length)];
 }
