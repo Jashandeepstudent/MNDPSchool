@@ -23,6 +23,9 @@ window.addEventListener("load", () => {
 <script>
   emailjs.init('82kjXx_GqN4q2HVOh');
  </script>
+
+
+
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
@@ -187,36 +190,20 @@ footer {
       display: inline-block;
       width: 80%;
     }
-    /* Admin menu dropdown */
-    .menu-container {
-      position: fixed;
-      top: 5px;
-      right: 20px;
-      z-index: 1000;
-      display: inline-block;
-    }
-    #menuBtn { font-size: 24px; cursor: pointer; background:#1f2937; color:#fff; border:none; border-radius:9999px; width:56px; height:56px; position: fixed; bottom: 20px; right: 20px; z-index: 9999; box-shadow: 0 10px 20px rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; }
-#menuBtn:hover { transform: translateY(-1px); }
-    .dropdown-content {
-      position: absolute;
-      background-color: white;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      padding: 8px 0;
-      min-width: 100px;
-      z-index: 1;
-      display: none;
-      right: 0;
-      border-radius: 4px;
-    }
-    .dropdown-content a {
-      display: block;
-      padding: 8px 12px;
-      text-decoration: none;
-      color: black;
-      cursor: pointer;
-      }
-    .dropdown-content a:hover {
-      background-color: #ddd;
+/* Admin menu dropdown */
+.menu-container {
+  position: fixed;
+  top: 5px;
+  right: 20px;
+  z-index: 1000;
+  display: inline-block;
+}
+
+/* Admin menu dropdown */ .menu-container { position: fixed; top: 5px; right: 20px; z-index: 999; display: inline-block; } #menuBtn { font-size: 24px; cursor: pointer; background:transparent; color:#fff; border:none; border-radius:0px; width:66px; height:56px; position: fixed; bottom: 40px; right: 20px; z-index: 9999; box-shadow: none 10px 20px rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; } #menuBtn:hover { transform: translateY(-1px); } .dropdown-content { position: absolute; background-color: white; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); padding: 8px 0; min-width: 100px; z-index: 1; display: none; right: 0; border-radius: 4px; } .dropdown-content a { display: block; padding: 8px 12px; text-decoration: none; color: black; cursor: pointer; } .dropdown-content a:hover { background-color: #ddd;
+
+
+
+
     }
     #adminPanel {
       margin-top: 20px;
@@ -567,9 +554,10 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 <body>
 <!-- Admin menu (3 dots) -->
 <div class="menu-container">
-<button id="menuBtn">
-    👤
-   </button>
+<button id="menuBtn" class="mg-logo-btn">
+  <span class="mndp-logo-circle" aria-hidden="true">MG</span>
+</button>
+
 <div class="dropdown-content" id="dropdown">
 <a href="#" id="adminOption">
      Admin
