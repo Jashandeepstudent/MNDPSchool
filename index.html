@@ -199,7 +199,7 @@ footer {
   display: inline-block;
 }
 
-/* Admin menu dropdown */ .menu-container { position: fixed; top: 5px; right: 20px; z-index: 999; display: inline-block; } #menuBtn { font-size: 24px; cursor: pointer; background:transparent; color:#fff; border:none; border-radius:99px; width:66px; height:56px; position: fixed; bottom: 40px; right: 20px; z-index: 9999; box-shadow: none 10px 20px rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; } #menuBtn:hover { transform: translateY(-1px); } .dropdown-content { position: absolute; background-color: white; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); padding: 8px 0; min-width: 100px; z-index: 1; display: none; right: 0; border-radius: 4px; } .dropdown-content a { display: block; padding: 8px 12px; text-decoration: none; color: black; cursor: pointer; } .dropdown-content a:hover { background-color: #ddd;
+/* Admin menu dropdown */ .menu-container { position: fixed; top: 5px; right: 20px; z-index: 999; display: inline-block; } #menuBtn { font-size: 24px; cursor: pointer; background:transparent; color:#fff; border:none; border-radius:0px; width:66px; height:56px; position: fixed; bottom: 40px; right: 20px; z-index: 9999; box-shadow: none 10px 20px rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; } #menuBtn:hover { transform: translateY(-1px); } .dropdown-content { position: absolute; background-color: white; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); padding: 8px 0; min-width: 100px; z-index: 1; display: none; right: 0; border-radius: 4px; } .dropdown-content a { display: block; padding: 8px 12px; text-decoration: none; color: black; cursor: pointer; } .dropdown-content a:hover { background-color: #ddd;
 
 
 
@@ -373,74 +373,6 @@ nav a, nav button, .navbar a, .navbar button, .topnav a, .topnav button,
 
 /* Hide legacy three-dots triggers on cards for cleaner UI */
 .three-dots, .menu-trigger, .more-vert, .admin-dots { display: none !important; }
-
-
-/* === UI POLISH ADDITIONS === */
-html { scroll-behavior: smooth; }
-
-/* Navbar hover effect */
-nav a:hover {
-  background: rgba(255,255,255,0.15);
-  border-radius: 6px;
-}
-
-/* Active Section Styling */
-section.active {
-  display: block;
-  background: #fff;
-  margin: 20px auto;
-  max-width: 850px;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  padding: 30px;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-/* Fade-in animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Buttons */
-button {
-  border-radius: 8px !important;
-  transition: all 0.2s ease;
-}
-button:hover {
-  background: #1e3c72 !important;
-  transform: scale(1.03);
-}
-
-/* Announcement cards */
-.announcement-card {
-  background: #f9faff;
-  border-left: 5px solid #2a5298;
-  padding: 16px;
-  margin-bottom: 12px;
-  border-radius: 8px;
-  animation: fadeIn 0.3s ease-in-out;
-}
-.announcement-card h3 { margin: 0 0 6px; color: #2a5298; }
-.announcement-card small { color: #666; font-size: 0.85rem; }
-
-/* Gallery hover zoom */
-.gallery-grid img {
-  transition: transform 0.25s ease;
-}
-.gallery-grid img:hover {
-  transform: scale(1.08);
-}
-
-/* Responsive gallery */
-@media (max-width: 768px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  button {
-    width: 100%;
-  }
-}
 
 </style>
 <style id="create-announcement-override">
@@ -616,109 +548,6 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 
 /* Some protective resets to avoid ovaling */
 .mndp-logo-circle *{ line-height:1 !important; }
-</style>
-
-
-<!-- MG intro + overlay styles (injected) -->
-<style>
-/* Fullscreen intro similar to streaming-service logo reveal */
-.mg-intro {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  z-index: 99999;
-  opacity: 0;
-  pointer-events: none;
-}
-.mg-intro.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-.mg-logo {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: linear-gradient(135deg,#0b69ff 0%, #0041a8 100%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  font-size:58px;
-  color:#fff;
-  box-shadow: 0 12px 60px rgba(11,105,255,0.35);
-  transform: scale(0.25);
-  opacity: 0;
-}
-
-/* keyframes emulate a quick punch-zoom + glow + fade like a streaming intro */
-@keyframes mg-zoom {
-  0%   { transform: scale(0.25); opacity: 0; filter: blur(12px); }
-  25%  { transform: scale(1.18); opacity: 1; filter: blur(0px); }
-  55%  { transform: scale(0.95); opacity: 1; filter: blur(0px); }
-  85%  { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(1.6); opacity: 0; filter: blur(6px); }
-}
-
-/* animation helper class */
-.mg-logo.play {
-  animation: mg-zoom 1200ms cubic-bezier(.2,.9,.25,1) forwards;
-}
-
-/* overlay that opens after the intro (mock MNDP GPT overlay) */
-.mndp-overlay {
-  position: fixed;
-  inset: 6% 6% auto 6%;
-  height: 72%;
-  background: rgba(255,255,255,0.98);
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  z-index: 99990;
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* header inside overlay */
-.mndp-overlay .header {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:12px 16px;
-  background: linear-gradient(90deg,#0b69ff 0%, #2a5298 100%);
-  color: #fff;
-}
-.mndp-overlay .header .mndp-logo-circle {
-  width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;background:#fff;color:#0b69ff;font-size:14px;
-}
-
-/* content area placeholder */
-.mndp-overlay .content {
-  padding:18px;
-  flex:1;
-  overflow:auto;
-}
-
-/* close button */
-.mndp-overlay .close-btn {
-  border:none;
-  background:transparent;
-  color:#fff;
-  font-weight:700;
-  font-size:18px;
-  cursor:pointer;
-}
-
-/* lightly dim the site while overlay is open */
-.mndp-dim {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 99985;
-  display: none;
-}
 </style>
 
 </head>
@@ -10244,6 +10073,6 @@ catch(e){}
 
 })();
 </script>
-
+<!-- === END FINAL OVERRIDE === -->
 </body>
 </html>
