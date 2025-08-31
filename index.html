@@ -374,6 +374,74 @@ nav a, nav button, .navbar a, .navbar button, .topnav a, .topnav button,
 /* Hide legacy three-dots triggers on cards for cleaner UI */
 .three-dots, .menu-trigger, .more-vert, .admin-dots { display: none !important; }
 
+
+/* === UI POLISH ADDITIONS === */
+html { scroll-behavior: smooth; }
+
+/* Navbar hover effect */
+nav a:hover {
+  background: rgba(255,255,255,0.15);
+  border-radius: 6px;
+}
+
+/* Active Section Styling */
+section.active {
+  display: block;
+  background: #fff;
+  margin: 20px auto;
+  max-width: 850px;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  padding: 30px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Buttons */
+button {
+  border-radius: 8px !important;
+  transition: all 0.2s ease;
+}
+button:hover {
+  background: #1e3c72 !important;
+  transform: scale(1.03);
+}
+
+/* Announcement cards */
+.announcement-card {
+  background: #f9faff;
+  border-left: 5px solid #2a5298;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+.announcement-card h3 { margin: 0 0 6px; color: #2a5298; }
+.announcement-card small { color: #666; font-size: 0.85rem; }
+
+/* Gallery hover zoom */
+.gallery-grid img {
+  transition: transform 0.25s ease;
+}
+.gallery-grid img:hover {
+  transform: scale(1.08);
+}
+
+/* Responsive gallery */
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  button {
+    width: 100%;
+  }
+}
+
 </style>
 <style id="create-announcement-override">
 /* Create Announcement button override */
