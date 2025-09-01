@@ -633,12 +633,14 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 
 .mentor-card {
   margin: 40px auto;
-  max-width: 420px;
+  width: 90%;              /* ✅ responsive width */
+  max-width: 420px;        /* ✅ still limit on big screens */
   background: white;
   padding: 24px;
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;  /* ✅ prevents overflow */
 }
 .mentor-card:hover {
   transform: scale(1.05);
