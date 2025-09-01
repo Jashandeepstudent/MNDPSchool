@@ -1,6 +1,4 @@
 
-
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -23,9 +21,6 @@ window.addEventListener("load", () => {
 <script>
   emailjs.init('82kjXx_GqN4q2HVOh');
  </script>
-
-
-
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
@@ -374,6 +369,32 @@ nav a, nav button, .navbar a, .navbar button, .topnav a, .topnav button,
 /* Hide legacy three-dots triggers on cards for cleaner UI */
 .three-dots, .menu-trigger, .more-vert, .admin-dots { display: none !important; }
 
+
+.mentor-card {
+  margin: 40px auto;
+  max-width: 420px;
+  background: white;
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+.mentor-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+}
+.mentor-card .mentor-desc {
+  display: none;
+  margin-top: 12px;
+  font-size: 0.95rem;
+  color: #333;
+}
+.mentor-card:hover .mentor-desc {
+  display: block;
+}
+
 </style>
 <style id="create-announcement-override">
 /* Create Announcement button override */
@@ -489,7 +510,6 @@ body.is-admin .tutor-del-btn {
 /* Show for admin via body class */
 body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: center; gap: 6px; }
 </style>
-
 <!-- MNDP GPT fixes: logo circle + send->stop button behavior -->
 <style id="mndp-gpt-fixes">
 /* Logo circle: force perfect circle and inline placement */
@@ -549,22 +569,114 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 /* Some protective resets to avoid ovaling */
 .mndp-logo-circle *{ line-height:1 !important; }
 </style>
+<style id="mentors-overlay-style">
+#mentorsOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: url("WhatsApp Image 2025-09-01 at 17.37.24_7f795273.jpg") no-repeat center center fixed;
+  background-size: cover;
+  z-index: 10000;
+  overflow-y: auto;
+  text-align: center;
+  padding: 40px 20px 80px 20px;
+  color: white;
+}
 
-</head>
+/* Our Mentors box */
+#mentorsOverlay h1 {
+  margin: 20px auto;
+  text-align: center;
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 10px;
+  background: #fff;                 /* ✅ white box visible */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Rainbow animated text inside */
+#mentorsOverlay h1 span {
+  font-size: 32px;
+  font-weight: bold;
+  background-image: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
+  background-size: 1400% 1400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbowShift 10s ease infinite;
+}
+
+/* Rainbow animation */
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#mentorsBackBtn {
+  position: fixed;
+  bottom: 20px; left: 20px;
+  padding: 12px 20px;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+#mentorsBackBtn:hover {
+  transform: translateY(-2px);
+  background: #222;
+}
+
+.mentor-card {
+  margin: 40px auto;
+  max-width: 420px;
+  background: white;
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.mentor-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+}
+.mentor-card img {
+  width: 100%;
+  border-radius: 14px;
+  margin-bottom: 18px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+.mentor-card h2 {
+  margin: 10px 0 6px 0;
+  color: #2a5298;
+  font-size: 22px;
+}
+.mentor-card p {
+  font-size: 1rem;
+  color: #555;
+  margin: 0;
+  font-style: italic;
+}
+</style>
+
+
+</style></head>
 <body>
 <!-- Admin menu (3 dots) -->
 <div class="menu-container">
-<button id="menuBtn" class="mg-logo-btn">
-  <span class="mndp-logo-circle" aria-hidden="true">MG</span>
+<button class="mg-logo-btn" id="menuBtn">
+<span aria-hidden="true" class="mndp-logo-circle">MG</span>
 </button>
-
 <div class="dropdown-content" id="dropdown">
 <a href="#" id="adminOption">
      Admin
     </a>
-
-    <a href="#" id="mndpGptOption"><span class="mndp-logo-circle" aria-hidden="true">MG</span>MNDP GPT</a>
-</div>
+<a href="#" id="mndpGptOption"><span aria-hidden="true" class="mndp-logo-circle">MG</span>MNDP GPT</a>
+<a href="#" id="mentorsOption">👍 Wall of Mentors</a></div>
 </div>
 <!-- Admin panel -->
 <div id="adminPanel">
@@ -831,6 +943,32 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 <section id="polls">
 <h1 style="text-align: center;">Poll Management</h1>
 </section>
+<div id="mentorsOverlay" style="display:none;">
+  <button id="mentorsBackBtn">← Back</button>
+<h1><span>Our Mentors</span></h1>
+
+
+
+  <div class="mentor-card">
+    <img alt="Sh. Anil Choudhry" src="principal.jpg"/>
+    <h2>Sh. Anil Choudhry</h2>
+    <p>Our Principal</p>
+    <div class="mentor-desc">
+      This man started this school solo after acting and made it one of the best in R.S Pura.
+    </div>
+  </div>
+
+  <div class="mentor-card">
+    <img alt="Smt. Happy Gupta" src="WhatsApp Image 2025-09-01 at 17.30.58_30efd477.jpg"/>
+    <h2>Smt. Happy Gupta</h2>
+    <p>Our Vice Principal</p>
+    <div class="mentor-desc">
+      She has been with the school since it started and is strict but cool at the same time.
+    </div>
+  </div>
+</div>
+
+
 <footer>
    MNDP School © 2025
   </footer>
@@ -2804,7 +2942,7 @@ document.addEventListener("DOMContentLoaded", function(){
 <div class="tutor-field">
 <label>Time limit</label>
 <div class="tutor-inline">
-<label style="display:flex;align-items:center;gap:6px"><input checked="" id="tp-exp-all" name="tp-exp" type="radio"> All time</input></label>
+<label style="display:flex;align-items:center;gap:6px"><input checked="" id="tp-exp-all" name="tp-exp" type="radio"/> All time</label>
 <label style="display:flex;align-items:center;gap:6px"><input id="tp-exp-cus" name="tp-exp" type="radio"/> Custom</label>
 <input disabled="" id="tp-exp-amt" min="1" placeholder="Amount" style="width:120px" type="number"/>
 <select disabled="" id="tp-exp-unit" style="width:150px">
@@ -4761,7 +4899,6 @@ function deleteProfile(name) {
 </script>
 <!-- ===== End NO-AUTO-ADMIN GUARD ===== -->
 <!-- Firestore Status Box -->
-
 <!-- Firebase SDKs (compat) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -5330,7 +5467,6 @@ div:has(> #tp-expiry-hours){ display:none !important; }
   }catch(e){ /* no-op */ }
 })();
 </script>
-
 <style id="mndp-gpt-styles">
 /* === MNDP GPT Fullscreen Assistant === */
 .mndp-gpt-overlay {
@@ -5447,19 +5583,17 @@ div:has(> #tp-expiry-hours){ display:none !important; }
   .mndp-gpt-inputbar input{font-size:16px;}
 }
 </style>
-
-<div id="mndpGptOverlay" class="mndp-gpt-overlay" aria-hidden="true">
-  <div class="mndp-gpt-fullscreen">
-    <div id="mndpGptCenter" class="mndp-gpt-center">What can I help with?</div>
-    <div id="mndpGptMessages" class="mndp-gpt-messages"></div>
-    <div class="mndp-gpt-inputbar">
-      <button id="mndpGptBack" class="mndp-gpt-btn" type="button">← Back</button>
-      <input id="mndpGptInput" type="text" placeholder="Ask Anything About School" />
-      <button id="mndpGptSend" class="mndp-gpt-send" type="button" aria-label="Send">➤</button>
-    </div>
-  </div>
+<div aria-hidden="true" class="mndp-gpt-overlay" id="mndpGptOverlay">
+<div class="mndp-gpt-fullscreen">
+<div class="mndp-gpt-center" id="mndpGptCenter">What can I help with?</div>
+<div class="mndp-gpt-messages" id="mndpGptMessages"></div>
+<div class="mndp-gpt-inputbar">
+<button class="mndp-gpt-btn" id="mndpGptBack" type="button">← Back</button>
+<input id="mndpGptInput" placeholder="Ask Anything About School" type="text"/>
+<button aria-label="Send" class="mndp-gpt-send" id="mndpGptSend" type="button">➤</button>
 </div>
-
+</div>
+</div>
 <script id="mndp-gpt-script">
 (function(){
   function el(id){ return document.getElementById(id); }
@@ -9700,10 +9834,6 @@ function sendMessage(){
 
 })();
 </script>
-
-
-
-
 <script>
 window.fixedSubmitLeave = function(event){
   if (event && event.preventDefault) event.preventDefault();
@@ -9749,7 +9879,6 @@ window.fixedSubmitLeave = function(event){
   return false;
 };
 </script>
-
 <!-- MNDP GPT behaviour override: reliable open + send->stop -->
 <script id="mndp-gpt-behaviour-override">
 (function(){
@@ -9993,8 +10122,6 @@ catch(e){}
   }); // once
 })(); 
 </script>
-
-
 <!-- === FINAL OVERRIDE: Leave Request submission === -->
 <script>
 (function(){
@@ -10058,15 +10185,13 @@ catch(e){}
 })();
 </script>
 <!-- MG intro element -->
-<div id="mgIntro" class="mg-intro" aria-hidden="true" role="dialog" aria-label="MG intro">
-  <div id="mgLogo" class="mg-logo">
-    <span class="letter M">M</span><span class="letter G">G</span>
-  </div>
+<div aria-hidden="true" aria-label="MG intro" class="mg-intro" id="mgIntro" role="dialog">
+<div class="mg-logo" id="mgLogo">
+<span class="letter M">M</span><span class="letter G">G</span>
 </div>
-
+</div>
 <!-- Page dimmer -->
-<div id="mndpDim" class="mndp-dim" tabindex="-1"></div>
-
+<div class="mndp-dim" id="mndpDim" tabindex="-1"></div>
 <style>
 /* Intro container */
 #mgIntro {
@@ -10119,7 +10244,6 @@ catch(e){}
   100% { opacity:0; transform:scale(1.2); }
 }
 </style>
-
 <script>
 (function(){
   const mgIntro = document.getElementById('mgIntro');
@@ -10166,7 +10290,6 @@ catch(e){}
 })();
 </script>
 <!-- === END FINAL OVERRIDE === -->
-
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     var backBtn = document.getElementById("mndpGptBack");
@@ -10195,8 +10318,21 @@ catch(e){}
     }
   });
 </script>
-
-
-
-</body>
+<script>
+document.getElementById("mentorsOption").addEventListener("click", function(e){
+  e.preventDefault();
+  showPage("mentors");
+  document.getElementById("dropdown").style.display = "none";
+});
+</script><script id="mentors-overlay-script">
+document.getElementById("mentorsOption").addEventListener("click", function(e){
+  e.preventDefault();
+  document.getElementById("mentorsOverlay").style.display = "block";
+  document.getElementById("dropdown").style.display = "none";
+});
+document.getElementById("mentorsBackBtn").addEventListener("click", function(){
+  document.getElementById("mentorsOverlay").style.display = "none";
+  showPage("home");
+});
+</script></body>
 </html>
