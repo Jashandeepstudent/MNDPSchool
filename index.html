@@ -796,7 +796,7 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 <button onclick="prevLeaveStep()">
      Back
     </button>
-<button id="leaveSubmitButton" onclick="fixedSubmitLeave(event)">Leave Request</button>
+<button id="leaveSubmitButton" onclick="submitLeaveForm()">Leave Request</button>
 </div>
 <div id="leaveRecordDisplay" style="margin-top: 20px;">
 </div>
@@ -1545,6 +1545,8 @@ window.addEventListener("load", () => {
 // Global wait time (24 hours)
 const WAIT_TIME = 24 * 60 * 60 * 1000; // 24 hours (production)
 
+
+// Leave Form with 30s Bot Review
 function submitLeaveForm() {
   const name = document.getElementById("leaveName").value.trim();
   const date = document.getElementById("leaveDate").value.trim();
@@ -1553,67 +1555,111 @@ function submitLeaveForm() {
   const roll = document.getElementById("leaveRoll").value.trim();
   const reason = document.getElementById("leaveReason").value.trim();
   const days = document.getElementById("leaveDays").value.trim();
-  if (!reason || !days) {
-    alert("Please provide a reason and number of days.");
-    return;
-  }
-  const userKey = `${name}_${roll}`;
-  const lastSubmit = localStorage.getItem(`leaveSubmit_${userKey}`);
-  const now = Date.now();
-  
-  if (lastSubmit && now - parseInt(lastSubmit) < WAIT_TIME) {
-    startCountdown(WAIT_TIME - (now - parseInt(lastSubmit)));
+
+  if (!name || !date || !className || !section || !roll || !reason || !days) {
+    alert("Please fill out all fields (Name, Date, Class, Section, Roll No., Reason, Days).");
     return;
   }
 
   const submitBtn = document.getElementById("leaveSubmitButton");
-  if (submitBtn) submitBtn.disabled = true;
+  submitBtn.disabled = true;
 
-  emailjs.send("service_zjp0c7m", "template_14sd7cg", {
-    name,
-    class: className,
-    section,
-    roll,
-    reason,
-    days,
-    email_to: "mrjolox@gmail.com"
-  }).then(function(response) {
-    alert("Leave request submitted and emailed to admin!");
-    const recordDisplay = document.getElementById("leaveRecordDisplay");
-    const newRecord = document.createElement("p");
-    newRecord.id = "recentLeaveMsg";
-    newRecord.textContent = `Leave Request: ${name} (Class: ${className}, Section: ${section}, Roll No: ${roll}) on ${date} - Reason: ${reason}, Days: ${days}`;
-    recordDisplay.appendChild(newRecord);
-    setTimeout(() => {
-      const msg = document.getElementById("recentLeaveMsg");
-      if (msg) msg.remove();
-    }, 10000);
+  // Show review message with countdown
+  const display = document.getElementById("leaveRecordDisplay");
+  display.innerHTML = `
+    <div id="reviewBox" style="padding:12px; border:1px solid #ccc; border-radius:6px; background:#f9f9f9; font-weight:bold;">
+      ⏳ Reviewing your request... Please wait <span id="countdown">10</span> seconds
+    </div>
+  `;
 
-    localStorage.setItem(`leaveSubmit_${userKey}`, now.toString());
-    localStorage.setItem('lastLeaveName', name);
-    localStorage.setItem('lastLeaveRoll', roll);
-    resetLeaveForm();
-    /* removed cooldown call */
-    if (submitBtn) submitBtn.style.display = "none";
-  }, function(error) {
-    console.error("FAILED...", error);
-    alert("Error sending email: " + JSON.stringify(error));
-    if (submitBtn) submitBtn.disabled = false;
-  });
-
-  function resetLeaveForm() {
-    document.getElementById("leaveName").value = "";
-    document.getElementById("leaveDate").value = "";
-    document.getElementById("leaveClass").value = "";
-    document.getElementById("leaveSection").value = "";
-    document.getElementById("leaveRoll").value = "";
-    document.getElementById("leaveReason").value = "";
-    document.getElementById("leaveDays").value = "";
-    leaveStep = 1;
-    updateLeaveForm();
-    if (submitBtn) submitBtn.disabled = false;
-  }
+  let timeLeft = 10;
+  const countdownEl = document.getElementById("countdown");
+  const timer = setInterval(() => {
+    timeLeft--;
+    countdownEl.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      runBotReview({ name, date, className, section, roll, reason, days });
+      submitBtn.disabled = false;
+    }
+  }, 1000);
 }
+
+// Bot review rules
+function runBotReview(leave) {
+  let suspicious = false;
+  let reasonNote = "";
+
+  if (parseInt(leave.days) > 5) {
+    suspicious = true;
+    reasonNote = "More than 5 days leave requested.";
+  }
+  if (!leave.reason || leave.reason.length < 3) {
+    suspicious = true;
+    reasonNote = "Reason is too short.";
+  }
+  if (/joke|fun|prank/i.test(leave.reason)) {
+    suspicious = true;
+    reasonNote = "Looks like a prank.";
+  }
+
+  const display = document.getElementById("leaveRecordDisplay");
+  if (suspicious) {
+    display.innerHTML = `
+      <div id="suspiciousBox" style="color:red; font-weight:bold; padding:10px; border:1px solid red; border-radius:6px;">
+        ❌ Failed to send. Suspicious request detected.<br>
+        (${reasonNote})
+      </div>
+    `;
+    setTimeout(() => {
+      const box = document.getElementById('suspiciousBox');
+      if (box) box.remove();
+      resetLeaveForm();
+    }, 2000);
+    return;
+  }
+
+  // If passed bot check → send via EmailJS
+  emailjs.send("service_zjp0c7m", "template_14sd7cg", {
+    name: leave.name,
+    class: leave.className,
+    section: leave.section,
+    roll: leave.roll,
+    reason: leave.reason,
+    days: leave.days,
+    email_to: "mrjolox@gmail.com"
+  }).then(() => {
+    display.innerHTML = `
+      <div id="successBox" style="color:green; font-weight:bold; padding:10px; border:1px solid green; border-radius:6px;">
+        ✅ Leave request sent successfully after review!
+      </div>
+    `;
+    setTimeout(() => {
+      const box = document.getElementById('successBox');
+      if (box) box.remove();
+    }, 2000);
+    resetLeaveForm();
+  }).catch((err) => {
+    display.innerHTML = `
+      <div style="color:red; font-weight:bold; padding:10px; border:1px solid red; border-radius:6px;">
+        ⚠️ Error sending request: ${err.text || err}
+      </div>
+    `;
+  });
+}
+
+function resetLeaveForm() {
+  document.getElementById("leaveName").value = "";
+  document.getElementById("leaveDate").value = "";
+  document.getElementById("leaveClass").value = "";
+  document.getElementById("leaveSection").value = "";
+  document.getElementById("leaveRoll").value = "";
+  document.getElementById("leaveReason").value = "";
+  document.getElementById("leaveDays").value = "";
+  leaveStep = 1;
+  updateLeaveForm();
+}
+
 
 
   let timeLeft = Math.floor(duration / 1000);
@@ -1834,6 +1880,8 @@ document.addEventListener("DOMContentLoaded", function(){
   if(document.getElementById("announcementsList")) loadAnnouncements();
   updateAdminUI();
 });
+
+// Leave Form with 30s Bot Review
 function submitLeaveForm() {
   const name = document.getElementById("leaveName").value.trim();
   const date = document.getElementById("leaveDate").value.trim();
@@ -1842,67 +1890,111 @@ function submitLeaveForm() {
   const roll = document.getElementById("leaveRoll").value.trim();
   const reason = document.getElementById("leaveReason").value.trim();
   const days = document.getElementById("leaveDays").value.trim();
-  if (!reason || !days) {
-    alert("Please provide a reason and number of days.");
-    return;
-  }
-  const userKey = `${name}_${roll}`;
-  const lastSubmit = localStorage.getItem(`leaveSubmit_${userKey}`);
-  const now = Date.now();
-  
-  if (lastSubmit && now - parseInt(lastSubmit) < WAIT_TIME) {
-    startCountdown(WAIT_TIME - (now - parseInt(lastSubmit)));
+
+  if (!name || !date || !className || !section || !roll || !reason || !days) {
+    alert("Please fill out all fields (Name, Date, Class, Section, Roll No., Reason, Days).");
     return;
   }
 
   const submitBtn = document.getElementById("leaveSubmitButton");
-  if (submitBtn) submitBtn.disabled = true;
+  submitBtn.disabled = true;
 
-  emailjs.send("service_zjp0c7m", "template_14sd7cg", {
-    name,
-    class: className,
-    section,
-    roll,
-    reason,
-    days,
-    email_to: "mrjolox@gmail.com"
-  }).then(function(response) {
-    alert("Leave request submitted and emailed to admin!");
-    const recordDisplay = document.getElementById("leaveRecordDisplay");
-    const newRecord = document.createElement("p");
-    newRecord.id = "recentLeaveMsg";
-    newRecord.textContent = `Leave Request: ${name} (Class: ${className}, Section: ${section}, Roll No: ${roll}) on ${date} - Reason: ${reason}, Days: ${days}`;
-    recordDisplay.appendChild(newRecord);
-    setTimeout(() => {
-      const msg = document.getElementById("recentLeaveMsg");
-      if (msg) msg.remove();
-    }, 10000);
+  // Show review message with countdown
+  const display = document.getElementById("leaveRecordDisplay");
+  display.innerHTML = `
+    <div id="reviewBox" style="padding:12px; border:1px solid #ccc; border-radius:6px; background:#f9f9f9; font-weight:bold;">
+      ⏳ Reviewing your request... Please wait <span id="countdown">10</span> seconds
+    </div>
+  `;
 
-    localStorage.setItem(`leaveSubmit_${userKey}`, now.toString());
-    localStorage.setItem('lastLeaveName', name);
-    localStorage.setItem('lastLeaveRoll', roll);
-    resetLeaveForm();
-    /* removed cooldown call */
-    if (submitBtn) submitBtn.style.display = "none";
-  }, function(error) {
-    console.error("FAILED...", error);
-    alert("Error sending email: " + JSON.stringify(error));
-    if (submitBtn) submitBtn.disabled = false;
-  });
-
-  function resetLeaveForm() {
-    document.getElementById("leaveName").value = "";
-    document.getElementById("leaveDate").value = "";
-    document.getElementById("leaveClass").value = "";
-    document.getElementById("leaveSection").value = "";
-    document.getElementById("leaveRoll").value = "";
-    document.getElementById("leaveReason").value = "";
-    document.getElementById("leaveDays").value = "";
-    leaveStep = 1;
-    updateLeaveForm();
-    if (submitBtn) submitBtn.disabled = false;
-  }
+  let timeLeft = 10;
+  const countdownEl = document.getElementById("countdown");
+  const timer = setInterval(() => {
+    timeLeft--;
+    countdownEl.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      runBotReview({ name, date, className, section, roll, reason, days });
+      submitBtn.disabled = false;
+    }
+  }, 1000);
 }
+
+// Bot review rules
+function runBotReview(leave) {
+  let suspicious = false;
+  let reasonNote = "";
+
+  if (parseInt(leave.days) > 5) {
+    suspicious = true;
+    reasonNote = "More than 5 days leave requested.";
+  }
+  if (!leave.reason || leave.reason.length < 3) {
+    suspicious = true;
+    reasonNote = "Reason is too short.";
+  }
+  if (/joke|fun|prank/i.test(leave.reason)) {
+    suspicious = true;
+    reasonNote = "Looks like a prank.";
+  }
+
+  const display = document.getElementById("leaveRecordDisplay");
+  if (suspicious) {
+    display.innerHTML = `
+      <div id="suspiciousBox" style="color:red; font-weight:bold; padding:10px; border:1px solid red; border-radius:6px;">
+        ❌ Failed to send. Suspicious request detected.<br>
+        (${reasonNote})
+      </div>
+    `;
+    setTimeout(() => {
+      const box = document.getElementById('suspiciousBox');
+      if (box) box.remove();
+      resetLeaveForm();
+    }, 2000);
+    return;
+  }
+
+  // If passed bot check → send via EmailJS
+  emailjs.send("service_zjp0c7m", "template_14sd7cg", {
+    name: leave.name,
+    class: leave.className,
+    section: leave.section,
+    roll: leave.roll,
+    reason: leave.reason,
+    days: leave.days,
+    email_to: "mrjolox@gmail.com"
+  }).then(() => {
+    display.innerHTML = `
+      <div id="successBox" style="color:green; font-weight:bold; padding:10px; border:1px solid green; border-radius:6px;">
+        ✅ Leave request sent successfully after review!
+      </div>
+    `;
+    setTimeout(() => {
+      const box = document.getElementById('successBox');
+      if (box) box.remove();
+    }, 2000);
+    resetLeaveForm();
+  }).catch((err) => {
+    display.innerHTML = `
+      <div style="color:red; font-weight:bold; padding:10px; border:1px solid red; border-radius:6px;">
+        ⚠️ Error sending request: ${err.text || err}
+      </div>
+    `;
+  });
+}
+
+function resetLeaveForm() {
+  document.getElementById("leaveName").value = "";
+  document.getElementById("leaveDate").value = "";
+  document.getElementById("leaveClass").value = "";
+  document.getElementById("leaveSection").value = "";
+  document.getElementById("leaveRoll").value = "";
+  document.getElementById("leaveReason").value = "";
+  document.getElementById("leaveDays").value = "";
+  leaveStep = 1;
+  updateLeaveForm();
+}
+
 
 function createAnnouncement() {
   // entering create mode
