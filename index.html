@@ -5453,7 +5453,7 @@ div:has(> #tp-expiry-hours){ display:none !important; }
     <div id="mndpGptCenter" class="mndp-gpt-center">What can I help with?</div>
     <div id="mndpGptMessages" class="mndp-gpt-messages"></div>
     <div class="mndp-gpt-inputbar">
-      <button id="mndpGptBack" class="mndp-gpt-btn" type="button">Back</button>
+      <button id="mndpGptBack" class="mndp-gpt-btn" type="button">← Back</button>
       <input id="mndpGptInput" type="text" placeholder="Ask Anything About School" />
       <button id="mndpGptSend" class="mndp-gpt-send" type="button" aria-label="Send">➤</button>
     </div>
@@ -10166,5 +10166,37 @@ catch(e){}
 })();
 </script>
 <!-- === END FINAL OVERRIDE === -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var backBtn = document.getElementById("mndpGptBack");
+    if (backBtn) {
+      backBtn.addEventListener("click", function () {
+        // Close the GPT overlay
+        var overlay = document.getElementById("mndpGptOverlay");
+        if (overlay) {
+          overlay.classList.remove("open");
+          overlay.style.display = "none";
+        }
+
+        // Go back to homepage
+        if (typeof showPage === "function") {
+          showPage("home");
+        } else {
+          location.hash = "#home";
+        }
+
+        // Close the dropdown menu if open
+        var dropdown = document.getElementById("dropdown");
+        if (dropdown) {
+          dropdown.style.display = "none";
+        }
+      });
+    }
+  });
+</script>
+
+
+
 </body>
 </html>
