@@ -22,8 +22,8 @@ window.addEventListener("load", () => {
   emailjs.init('82kjXx_GqN4q2HVOh');
  </script>
 <head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
 <style>
 body{font-family:'Poppins',Arial,sans-serif;}
 button, a{transition:all 0.3s ease;}
@@ -692,8 +692,27 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
   font-style: italic;
 }
 </style>
-
-
+<style id="admin-panel-polish-safe">
+/* Admin Panel polish (safe override) */
+#adminPanel {
+  display: none;
+  max-width: 900px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  margin: 24px auto;
+}
+#adminPanel h3 { font-size:22px; margin:0 0 12px 0; color:#2a5298; }
+#adminPanel button { margin:6px; padding:10px 16px; border-radius:10px; border:none; background:#2a5298; color:#fff; font-weight:600; cursor:pointer; }
+#adminPanel button.logout { background:#d9534f !important; }
+</style><style id="safe-poll-card-style">
+/* Poll card styles */
+.poll-card{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);padding:16px;margin:12px auto;max-width:720px;}
+.poll-card h3{margin:0 0 8px;color:#2a5298;}
+.poll-del-btn{background:#ef4444;color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:14px;display:none;}
+body.is-admin .poll-del-btn{display:inline-block;}
+.poll-del-btn:hover{opacity:0.92;}
 </style></head>
 <body>
 <!-- Admin menu (3 dots) -->
@@ -768,30 +787,7 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
     </button>
 </div>
 <!-- Background edit section for Admin -->
-<div class="editable" id="backgroundEditable">
-<h2>
-     Edit Background
-    </h2>
-<label for="backgroundColorInput">
-     Background Color (Hex code):
-    </label>
-<input id="backgroundColorInput" placeholder="Enter hex code, e.g., #ffffff" type="text"/>
-<button onclick="changeBackgroundColor()">
-     Change Background Color
-    </button>
-<br/>
-<br/>
-<label for="backgroundImageInput">
-     Background Image (Upload):
-    </label>
-<input accept="image/*" id="backgroundImageInput" type="file"/>
-<button onclick="changeBackgroundImage()">
-     Change Background Image
-    </button>
-<button onclick="clearBackgroundImage()" style="background-color: #d9534f; margin-left: 10px;">
-     Clear Background Image
-    </button>
-</div>
+
 <div class="gallery-grid" id="homeGallery">
 </div>
 </section>
@@ -826,9 +822,9 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
     </label>
 <input id="admissionName" required="" type="text"/>
 <label for="admissionParent">Parent\'s Name:</label>
-<input id="admissionParent" type="text" required />
+<input id="admissionParent" required="" type="text"/>
 <label for="admissionMobile">Mobile Number:</label>
-<input id="admissionMobile" type="tel" pattern="[0-9]{10}" placeholder="10-digit mobile" required />
+<input id="admissionMobile" pattern="[0-9]{10}" placeholder="10-digit mobile" required="" type="tel"/>
 <label for="admissionAge">
      Age:
     </label>
@@ -977,37 +973,27 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
 <!-- Polls -->
 <section id="polls">
 <h1 style="text-align: center;">Poll Management</h1>
-</section>
+<div id="pollsContainer"></div></section>
 <div id="mentorsOverlay" style="display:none;">
-  <button id="mentorsBackBtn">← Back</button>
+<button id="mentorsBackBtn">← Back</button>
 <h1><span>Our Mentors</span></h1>
-
-
-
-  <div class="mentor-card">
-    <img alt="Sh. Anil Choudhry" src="principal.jpg"/>
-    <h2>Sh. Anil Choudhry</h2>
-    <p>Our Principal</p>
-    <div class="mentor-desc">
+<div class="mentor-card">
+<img alt="Sh. Anil Choudhry" src="principal.jpg"/>
+<h2>Sh. Anil Choudhry</h2>
+<p>Our Principal</p>
+<div class="mentor-desc">
       This man started this school solo after acting and made it one of the best in R.S Pura.
     </div>
-  </div>
-
-  <div class="mentor-card">
-    <img alt="Smt. Happy Gupta" src="WhatsApp Image 2025-09-01 at 17.30.58_30efd477.jpg"/>
-    <h2>Smt. Happy Gupta</h2>
-    <p>Our Vice Principal</p>
-    <div class="mentor-desc">
+</div>
+<div class="mentor-card">
+<img alt="Smt. Happy Gupta" src="WhatsApp Image 2025-09-01 at 17.30.58_30efd477.jpg"/>
+<h2>Smt. Happy Gupta</h2>
+<p>Our Vice Principal</p>
+<div class="mentor-desc">
       She has been with the school since it started and is strict but cool at the same time.
     </div>
-  </div>
 </div>
-
-
-
-
-
-
+</div>
 <script>
   // Close menu when Contact section opens
   function showContact() {
@@ -1028,17 +1014,11 @@ body.is-admin .tutor-del-btn { display: inline-flex !important; align-items: cen
     }
   });
 </script>
-
-
-
-
 <footer>
    MNDP School © 2025
   
 <!-- Removed old contact section -->
 </footer>
-
-
 <script>
    function isMobileDevice() {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -1307,40 +1287,11 @@ function uploadImage() {
   input.click(); // trigger file input
 }
   // Background color change
-  function changeBackgroundColor() {
-    if (!isAdmin) return;
-    const colorInput = document.getElementById("backgroundColorInput").value.trim();
-    if (!colorInput.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i)) {
-      alert("Please enter a valid hex color code.");
-      return;
-    }
-    document.body.style.backgroundColor = colorInput;
-    document.body.style.backgroundImage = ""; // clear any background image
-    alert("Background color updated.");
-  }
+  
   // Background image change
-  function changeBackgroundImage() {
-    if (!isAdmin) return;
-    const input = document.getElementById("backgroundImageInput");
-    if (input.files.length === 0) {
-      alert("Please select an image file.");
-      return;
-    }
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      document.body.style.backgroundImage = `url('${e.target.result}')`;
-      document.body.style.backgroundColor = ""; // clear background color
-      alert("Background image updated.");
-    };
-    reader.readAsDataURL(file);
-  }
+  
   // Clear background image
-  function clearBackgroundImage() {
-    if (!isAdmin) return;
-    document.body.style.backgroundImage = "";
-    alert("Background image cleared.");
-  }
+  
 function uploadVideo() {
   if (!isAdmin) {
     alert("Only admins can upload videos.");
@@ -1511,25 +1462,7 @@ function uploadVideo() {
   });
 }
 // ---- Upload Background Image ----
-function changeBackgroundImage() {
-  if (!isAdmin) return;
-  const input = document.getElementById("backgroundImageInput");
-  if (input.files.length === 0) {
-    alert("Select a background image.");
-    return;
-  }
-  const formData = new FormData();
-  formData.append("background", input.files[0]);
-  fetch("http://localhost:3000/upload-background", {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.body.style.backgroundImage = `url(${data.file})`;
-    alert("Background image updated!");
-  });
-}
+
 // ---- Load Saved Data + Gallery on Load ----
 window.addEventListener("load", () => {
   fetch("http://localhost:3000/load-content")
@@ -10610,8 +10543,6 @@ document.getElementById("contactOption").addEventListener("click", function(e) {
   showPage("contact");
 });
 </script>
-
-
 <script>
 function showContact() {
   // Show Contact section
@@ -10621,6 +10552,39 @@ function showContact() {
   if (dd) dd.style.display = "none";
 }
 </script>
-
-</body>
+<script id="safe-delete-polls-script">
+// Safe per-poll delete functions (admin only)
+function deletePoll(button){
+  try{
+    if(!window.isAdmin && !(localStorage && localStorage.getItem && localStorage.getItem('isAdmin')==='true')){
+      alert('Login as admin to delete polls.');
+      return;
+    }
+    var pollCard = button.closest ? button.closest('.poll-card') : button.parentNode;
+    if(pollCard && confirm('Delete this poll?')){
+      pollCard.remove();
+      alert('Poll deleted.');
+    }
+  }catch(e){ console.error('deletePoll error', e); alert('Error deleting poll.'); }
+}
+function deletePolls(){
+  try{
+    if(!window.isAdmin && !(localStorage && localStorage.getItem && localStorage.getItem('isAdmin')==='true')){
+      alert('Login as admin to delete polls.');
+      return;
+    }
+    if(!confirm('Are you sure you want to delete all polls?')) return;
+    var c = document.getElementById('pollsContainer');
+    if(c){ c.innerHTML = '<p style="text-align:center;">No polls available.</p>'; }
+    alert('All polls deleted.');
+  }catch(e){ console.error('deletePolls error', e); alert('Error deleting all polls.'); }
+}
+</script><script id="safe-admin-sync">
+(function(){
+  function isOn(){ try { return (sessionStorage.getItem('isAdmin')||localStorage.getItem('isAdmin')) === 'true'; } catch(e){ return false; } }
+  function sync(){ if(document && document.body) document.body.classList.toggle('is-admin', isOn()); }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', sync, {once:true}); } else { sync(); }
+  window.addEventListener('storage', sync);
+})();
+</script></body>
 </html>
