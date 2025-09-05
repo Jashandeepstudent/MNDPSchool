@@ -6770,7 +6770,6 @@ So really, it’s impossible to pick just one — **every teacher shines at thei
 Plus ID card, fleet shoes, and white socks ❤️🤍. Smart & stylish! 😎`
 },
 
-
   {
     keywords: ["which is latest going activity in school","tell me which activity is going on in school","recently going in school","ongoing activity in school"],
     answer: "🎶 Right now, the hottest activity is **English & Hindi songs**..."
@@ -6897,6 +6896,303 @@ If you are a real student, you already have it — it’s stamped in your **note
 If I don’t hype him up, who else will? 🚀  
 Also, sugarcoating? Nah… I’m just sprinkling some extra 🍭 respect.`
   },
+{
+  keywords: [
+    "chhatra pratigya",
+    "pledge",
+    "national pledge",
+    "bharat pledge"
+  ],
+  answer: function(query) {
+    const lower = query.toLowerCase();
+
+    // Check if query is related to pledge
+    const isPledge = /chhatra pratigya|pledge|national pledge|bharat pledge/i.test(lower);
+    if (!isPledge) return "";
+
+    let response = "Check this out — **National Pledge / Chhatra Pratigya** 🇮🇳\n\n";
+
+    // Detect requested language
+    const wantsSanskrit = /sanskrit/i.test(lower);
+    const wantsHindi = /hindi|hind/i.test(lower);
+    const wantsEnglish = /english/i.test(lower);
+
+    if (!wantsSanskrit && !wantsHindi && !wantsEnglish) {
+      // No language specified → return all
+      response += getHindi() + "\n" + getSanskrit() + "\n" + getEnglish();
+    } else {
+      if (wantsSanskrit) response += getSanskrit();
+      if (wantsHindi) response += getHindi();
+      if (wantsEnglish) response += getEnglish();
+    }
+
+    response += "\nDon't forget to stand in its original position before speaking it! 🙏";
+    return response;
+
+    // ---------------- Language Functions ----------------
+    function getHindi() {
+      return "**Hindi Version:**\n" +
+        "भारत हमारा देश है।\n" +
+        "हम सब भारतवासी भाई-बहन हैं।\n" +
+        "हमें अपना देश प्राणों से भी प्यारा है।\n" +
+        "इसकी समृद्ध एवम् विविध संस्कृति पर हमें गर्व है।\n" +
+        "हम सदा इसके सुयोग्य अधिकारी बनने का प्रयत्न करते रहेंगे।\n" +
+        "हम अपने माता-पिता, शिक्षकों एवं गुरुजनों का सदा सम्मान करेंगे और प्रत्येक के साथ विनीत रहेंगे।\n" +
+        "हम अपने देश और देशवासियों के प्रति सत्यनिष्ठ रहने की प्रतिज्ञा करते हैं।\n" +
+        "इसके कल्याण एवम् समृद्धि में ही हमारा सुख निहित है। जय हिन्द।\n";
+    }
+
+    function getSanskrit() {
+      return "**Sanskrit Version:**\n" +
+        "भारतं अस्माकं मातृभूमिः।\n" +
+        "वयं सर्वे भारतीया: भ्रातरः भगिन्यः च।\n" +
+        "अस्माकं मातृभूमिः प्राणेभ्यः अपि प्रियतरा अस्ति।\n" +
+        "अस्या: समृद्धौ विविध-संस्कृतौ च अस्माकं गर्वः अस्ति।\n" +
+        "वयं अस्याः सुयोग्याः अधिकारिणः भवितुं सदा प्रयत्नं करिष्यामः।\n" +
+        "वयं स्वमातापित्रोः, शिक्षकाणां गुरुजनानां च आदरं करिष्यामः।\n" +
+        "सर्वैः सह शिष्टतया व्यवहारं करिष्यामः।\n" +
+        "वयं स्वदेशं देशवासिनं च प्रति कृतज्ञतया वर्तितुं प्रतिज्ञां कुर्मः।\n" +
+        "तेषां कल्याणे समृद्धौ च न: सुखं निहितम् अस्ति।\n";
+    }
+
+    function getEnglish() {
+      return "**English Version:**\n" +
+        "India is my country, and all Indians are my brothers and sisters.\n" +
+        "I love my country, and I am proud of its rich and varied heritage.\n" +
+        "I shall always strive to be worthy of it.\n" +
+        "I shall give my parents, teachers, and all elders respect and treat everyone with courtesy.\n" +
+        "To my country and my people, I pledge my devotion.\n" +
+        "In their well-being and prosperity alone, lies my happiness.\n";
+    }
+  }
+},
+
+ {
+  keywords: [
+    "national anthem",
+    "rashtriya gaan",
+    "jana gana mana",
+    "jan gan man",
+     " jan gana mana"
+  ],
+  answer: function(query) {
+    const lower = query.toLowerCase();
+
+    // Check if query is related to National Anthem / Rashtriya Gaan / Jana Gana Mana
+    const isAnthem = /national anthem|rashtriya gaan|jan gan man|jan gana mana|jana gana mana/i.test(lower);
+    if (!isAnthem) return "";
+
+    let response = "Check this out — **National Anthem / Jana Gana Mana** 🇮🇳\n\n";
+
+    // Detect requested language
+    const wantsHindi = /hindi/i.test(lower);
+    const wantsEnglish = /english/i.test(lower);
+
+    // Detect if user explicitly wants both (any order, with separators like & / and)
+    const wantsBoth = (wantsHindi && wantsEnglish) || /hindi\s*(and|&|\/)\s*english|english\s*(and|&|\/)\s*hindi/i.test(lower);
+
+    if (wantsBoth) {
+      response += getHindi() + "\n" + getEnglish();
+    } else if (wantsHindi) {
+      response += getHindi();
+    } else if (wantsEnglish) {
+      response += getEnglish();
+    } else {
+      // No language specified → return both
+      response += getHindi() + "\n" + getEnglish();
+    }
+
+    response += "\nDon't forget to stand in its original position before singing it! 🙏";
+    return response;
+
+    // ---------------- Language Functions ----------------
+    function getHindi() {
+      return "**Hindi Version:**\n" +
+        "जन गण मन अधिनायक जय हे\n" +
+        "भारत भाग्य विधाता\n" +
+        "पंजाब सिंध गुजरात मराठा\n" +
+        "द्राविड़ उत्कल बंग\n" +
+        "विन्ध्य हिमाचल यमुना गंगा\n" +
+        "उच्छल जलधि तरंग\n" +
+        "तव शुभ नामे जागे\n" +
+        "तव शुभ आशिष मागे\n" +
+        "गाहे तव जय गाथा\n" +
+        "जन गण मंगलदायक जय हे\n" +
+        "भारत भाग्य विधाता जय हे\n" +
+        "जय हे, जय हे, जय हे\n" +
+        "जय जय जय, जय हे!\n";
+    }
+
+    function getEnglish() {
+      return "**English Meaning:**\n" +
+        "Thou art the ruler of the minds of all people,\n" +
+        "Dispenser of India's destiny.\n" +
+        "Thy name rouses the hearts of Punjab, Sindh, Gujarat, and Maratha,\n" +
+        "Of Dravida and Orissa and Bengal.\n" +
+        "It echoes in the hills of the Vindhyas and Himalayas,\n" +
+        "mingles in the music of Yamuna and Ganga,\n" +
+        "and is chanted by the waves of the Indian Sea.\n" +
+        "They pray for thy blessings and sing thy praise.\n" +
+        "Thou dispenser of India's destiny, victory, victory, victory to thee.\n";
+    }
+  }
+},
+
+{
+  keywords: [
+    "vande mataram",
+    "vande mataram in sanskrit",
+    "vande mataram in hindi",
+    "vande mataram in english",
+    "rashtriya geet",
+    "rashtriya geet in sanskrit",
+    "rashtriya geet in hindi",
+    "rashtriya geet in english",
+    "national song",
+    "national song in sanskrit",
+    "national song in hindi",
+    "national song in english"
+  ],
+  answer: function(query) {
+    const lower = query.toLowerCase();
+
+    // Check if query is related to Vande Mataram / Rashtriya Geet / National Song
+    const isNationalSong = /vande mataram|rashtriya geet|national song/i.test(lower);
+    if (!isNationalSong) return "";
+
+    let response = "Check this out — **Vande Mataram / National Song 🇮🇳**\n\n";
+
+    // Check for language
+    const wantsSanskrit = /sanskrit/i.test(lower);
+    const wantsHindi = /hindi|hind/i.test(lower);
+    const wantsEnglish = /english/i.test(lower);
+
+    // If no specific language mentioned, return all
+    if (!wantsSanskrit && !wantsHindi && !wantsEnglish) {
+      response += getSanskrit() + "\n" + getHindi() + "\n" + getEnglish();
+    } else {
+      if (wantsSanskrit) response += getSanskrit();
+      if (wantsHindi) response += getHindi();
+      if (wantsEnglish) response += getEnglish();
+    }
+
+    return response;
+
+    // ---------------- Language Functions ----------------
+    function getSanskrit() {
+      return "**Sanskrit Lyrics:**\n" +
+        "वन्दे मातरम्।\n" +
+        "सुजलां सुफलां मलयजशीतलाम्।\n" +
+        "शस्यश्यामलां मातरम्।।\n" +
+        "सप्तकोटि कण्ठ कलकल निनाद कराले।\n" +
+        "सहस्राब्द धरणीधर तडित खण्ड कराले।\n" +
+        "मातरम्।।\n\n" +
+        "शुभ्रज्योत्स्ना पुलकित यामिनीं फुल्लकुसुमित द्रुमदलशोभिनीं।\n" +
+        "सुहासिनीं सुमधुर भाषिणीं सुहृदं मातरम्।\n" +
+        "सुखदां वरदां मातरम्।।\n\n" +
+        "माता! पितरं पुण्यभूमिं स्वर्गादपि गरीयसीम्।\n" +
+        "सप्तर्षीणां पूजितां यत्र विद्या-विहारिणीम्।\n" +
+        "वन्दे मातरम्।।\n";
+    }
+
+    function getHindi() {
+      return "**Hindi Meaning:**\n" +
+        "मैं मातृभूमि को नमन करता हूँ।\n" +
+        "वह पानी से समृद्ध और फलों से भरी, ठंडी पहाड़ियों वाली है।\n" +
+        "वह हरी-भरी धरती है।\n" +
+        "उसके हजारों गले की आवाजें गूँजती हैं और आकाश गम्भीर क्रंदन करता है।\n\n" +
+        "शुभ्रज्योत्स्ना से जगमगाती रातें और फूलों से भरे पेड़।\n" +
+        "वह मधुर वाणी वाली और सुखदायी है।\n" +
+        "मातरम् सुख देती है और वरदान देती है।।\n\n";
+    }
+
+    function getEnglish() {
+      return "**English Meaning:**\n" +
+        "I bow to thee, Mother.\n" +
+        "Thou art rich with waters, fruitful and cool with the winds of the south,\n" +
+        "Dark with the crops of the harvests, Mother thou art.\n" +
+        "Thy nights gleam with moonlight, thy trees bloom with flowers,\n" +
+        "Thou art sweet of speech and gentle of heart.\n" +
+        "Thou art the giver of happiness and the bestower of blessings.\n";
+    }
+  }
+},
+
+
+
+  
+{
+ keywords:["class rules","tell me class rules","give me class rules","what are class rules"],
+ answer: `Here are Class Rules from our School📚
+          
+
+ * Respect your Teacher.Always greet them when you meet them.
+ * Always Maintain Silence in the class.
+ * Raise your hand if you have to ask any question.
+ * Ask"May I come in mam/sir" before entering the classroom.
+ * Take your Teacher's permission before going anywhere.
+ * Always be polite and helpful towards your classmates.It's bad habit to fight or bully them.(most important and best )
+ * Keep your classroom clean.(that most of class don't)
+ * Do not use things belonging to others without their permission.                                                                                                                                                                                                                                                                                                                                                                                  
+    
+Follow these or you will be standing outside of class😂`
+}, 
+  {
+  keywords: [
+    "bhojan purv mantra",
+    "bhojan mantra",
+    "pre-meal mantra",
+    "bhojan shubh arambh mantra",
+    "bhojan purva mantra"
+  ],
+  answer: function(query) {
+    const lower = query.toLowerCase().replace(/\s+/g, "");
+
+    // Flatten keywords to remove spaces
+    const variants = [
+      "bhojanpurvmantra",
+      "bhojanmantra",
+      "pre-mealmantra",
+      "bhojanshubharambhmantra",
+      "bhojanpurvamantra"
+    ];
+
+    // Fuzzy match using Levenshtein similarity
+    const match = variants.some(v => levenshteinSimilarity(lower, v) > 0.7);
+    if (!match) return "";
+
+    let response = "Check this out — **Bhojan Purv Mantra (Sanskrit)** 🙏\n\n";
+
+    response += getSanskrit();
+
+    return response;
+
+    function getSanskrit() {
+      return "**Sanskrit:**\n" +
+        "ओम् यन्तु नदयोः वर्षन्तु पर्जंया सुपिप्पला ओषधयोः भवन्तुः ।\n" +
+        "अन्नवताम् ओदनवताम् मामिक्षवताम् एशाम् राजा भूयासन् ।।\n" +
+        "ओदन् मुत्ब्रुवते परमेष्ठीवा एषः यदोदनः ।\n" +
+        "परमामेवैनम् श्रियंगमयति ।।1।।\n\n" +
+        "🙏 **Instruction:** Don't forget to stand, close your eyes, and keep quiet after speaking this.";
+    }
+  }
+},
+
+{
+ keywords: ["what is the appointment of monitors","appointment of monitors","what is appointment of gaffers"],
+ answer:` Appointment of gaffers are done at 4 ranks:
+          
+          1. GAFFER
+          2. LIEUTENANT
+          3. CAPTAIN
+          4. MAJOR
+ 
+Fun Fact: CEO Jashandeep is nothing of above but why because he is CEO.😎`
+
+},
+           
+
+
   {
   keywords: ["give me dictation of english", "give me dictation words of english", "what are dictation words of english","dictation of english","what is dictation of english","english dictation"],
   answer: `📚 Here are dictation words of English that are going to be in **F3** and **F4**:  
@@ -7041,6 +7337,84 @@ CEO = **Jashandeep Singh**.
 Me = His digital creation.  
 Together = MNDP Power Duo 🚀🤖.`
   },
+{
+  keywords: ["usa states", "us capitals", "states and capitals of usa"],
+  answer: `Here’s a list of all U.S. states and their capitals:
+
+1. Alabama – Montgomery
+2. Alaska – Juneau
+3. Arizona – Phoenix
+4. Arkansas – Little Rock
+5. California – Sacramento
+6. Colorado – Denver
+7. Connecticut – Hartford
+8. Delaware – Dover
+9. Florida – Tallahassee
+10. Georgia – Atlanta
+11. Hawaii – Honolulu
+12. Idaho – Boise
+13. Illinois – Springfield
+14. Indiana – Indianapolis
+15. Iowa – Des Moines
+16. Kansas – Topeka
+17. Kentucky – Frankfort
+18. Louisiana – Baton Rouge
+19. Maine – Augusta
+20. Maryland – Annapolis
+21. Massachusetts – Boston
+22. Michigan – Lansing
+23. Minnesota – Saint Paul
+24. Mississippi – Jackson
+25. Missouri – Jefferson City
+26. Montana – Helena
+27. Nebraska – Lincoln
+28. Nevada – Carson City
+29. New Hampshire – Concord
+30. New Jersey – Trenton
+31. New Mexico – Santa Fe
+32. New York – Albany
+33. North Carolina – Raleigh
+34. North Dakota – Bismarck
+35. Ohio – Columbus
+36. Oklahoma – Oklahoma City
+37. Oregon – Salem
+38. Pennsylvania – Harrisburg
+39. Rhode Island – Providence
+40. South Carolina – Columbia
+41. South Dakota – Pierre
+42. Tennessee – Nashville
+43. Texas – Austin
+44. Utah – Salt Lake City
+45. Vermont – Montpelier
+46. Virginia – Richmond
+47. Washington – Olympia
+48. West Virginia – Charleston
+49. Wisconsin – Madison
+50. Wyoming – Cheyenne
+
+📌 Tip: Practice memorizing the states and capitals in small groups for easier recall!`
+},
+
+  
+{
+  keywords: ["english ielts","english reading","what is english reading","what is english ielts","what is english ielts","give english ielts","give english reading"],
+  answer: `Ellerman House — Cape Town, South Africa:
+
+Built for the shipping magnate Sir John Ellerman in 1906, this is one of the most splendid Edwardian mansions on one of Cape Town’s most beautiful coastal sites, with prime views of the boulder-strewn swimming coves below and of sunsets.
+
+In the exclusive Bantry Bay area, Ellerman House has 11 rooms, two suites, two villas, and one-and-a-half-acre hillside gardens, all verdant lawns, waving palm trees, and aromatic Cape fynbos beds. The staff members treat everyone like a houseguest by pressing clothes, running bubble-baths, delivering antique silver pots of just-picked mint for tea, and advising on the perfect wine.
+
+Each individually decorated sea- or mountain-facing bedroom features art belonging to the house’s owner, Paul Harris. He has one of South Africa’s finest private collections, including 19th-century landscapes by Thomas Bowler and contemporary portraits by Gerard Sekoto, which decorates the house and its adjoining gallery.
+
+The service within its airy, light-filled spa, its amply stocked cellar, and its sunny restaurant is personalized; chefs happily whip up individual favorites, like rich Cape Malay curries and fresh lobster salads, as well as treats that are set out daily in a help-yourself pantry.
+
+For families, two more-contemporary villas enable children to splash about in their own pool without disturbing those indulging in a formal English tea on the shaded verandas or lazing on a pool lounger while watching seagulls wheel above the Atlantic.
+
+This feels like a gracious grande dame of a hotel—a clubby space that encourages you to slow down and be spoiled.From $900.
+
+**⚠️ Practice this carefully or you will get fewer marks. Also, for pronunciation, check out our principal Sir’s pronunciation video posted on our WhatsApp.** `
+},
+
 
 
 
@@ -7305,260 +7679,6 @@ let gkQuestions = [
   { q: "Which is the national animal of India?", a: "Bengal Tiger" },
   { q: "Who was the first Prime Minister of India?", a: "Jawaharlal Nehru" },
   { q: "What is the national flower of India?", a: "Lotus" },
-  { q: "In which year did India gain independence?", a: "1947" },
-  { q: "Who wrote the national anthem of India?", a: "Rabindranath Tagore" },
-  { q: "What is the national sport of India?", a: "Field Hockey" },
-  { q: "Who was the first President of India?", a: "Dr. Rajendra Prasad" },
-  { q: "What is the national bird of India?", a: "Indian Peacock" },
-  { q: "Which river is the longest in India?", a: "Ganga" },
-  { q: "Who drafted the Indian Constitution?", a: "Dr. B.R. Ambedkar" },
-  { q: "Which festival is known as the Festival of Lights?", a: "Diwali" },
-  { q: "Which is the smallest state in India by area?", a: "Goa" },
-  { q: "Which is the largest state in India by area?", a: "Rajasthan" },
-  { q: "Which Indian city is called the Pink City?", a: "Jaipur" },
-  { q: "Which Indian city is called the Silicon Valley of India?", a: "Bangalore" },
-  { q: "Who discovered the laws of gravity?", a: "Isaac Newton" },
-  { q: "Which is the largest planet in our solar system?", a: "Jupiter" },
-  { q: "Which planet is known as the Red Planet?", a: "Mars" },
-  { q: "Who wrote 'Romeo and Juliet'?", a: "William Shakespeare" },
-  { q: "Who painted the Mona Lisa?", a: "Leonardo da Vinci" },
-  { q: "What is the largest mammal in the world?", a: "Blue Whale" },
-  { q: "What is the chemical symbol for water?", a: "H2O" },
-  { q: "Who discovered penicillin?", a: "Alexander Fleming" },
-  { q: "Which country is known as the Land of the Rising Sun?", a: "Japan" },
-  { q: "What is the hardest natural substance on Earth?", a: "Diamond" },
-  { q: "Which is the longest river in the world?", a: "Nile" },
-  { q: "Who is known as the Father of Computers?", a: "Charles Babbage" },
-  { q: "What is the smallest prime number?", a: "2" },
-  { q: "Which gas do plants absorb from the atmosphere?", a: "Carbon Dioxide" },
-  { q: "Who invented the telephone?", a: "Alexander Graham Bell" },
-  { q: "What is the currency of Japan?", a: "Yen" },
-  { q: "Which planet has the most moons?", a: "Saturn" },
-  { q: "Who wrote the 'Harry Potter' series?", a: "J.K. Rowling" },
-  { q: "What is the boiling point of water at sea level?", a: "100°C (212°F)" },
-  { q: "Which organ purifies our blood?", a: "Kidneys" },
-  { q: "What is the largest desert in the world?", a: "Sahara Desert" },
-  { q: "Who painted 'Starry Night'?", a: "Vincent van Gogh" },
-  { q: "Which is the smallest continent by area?", a: "Australia" },
-  { q: "Which element has the chemical symbol 'O'?", a: "Oxygen" },
-  { q: "How many planets are in our solar system?", a: "8" },
-  { q: "Who developed the theory of relativity?", a: "Albert Einstein" },
-  { q: "What is the tallest mountain in the world?", a: "Mount Everest" },
-  { q: "Which country hosted the 2016 Summer Olympics?", a: "Brazil" },
-  { q: "What is the largest ocean on Earth?", a: "Pacific Ocean" },
-  { q: "Who invented the light bulb?", a: "Thomas Edison" },
-  { q: "What is the main gas found in the air we breathe?", a: "Nitrogen" },
-  { q: "Which planet is closest to the Sun?", a: "Mercury" },
-  { q: "Who is known as the Father of Geometry?", a: "Euclid" },
-  { q: "Which blood type is called the universal donor?", a: "O Negative" },
-  { q: "What is the fastest land animal?", a: "Cheetah" },
-  { q: "Who discovered gravity?", a: "Isaac Newton" },
-  { q: "Which city is known as the Big Apple?", a: "New York City" },
-  { q: "Which vitamin is produced when exposed to sunlight?", a: "Vitamin D" },
-  { q: "What is the square root of 144?", a: "12" },
-  { q: "Who painted the ceiling of the Sistine Chapel?", a: "Michelangelo" },
-  { q: "Which is the longest bone in the human body?", a: "Femur" },
-  { q: "Which planet is known for its rings?", a: "Saturn" },
-  { q: "What is the largest organ in the human body?", a: "Skin" },
-  { q: "Which language has the most native speakers?", a: "Mandarin Chinese" },
-  { q: "Who wrote 'The Odyssey'?", a: "Homer" },
-  { q: "Which country is known as the Land of the Midnight Sun?", a: "Norway" },
-  { q: "What is the most abundant element in the universe?", a: "Hydrogen" },
-  { q: "Which animal is known as the Ship of the Desert?", a: "Camel" },
-  { q: "What is the freezing point of water?", a: "0°C (32°F)" },
-  { q: "Which organ produces insulin?", a: "Pancreas" },
-  { q: "Which city is called the City of Canals?", a: "Venice" },
-  { q: "Which is the largest island in the world?", a: "Greenland" },
-  { q: "Who was the first man to walk on the moon?", a: "Neil Armstrong" },
-  { q: "What is the capital of Australia?", a: "Canberra" },
-  { q: "Which is the smallest country in the world?", a: "Vatican City" },
-  { q: "Which is the largest volcano in the world?", a: "Mauna Loa" },
-  { q: "What is the main ingredient in sushi?", a: "Rice" },
-  { q: "Which metal is liquid at room temperature?", a: "Mercury" },
-  { q: "What is the currency of the USA?", a: "Dollar" },
-  { q: "Which planet is called the Morning Star?", a: "Venus" },
-  { q: "Which animal lays the largest eggs?", a: "Ostrich" },
-  { q: "Which is the deepest ocean trench in the world?", a: "Mariana Trench" },
-  { q: "What is the fastest bird in the world?", a: "Peregrine Falcon" },
-  { q: "Who invented the printing press?", a: "Johannes Gutenberg" },
-  { q: "Which is the largest rainforest in the world?", a: "Amazon" },
-  { q: "Which country is called the Land of Fire and Ice?", a: "Iceland" },
-  { q: "Which organ controls hormones in the human body?", a: "Pituitary Gland" },
-  { q: "Which sea creature has 9 brains?", a: "Octopus" },
-  { q: "Which is the smallest planet in our solar system?", a: "Mercury" },
-  { q: "Which animal is known as the King of the Jungle?", a: "Lion" },
-  { q: "Who discovered America?", a: "Christopher Columbus" },
-  { q: "Which instrument measures atmospheric pressure?", a: "Barometer" },
-  { q: "Which is the largest country in the world by area?", a: "Russia" },
-  { q: "Which country gifted the Statue of Liberty to the USA?", a: "France" },
-  { q: "Which gas is essential for human respiration?", a: "Oxygen" },
-  { q: "Which is the smallest bird in the world?", a: "Bee Hummingbird" },
-  { q: "What is the national fruit of India?", a: "Mango" },
-  { q: "Which organ is responsible for balance in the human body?", a: "Inner Ear" },
-  { q: "Which country is known for the Great Wall?", a: "China" },
-  { q: "What is the main gas in the Sun?", a: "Hydrogen" },
-  { q: "Which planet spins on its side?", a: "Uranus" },
-  { q: "Which country is called the Land of the Thunder Dragon?", a: "Bhutan" },
-  { q: "Which bird can mimic human speech?", a: "Parrot" },
-  { q: "Which is the largest species of shark?", a: "Whale Shark" },
-  { q: "Which is the largest desert in Asia?", a: "Gobi Desert" },
-  { q: "Which organ stores bile?", a: "Gallbladder" },
-  { q: "Which continent has the most countries?", a: "Africa" },
-  { q: "Which metal is used in electric wires?", a: "Copper" },
-  { q: "Which is the smallest ocean in the world?", a: "Arctic Ocean" },
-  { q: "Which is the national tree of India?", a: "Banyan Tree" },
-  { q: "Which is the tallest building in the world?", a: "Burj Khalifa" },
-  { q: "Which is the fastest land animal in the world?", a: "Cheetah" },
-  { q: "Which planet is known as the Earth’s twin?", a: "Venus" },
-  { q: "Which is the largest lake in the world?", a: "Caspian Sea" },
-  { q: "Which vitamin is essential for blood clotting?", a: "Vitamin K" },
-  { q: "Which organ in the human body stores urine?", a: "Bladder" },
-  { q: "Which is the highest waterfall in the world?", a: "Angel Falls" },
-  { q: "Which bird has the largest wingspan?", a: "Wandering Albatross" },
-  { q: "Which planet has the shortest day?", a: "Jupiter" },
-  { q: "Which is the most spoken language in the world?", a: "Mandarin Chinese" },
-  { q: "Which is the national bird of India?", a: "Indian Peacock" },
-  { q: "Which is the national fruit of India?", a: "Mango" },
-  { q: "Which is the national flower of India?", a: "Lotus" },
-  { q: "Which is the national anthem of India?", a: "Jana Gana Mana" },
-  { q: "Which is the national song of India?", a: "Vande Mataram" },
-  { q: "Which is the national currency of India?", a: "Indian Rupee" },
-  { q: "Which is the most populated state in India?", a: "Uttar Pradesh" },
-  { q: "Which is the least populated state in India?", a: "Sikkim" },
-  { q: "Which is the highest civilian award in India?", a: "Bharat Ratna" },
-  { q: "Which is the highest gallantry award in India?", a: "Param Vir Chakra" },
-  { q: "Which Indian city is called the 'Pink City'?", a: "Jaipur" },
-  { q: "Which Indian city is called the 'City of Joy'?", a: "Kolkata" },
-  { q: "Which Indian city is called the 'City of Lakes'?", a: "Udaipur" },
-  { q: "Which Indian city is called the 'Silicon Valley of India'?", a: "Bengaluru" },
-  { q: "Which Indian city is called the 'City of Nawabs'?", a: "Lucknow" },
-  { q: "Which Indian city is called the 'Manchester of India'?", a: "Ahmedabad" },
-  { q: "Which is the longest river in India?", a: "Ganga" },
-  { q: "Which is the largest river island in India?", a: "Majuli (Assam)" },
-  { q: "Which is the largest state in India by population?", a: "Uttar Pradesh" },
-  { q: "Which is the largest union territory in India?", a: "Jammu and Kashmir" },
-  { q: "Which is the smallest union territory in India?", a: "Lakshadweep" },
-  { q: "Which state is known as the 'Spice Garden of India'?", a: "Kerala" },
-  { q: "Which state is known as the 'Tea Garden of India'?", a: "Assam" },
-  { q: "Which state is known as the 'Land of Five Rivers'?", a: "Punjab" },
-  { q: "Which is the southernmost point of India?", a: "Indira Point" },
-  { q: "Which is the highest mountain peak in India?", a: "K2 (Godwin-Austen)" },
-  { q: "Which is the highest mountain peak located entirely in India?", a: "Kangchenjunga" },
-  { q: "Which Indian state has the longest coastline?", a: "Gujarat" },
-  { q: "Which is the largest desert in India?", a: "Thar Desert" },
-  { q: "Which is the largest dam in India?", a: "Tehri Dam" },
-  { q: "Which is the oldest dam in India?", a: "Kallanai Dam (Tamil Nadu)" },
-  { q: "Which is the largest lake in India?", a: "Vembanad Lake" },
-  { q: "Which is the largest freshwater lake in India?", a: "Wular Lake" },
-  { q: "Which is the deepest river in India?", a: "Brahmaputra" },
-  { q: "Which is the longest highway in India?", a: "NH 44" },
-  { q: "Which is the busiest airport in India?", a: "Indira Gandhi International Airport, Delhi" },
-  { q: "Which is the oldest mountain range in India?", a: "Aravalli Range" },
-  { q: "Which state is known as the 'Land of Rising Sun'?", a: "Arunachal Pradesh" },
-  { q: "Which is the official language of India?", a: "Hindi" },
-  { q: "Which Indian festival is known as the Festival of Lights?", a: "Diwali" },
-  { q: "Which Indian festival is known as the Festival of Colors?", a: "Holi" },
-  { q: "Which festival is known as the Harvest Festival of India?", a: "Makar Sankranti" },
-  { q: "Which festival is known as the Festival of Rakhi?", a: "Raksha Bandhan" },
-  { q: "Which is the national sport of India?", a: "Hockey (de facto)" },
-  { q: "Which sport is most popular in India?", a: "Cricket" },
-  { q: "Who was the first woman Prime Minister of India?", a: "Indira Gandhi" },
-  { q: "Who was the first woman President of India?", a: "Pratibha Patil" },
-  { q: "Who is the first Indian woman to go to space?", a: "Kalpana Chawla" },
-  { q: "Who is the first Indian in space?", a: "Rakesh Sharma" },
-  { q: "Who is the first Indian to win a Nobel Prize?", a: "Rabindranath Tagore" },
-  { q: "Who is the first Indian to win an Olympic medal?", a: "Khashaba Dadasaheb Jadhav" },
-  { q: "Who is the first Indian to win an Olympic gold medal?", a: "Abhinav Bindra" },
-  { q: "Who is the first Indian woman to win an Olympic medal?", a: "Karnam Malleswari" },
-  { q: "Who is the first Indian woman to win an Olympic silver medal?", a: "P.V. Sindhu" },
-  { q: "Who is the first Indian woman to win an Olympic gold medal?", a: "Neeraj Chopra (not woman, correction)" },
-  { q: "Who was the first Governor-General of independent India?", a: "Lord Mountbatten" },
-  { q: "Who was the first Indian Governor-General of India?", a: "C. Rajagopalachari" },
-  { q: "Who was the first Vice President of India?", a: "Dr. S. Radhakrishnan" },
-  { q: "Who was the first Home Minister of India?", a: "Sardar Vallabhbhai Patel" },
-  { q: "Who was the first Defence Minister of India?", a: "Baldev Singh" },
-  { q: "Who was the first Finance Minister of India?", a: "R.K. Shanmukham Chetty" },
-  { q: "Who was the first Education Minister of India?", a: "Maulana Abul Kalam Azad" },
-  { q: "Who was the first Law Minister of India?", a: "Dr. B. R. Ambedkar" },
-  { q: "Who was the first Chief Election Commissioner of India?", a: "Sukumar Sen" },
-  { q: "Who was the first Indian Chief of Army Staff?", a: "K. M. Cariappa" },
-  { q: "Who was the first Indian Chief of Air Staff?", a: "Subroto Mukerjee" },
-  { q: "Who was the first Indian Chief of Naval Staff?", a: "R. D. Katari" },
-  { q: "Who was the first Speaker of Lok Sabha?", a: "Ganesh Vasudev Mavalankar" },
-  { q: "Who was the first Chief Justice of India?", a: "H. J. Kania" },
-  { q: "When did India become independent?", a: "15 August 1947" },
-  { q: "When did India become a republic?", a: "26 January 1950" },
-  { q: "When was the Indian Constitution adopted?", a: "26 November 1949" },
-  { q: "Who is known as the Missile Man of India?", a: "Dr. A.P.J. Abdul Kalam" },
-  { q: "Who is known as the Iron Man of India?", a: "Sardar Vallabhbhai Patel" },
-  { q: "Who is known as the Nightingale of India?", a: "Sarojini Naidu" },
-  { q: "Who is known as the Frontier Gandhi?", a: "Khan Abdul Ghaffar Khan" },
-  { q: "Who is known as the Father of Indian Constitution?", a: "Dr. B. R. Ambedkar" },
-  { q: "Who is known as the Father of Indian Green Revolution?", a: "M. S. Swaminathan" },
-  { q: "Who is known as the Father of Indian White Revolution?", a: "Verghese Kurien" },
-  { q: "Who is known as the Father of Indian Space Program?", a: "Dr. Vikram Sarabhai" },
-  { q: "Who is known as the Father of Indian Atomic Energy?", a: "Dr. Homi J. Bhabha" },
-  { q: "Who is known as the Father of Indian Industry?", a: "Jamsetji Tata" },
-  { q: "Who is known as the Grand Old Man of India?", a: "Dadabhai Naoroji" },
-  { q: "Who was the first Indian woman IPS officer?", a: "Kiran Bedi" },
-  { q: "Who was the first Indian woman Chief Minister?", a: "Sucheta Kripalani" },
-  { q: "Who was the first Indian woman Governor?", a: "Sarojini Naidu" },
-  { q: "Who was the first woman Chief Justice of India?", a: "Leila Seth (High Court), CJI not yet" },
-  { q: "Who was the first woman Chief Minister of an Indian state?", a: "Sucheta Kripalani" },
-  { q: "Which Indian leader gave the slogan 'Inquilab Zindabad'?", a: "Bhagat Singh" },
-  { q: "Which Indian leader gave the slogan 'Do or Die'?", a: "Mahatma Gandhi" },
-  { q: "Which Indian leader gave the slogan 'Jai Jawan Jai Kisan'?", a: "Lal Bahadur Shastri" },
-  { q: "In which year did India become a republic?", a: "1" },
-  { q: "Which is the largest state of India by area?", a: "R" },
-  { q: "Which is the smallest state of India by area?", a: "G" },
-  { q: "Which city is known as the Pink City?", a: "J" },
-  { q: "Which Indian state is called the Land of Five Rivers?", a: "P" },
-  { q: "What is the national currency of India?", a: "I" },
-  { q: "Which Indian scientist is known as the Missile Man of India?", a: "D" },
-  { q: "Which Indian city is called the City of Joy?", a: "K" },
-  { q: "Where is the Ajanta and Ellora Caves located?", a: "M" },
-  { q: "Which Indian state is famous for tea plantations?", a: "A" },
-  { q: "Which Indian monument is called the Symbol of Love?", a: "T" },
-  { q: "Who wrote the Indian National Anthem?", a: "R" },
-  { q: "Who was the Father of the Indian Constitution?", a: "D" },
-  { q: "Which Indian city is called Silicon Valley of India?", a: "B" },
-  { q: "Where is the Sun Temple located?", a: "K" },
-  { q: "Which Indian state is known as the Land of Rising Sun?", a: "A" },
-  { q: "Who was the first Indian to win a Nobel Prize?", a: "R" },
-  { q: "What is the national animal of India?", a: "B" },
-  { q: "Which Indian festival is also called the Festival of Colors?", a: "H" },
-  { q: "Who invented Zero?", a: "A" },
-  { q: "Which Indian state is called the Land of Gods?", a: "U" },
-  { q: "Where is the famous Charminar located?", a: "H" },
-  { q: "Which Indian leader is called the Iron Man of India?", a: "S" },
-  { q: "Which city is known as the Manchester of India?", a: "A" },
-  { q: "Where is the Gateway of India located?", a: "M" },
-  { q: "Who was the first Indian woman to win a Nobel Prize?", a: "M" },
-  { q: "Which is the largest delta in India?", a: "S" },
-  { q: "Which city is known as the City of Lakes?", a: "U" },
-  { q: "Which Indian festival is associated with harvest?", a: "P" },
-  { q: "Which Indian freedom fighter gave the slogan ‘Inquilab Zindabad’?", a: "B" },
-  { q: "Where is the Sanchi Stupa located?", a: "M" },
-  { q: "Which Indian leader was known as Netaji?", a: "S" },
-  { q: "Which is the largest planetarium in India?", a: "B" },
-  { q: "Who was the last Governor-General of independent India?", a: "C" },
-  { q: "Which Indian city is called the City of Nawabs?", a: "L" },
-  { q: "Which dance form is famous in Kerala?", a: "K" },
-  { q: "Where is the Lotus Temple located?", a: "D" },
-  { q: "Which Mughal emperor built the Red Fort?", a: "S" },
-  { q: "Which Indian state is famous for spices?", a: "K" },
-  { q: "Who was the first Indian woman to win an Olympic medal?", a: "K" },
-  { q: "Which Indian river is considered the holiest?", a: "G" },
-  { q: "Which city is called the Golden City of India?", a: "J" },
-  { q: "Which state is known as the Spice Garden of India?", a: "K" },
-  { q: "Which Indian king is famous as Ashoka the Great?", a: "E" },
-  { q: "Where is the Meenakshi Temple located?", a: "M" },
-  { q: "Which is the largest union territory of India?", a: "L" },
-  { q: "Which is the smallest union territory of India?", a: "L" },
-  { q: "Which city is known as the Steel City of India?", a: "J" },
-  { q: "Which Indian state is known as the 'Land of Rising Sun'?", a: "Arunachal Pradesh" },
-  { q: "What is the national song of India?", a: "Vande Mataram" },
-  { q: "Which city is known as the 'Pink City'?", a: "Jaipur" },
   { q: "Which city is known as the 'City of Joy'?", a: "Kolkata" },
   { q: "Which city is known as the 'Silicon Valley of India'?", a: "Bengaluru" },
   { q: "Which city is called the 'City of Nawabs'?", a: "Lucknow" },
@@ -7601,78 +7721,6 @@ let gkQuestions = [
   { q: "Who is known as the Father of the Nation?", a: "Mahatma Gandhi" },
   { q: "Who is known as the Missile Woman of India?", a: "Tessy Thomas" },
   { q: "Who was the first Indian to win Nobel Prize?", a: "Rabindranath Tagore" },
-  { q: "Who was the first Indian to win an Oscar?", a: "Bhanu Athaiya" },
-  { q: "Who was the first Indian to win Booker Prize?", a: "Arundhati Roy" },
-  { q: "Who was the first Indian to win Miss World title?", a: "Reita Faria" },
-  { q: "Who was the first Indian to win Miss Universe title?", a: "Sushmita Sen" },
-  { q: "Who was the first Indian to climb Mount Everest?", a: "Tenzing Norgay and Edmund Hillary" },
-  { q: "Who was the first Indian woman to climb Mount Everest?", a: "Bachendri Pal" },
-  { q: "What is the capital of Maharashtra?", a: "Mumbai" },
-  { q: "What is the capital of Tamil Nadu?", a: "Chennai" },
-  { q: "What is the capital of West Bengal?", a: "Kolkata" },
-  { q: "What is the capital of Punjab?", a: "Chandigarh" },
-  { q: "What is the capital of Karnataka?", a: "Bengaluru" },
-  { q: "What is the capital of Kerala?", a: "Thiruvananthapuram" },
-  { q: "What is the capital of Gujarat?", a: "Gandhinagar" },
-  { q: "What is the capital of Rajasthan?", a: "Jaipur" },
-  { q: "What is the capital of Uttar Pradesh?", a: "Lucknow" },
-  { q: "Which Indian state shares border with maximum number of states?", a: "Uttar Pradesh" },
-  { q: "Which Indian state shares border with Pakistan?", a: "Jammu & Kashmir, Punjab, Rajasthan, Gujarat" },
-  { q: "Which Indian state shares border with China?", a: "Jammu & Kashmir, Himachal Pradesh, Uttarakhand, Sikkim, Arunachal Pradesh" },
-  { q: "Which Indian state shares border with Nepal?", a: "Uttarakhand, Uttar Pradesh, Bihar, Sikkim, West Bengal" },
-  { q: "Which Indian state shares border with Bangladesh?", a: "West Bengal, Assam, Meghalaya, Tripura, Mizoram" },
-  { q: "Which Indian state shares border with Myanmar?", a: "Arunachal Pradesh, Nagaland, Manipur, Mizoram" },
-  { q: "Which Indian state shares border with Bhutan?", a: "Arunachal Pradesh, Assam, Sikkim, West Bengal" },
-  { q: "Which Indian state shares border with Sri Lanka?", a: "Tamil Nadu (via sea border)" },
-  { q: "Which Indian mountain is known as 'Five Treasures of Great Snow'?", a: "Kanchenjunga" },
-  { q: "Which is the southernmost tip of India?", a: "Indira Point" },
-  { q: "Which plateau is known as the 'Deccan Plateau'?", a: "Peninsular Plateau" },
-  { q: "Which desert is located in India?", a: "Thar Desert" },
-  { q: "Which river is known as the 'Sorrow of Bihar'?", a: "Kosi River" },
-  { q: "Which river is known as the 'Dakshin Ganga'?", a: "Godavari" },
-  { q: "Which river is known as the 'Sorrow of Bengal'?", a: "Damodar River" },
-  { q: "Which Indian lake is the largest freshwater lake?", a: "Wular Lake" },
-  { q: "Which Indian lake is the largest saltwater lake?", a: "Chilika Lake" },
-  { q: "Which Indian lake is famous as the highest saltwater lake?", a: "Pangong Lake" },
-  { q: "Which Indian island is famous for coconut?", a: "Lakshadweep" },
-  { q: "Which Indian island is famous for biodiversity?", a: "Andaman & Nicobar Islands" },
-  { q: "Which Indian state is famous for Sambar Deer?", a: "Rajasthan" },
-  { q: "Which Indian state is famous for Asiatic Lions?", a: "Gujarat" },
-  { q: "Which Indian state is famous for One-horned Rhino?", a: "Assam" },
-  { q: "Which Indian state is famous for Elephants?", a: "Kerala" },
-  { q: "Which Indian state is famous for Tigers?", a: "Madhya Pradesh" },
-  { q: "Which Indian city is known as 'Manchester of India'?", a: "Ahmedabad" },
-  { q: "Which Indian city is known as 'Detroit of India'?", a: "Chennai" },
-  { q: "Which Indian city is known as 'Boston of India'?", a: "Pune" },
-  { q: "Which Indian city is known as 'Manchester of South India'?", a: "Coimbatore" },
-  { q: "Which Indian city is known as 'Diamond City of India'?", a: "Surat" },
-  { q: "Which Indian city is known as 'Steel City of India'?", a: "Jamshedpur" },
-  { q: "Which Indian city is known as 'Coal Capital of India'?", a: "Dhanbad" },
-  { q: "Which Indian city is known as 'Electronic City of India'?", a: "Bengaluru" },
-  { q: "Which Indian city is known as 'City of Palaces'?", a: "Mysuru" },
-  { q: "Which Indian city is known as 'Temple City of India'?", a: "Bhubaneswar" },
-  { q: "Which Indian city is known as 'City of Oranges'?", a: "Nagpur" },
-  { q: "Which Indian city is known as 'Oxford of the East'?", a: "Pune" },
-  { q: "Which Indian city is known as 'Venice of the East'?", a: "Alappuzha" },
-  { q: "Which Indian city is known as 'Scotland of India'?", a: "Coorg (Kodagu)" },
-  { q: "Which Indian city is known as 'Queen of the Hills'?", a: "Darjeeling" },
-  { q: "Which Indian city is known as 'City of Pearls'?", a: "Hyderabad" },
-  { q: "Which Indian city is known as 'Garden City of India'?", a: "Bengaluru" },
-  { q: "Which Indian city is known as 'Financial Capital of India'?", a: "Mumbai" },
-  { q: "Which Indian city is known as 'City of Dreams'?", a: "Mumbai" },
-  { q: "Which Indian city is known as 'City of Festivals'?", a: "Madurai" },
-  { q: "Which Indian city is known as 'Gateway of South India'?", a: "Chennai" },
-  { q: "Which Indian city is known as 'Twin City of Hyderabad'?", a: "Secunderabad" },
-  { q: "Which Indian city is known as 'City of Seven Islands'?", a: "Mumbai" },
-  { q: "Which Indian city is known as 'City of Sweets'?", a: "Kolkata" },
-  { q: "Which Indian city is known as 'Pilgrim City'?", a: "Varanasi" },
-  { q: "Which Indian city is known as 'Yoga Capital of the World'?", a: "Rishikesh" },
-  { q: "Which Indian city is known as 'Spiritual Capital of India'?", a: "Varanasi" },
-  { q: "Which Indian city is known as 'Rome of the East'?", a: "Goa" },
-  { q: "Which Indian city is known as 'White City'?", a: "Udaipur" },
-  { q: "Which Indian city is known as 'Silk City'?", a: "Bhagalpur" },
-  { q: "Which Indian city is known as 'Silver City'?", a: "Cuttack" },
-  { q: "Which Indian city is known as 'City of Temples'?", a: "Bhubaneswar" },
   { q: "Which Indian city is known as 'Evergreen City of India'?", a: "Thiruvananthapuram" },
   { q: "Which Indian city is known as 'Manchester of North India'?", a: "Kanpur" },
   { q: "Which Indian city is known as 'Mini Switzerland of India'?", a: "Khajjiar" },
@@ -8586,7 +8634,6 @@ let gkQuestions = [
   { q: "Which is the highest mountain peak in India?", a: "Kanchenjunga" },
   { q: "Which is the capital of India?", a: "New Delhi" },
   { q: "Which is the currency of India?", a: "Rupee" },
-  { q: "Which is the national song of India?", a: "Vande Mataram" },
   { q: "Which is the national anthem of India?", a: "Jana Gana Mana" },
   { q: "Who wrote the national anthem of India?", a: "Rabindranath Tagore" },
   { q: "Who wrote the national song of India?", a: "Bankim Chandra Chatterjee" },
@@ -8699,7 +8746,6 @@ let gkQuestions = [
   { q: "Which Indian state is called the Land of Temples?", a: "Odisha" },
   { q: "Which is the largest freshwater lake in India?", a: "Vembanad Lake" },
   { q: "Which city is called the Garden City of India?", a: "Bangalore" },
-  { q: "The Indian national song is?", a: "Vande Mataram" },
   { q: "Who was the first Indian woman Chief Minister?", a: "Sucheta Kriplani" },
   { q: "Which city is called the City of Joy?", a: "Kolkata" },
   { q: "The first Indian in space was?", a: "Rakesh Sharma" },
@@ -8804,7 +8850,6 @@ let gkQuestions = [
   { "q": "Who was the first woman President of India?", "a": "Pratibha Patil" },
   { "q": "Who is known as the 'Father of the Nation' in India?", "a": "Mahatma Gandhi" },
   { "q": "Who wrote the Indian national anthem 'Jana Gana Mana'?", "a": "Rabindranath Tagore" },
-  { "q": "What is the national song of India?", "a": "Vande Mataram" },
   { "q": "What is the national flower of India?", "a": "Lotus" },
   { "q": "What is the national animal of India?", "a": "Bengal Tiger" },
   { "q": "What is the national bird of India?", "a": "Peacock" },
@@ -9675,7 +9720,10 @@ function getGkAnswersFromQuery(query) {
   // Multiple matches → use intro + list of answers
   let answers = gkMatches.map(m => `• ${m.question} → ${randomSingleTemplate(m.answer)}`);
   return randomMultipleIntro() + answers.join("\n") + " 😄";
+
 }
+
+
 
 // 🔍 Utility
 function normalize(str) {
@@ -9879,7 +9927,7 @@ for (let part of parts) {
   }
 
   // ✅ Only accept good matches with GK-like keywords
-  const hasGKKeyword = /(capital|prime|president|minister|animal|river|state|city|largest|smallest|first|national|year|when|where|who|which|what|how|many|full form)/i.test(
+  const hasGKKeyword = /(capital|prime|president|minister|animal|river|state|city|largest|smallest|first|year|when|where|who|which|what|how|many|full form)/i.test(
     part
   );
 
@@ -9899,53 +9947,83 @@ if (gkMatches.length > 0) {
   }
 }
 
+let bestKnowledge = { score: 0, answer: null };
 
+// Normalize and tokenize query
+let queryTokens = lowerQ
+  .replace(/[^\w\s]/g, " ")
+  .split(/\s+/)
+  .filter(t => t.length > 0 && !["what","is","the","of","a","an","to","for","in"].includes(t));
 
+// Loop through knowledge items
+for (let item of knowledge) {
+  for (let k of item.keywords) {
+    const keywordNormalized = normalize(k);
+    const keywordTokens = keywordNormalized.split(/\s+/);
 
-  // Step 4: Knowledge base search (improved fuzzy + semantic)
-  let bestKnowledge = { score: 0, answer: null };
+    let matchedTokens = 0;
+    let simSum = 0;
 
-  let queryTokens = lowerQ
-    .replace(/[^\w\s]/g, " ")
-    .split(/\s+/)
-    .filter(t => t.length > 1 && !["what","is","the","of","a","an","to","for","in"].includes(t));
-
-  for (let item of knowledge) {
-    for (let k of item.keywords) {
-      const keywordNormalized = normalize(k);
-      const keywordTokens = keywordNormalized.split(/\s+/);
-
-      let dice = diceSimilarity(lowerQ, keywordNormalized);
-      let lev = levenshteinSimilarity(lowerQ, keywordNormalized);
-      let tokenOverlap = tokenOverlapSimilarity(lowerQ, keywordNormalized);
-      let semLite = semanticLiteSimilarity(lowerQ, keywordNormalized);
-
-      let score = (dice * 0.25) + (lev * 0.25) + (tokenOverlap * 0.25) + (semLite * 0.25);
-
-      if (lowerQ.includes(keywordNormalized)) score += 1.0;
-
-      let matchCount = 0;
-      for (let qt of queryTokens) {
-        for (let kt of keywordTokens) {
-          if (levenshteinSimilarity(qt, kt) > 0.7) matchCount++;
-        }
+    // Fuzzy token-level matching (ignore word order)
+    for (let qt of queryTokens) {
+      let bestTokenSim = 0;
+      for (let kt of keywordTokens) {
+        const levSim = levenshteinSimilarity(qt, kt);
+        if (levSim > bestTokenSim) bestTokenSim = levSim;
       }
-      score += (matchCount / keywordTokens.length) * 0.5;
-
-      if (score > bestKnowledge.score) {
-        bestKnowledge = { score, answer: item.answer };
+      if (bestTokenSim > 0.35) { // typo tolerance
+        matchedTokens++;
+        simSum += bestTokenSim;
       }
     }
-  }
 
-  if (bestKnowledge.score > 0.3) {
-    if (Array.isArray(bestKnowledge.answer)) {
-      return bestKnowledge.answer[Math.floor(Math.random() * bestKnowledge.answer.length)];
+    // Score = average similarity + fraction of query tokens matched
+    let tokenMatchFraction = matchedTokens / Math.max(queryTokens.length, keywordTokens.length);
+    let score = (simSum / keywordTokens.length) + tokenMatchFraction;
+
+    // Bonus for tiny queries (1-3 words)
+    if (queryTokens.length <= 3) score += tokenMatchFraction * 1.2;
+
+    // Exact substring bonus
+    if (lowerQ.includes(keywordNormalized)) score += 1.0;
+
+    // Extra: check if all query tokens exist in keyword regardless of order (super fuzzy)
+    if (queryTokens.every(qt => keywordTokens.some(kt => levenshteinSimilarity(qt, kt) > 0.3))) {
+      score += 0.5; // small extra boost
     }
-    return typeof bestKnowledge.answer === "function"
-      ? bestKnowledge.answer()
-      : bestKnowledge.answer;
+
+    // Update bestKnowledge if score improves
+    if (score > bestKnowledge.score) {
+      bestKnowledge = { score, answer: item.answer };
+    }
   }
+}
+
+// Threshold logic (keep safe)
+let threshold = queryTokens.length <= 2 ? 0.1 : 0.3;
+
+// Return answer safely
+if (bestKnowledge.score > threshold) {
+  if (Array.isArray(bestKnowledge.answer)) {
+    return bestKnowledge.answer[Math.floor(Math.random() * bestKnowledge.answer.length)];
+  }
+  return typeof bestKnowledge.answer === "function"
+    ? bestKnowledge.answer(q)
+    : bestKnowledge.answer;
+}
+
+// Safe fallback for tiny queries
+for (let item of knowledge) {
+  for (let k of item.keywords) {
+    if (queryTokens.every(qt => k.toLowerCase().includes(qt))) {
+      return item.answer;
+    }
+  }
+}
+
+return null;
+
+
 
   // Step 5: Fallback
   const fallbacks = [
