@@ -6078,6 +6078,103 @@ const knowledge = [
     answer: "✨ Say hello to **Happy Gupta Mam** 😇. Sweet smile, strict rules, and always catching those Poor Handwriting ones 👀. Don’t test the patience!"
   },
 {
+  keywords: ["menu", "food menu", "what is menu", "tell me menu", "give me menu"],
+  answer: function (query) {
+    const menuData = {
+      "17/07/2025": "THURSDAY - LADY FINGER - भिंडी",
+      "18/07/2025": "FRIDAY - NUTRI - न्यूट्री",
+      "19/07/2025": "SATURDAY - DRY BLACK GRAM - सूखे काले चने",
+      "21/07/2025": "MONDAY - BOTTLE GOURD - घीया",
+      "22/07/2025": "TUESDAY - DRY PEAS WITH POTATOES - मटर आलू के साथ",
+      "23/07/2025": "WEDNESDAY - STUFFED PRANTHA WITH PICKLE - पराँठा अचार के साथ",
+      "04/08/2025": "MONDAY - BITTER GOURD - करेला",
+      "05/08/2025": "TUESDAY - WHITE GRAM - सफ़ेद चने",
+      "06/08/2025": "WEDNESDAY - PULAAV - पुलाव",
+      "07/08/2025": "THURSDAY - RIDGE GOURD - तोरी",
+      "09/08/2025": "SATURDAY - RAKSHA BANDHAN (HOLIDAY)",
+      "11/08/2025": "MONDAY - CAPSICUM WITH POTATOES - आलू के साथ शिमला मिर्च",
+      "12/08/2025": "TUESDAY - POTATO - आलू",
+      "13/08/2025": "WEDNESDAY - NOOL KHOL OR LADY FINGER - कढ़म या भिंडी",
+      "14/08/2025": "THURSDAY - CHEESE BHURJI - पनीर भुर्जी",
+      "15/08/2025": "FRIDAY - INDEPENDENCE DAY (HOLIDAY)",
+      "16/08/2025": "SATURDAY - JANMASHTHAMI (HOLIDAY)",
+      "18/08/2025": "MONDAY - TARO ROOT OR COLOCASIA - अरबी",
+      "19/08/2025": "TUESDAY - BAINGAN/BRINJAL BHARTA - बैंगन भरता",
+      "20/08/2025": "WEDNESDAY - ROUND MELON - टिंडा",
+      "21/08/2025": "THURSDAY - BITTER GOURD - करेला",
+      "22/08/2025": "FRIDAY - CHILDREN’S CHOICE - बच्चों की मर्जी से कोई भी डिश",
+      "23/08/2025": "SATURDAY - TARO ROOT OR COLOCASIA - अरबी",
+      "25/08/2025": "MONDAY - LADY FINGER - भिंडी",
+      "26/08/2025": "TUESDAY - BOTTLE GOURD - घीया",
+      "27/08/2025": "WEDNESDAY - NUTRI AND CHOORA PEAS - (चूरा न्यूट्री मटर के साथ)",
+      "28/08/2025": "THURSDAY - CAPSICUM WITH POTATOES - आलू के साथ शिमला मिर्च",
+      "29/08/2025": "FRIDAY - PULAAV - पुलाव",
+      "30/08/2025": "SATURDAY - BLACK GRAM - काले चने"
+    };
+
+    query = query.toLowerCase();
+
+    // Helper to format date as dd/mm/yyyy
+    function formatDate(dateObj) {
+      let dd = String(dateObj.getDate()).padStart(2, "0");
+      let mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+      let yyyy = dateObj.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    }
+
+    // Handle "today" and "tomorrow"
+    if (query.includes("today")) {
+      let today = new Date();
+      let todayKey = formatDate(today);
+      if (menuData[todayKey]) {
+        return `📅 Today (${todayKey}) - ${menuData[todayKey]}`;
+      } else {
+        return `😔 Sorry, no menu scheduled for today (${todayKey}).`;
+      }
+    }
+
+    if (query.includes("tomorrow")) {
+      let tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      let tomorrowKey = formatDate(tomorrow);
+      if (menuData[tomorrowKey]) {
+        return `📅 Tomorrow (${tomorrowKey}) - ${menuData[tomorrowKey]}`;
+      } else {
+        return `😔 Sorry, no menu scheduled for tomorrow (${tomorrowKey}).`;
+      }
+    }
+
+    // If just asking for full menu
+    if (/menu\b/.test(query) && !/\d{1,2}/.test(query)) {
+      return "📋 MENU OF MEALS : FROM 17TH JULY TO 30TH AUGUST, 2025\n\n" + 
+        Object.entries(menuData)
+          .map(([date, item]) => `${date} - ${item}`)
+          .join("\n");
+    }
+
+    // If specific date asked (like 22 july 2025)
+    const dateMatch = query.match(/(\d{1,2})\s*(\/|-|\s)?\s*(\w+)\s*(2025)?/);
+    if (dateMatch) {
+      let day = dateMatch[1].padStart(2, "0");
+      let month = dateMatch[3].toLowerCase();
+
+      const months = { "july": "07", "jul": "07", "august": "08", "aug": "08" };
+
+      if (months[month]) {
+        let fullDate = `${day}/${months[month]}/2025`;
+        if (menuData[fullDate]) {
+          return `📅 ${fullDate} - ${menuData[fullDate]}`;
+        }
+      }
+    }
+
+    // Fallback
+    return "😔 Sorry, I could not find that date’s menu. Maybe no menu was scheduled on that day in my base.";
+  }
+},
+
+
+{
   keywords: [
     "describe teachers of 8th a",
     "teachers of 8th a class",
@@ -9278,8 +9375,9 @@ const profiles = {
 
 
 // 📘 Subject/Class → Teacher mapping
-const teacherBySubject = {
-  "1st a": {
+const teacherBySubject = { 
+
+    "nursery a": {
     "science": "alice mam",
     "english": "bob mam",
     "geography": "carol mam",
@@ -9288,7 +9386,84 @@ const teacherBySubject = {
     "sst": "frank sir",
     "hindi": "grace mam"
   },
+  "nursery b": {
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+
+  "nursery c": {
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+
+  "nursery d": {
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+  "lkg a": {
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+  "lkg b": {
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+  "ukg a": {
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+  "ukg b": {
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+  "1st a": {
+     "form": "Priya Mam",
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+
   "1st b": {
+     "form": "Kajal Mam",
     "science": "hannah mam",
     "english": "ian sir",
     "geography": "jane mam",
@@ -9297,7 +9472,19 @@ const teacherBySubject = {
     "sst": "mike sir",
     "hindi": "nina mam"
   },
+  "1st c": {
+     "form": "Poonam Mam",
+    "science": "alice mam",
+    "english": "bob mam",
+    "geography": "carol mam",
+    "gk": "dave sir",
+    "maths": "eve sir",
+    "sst": "frank sir",
+    "hindi": "grace mam"
+  },
+
   "2nd a": {
+     "form": "Rashmi Mam",
     "science": "oliver sir",
     "english": "patricia mam",
     "geography": "quentin sir",
@@ -9307,6 +9494,7 @@ const teacherBySubject = {
     "hindi": "uma mam"
   },
   "2nd b": {
+     "form": "Rachna Mam",
     "science": "victor sir",
     "english": "wendy mam",
     "geography": "xander sir",
@@ -9315,8 +9503,20 @@ const teacherBySubject = {
     "sst": "amy mam",
     "hindi": "brian sir"
   },
+  "2nd c": {
+     "form": "Neelam Mam",
+    "science": "oliver sir",
+    "english": "patricia mam",
+    "geography": "quentin sir",
+    "gk": "rachel mam",
+    "maths": "sam sir",
+    "sst": "tina mam",
+    "hindi": "uma mam"
+  },
+
   "3rd a": {
-    "science": "carl sir",
+    "form": "Ravinder Mam",
+    "science": "",
     "english": "diana mam",
     "geography": "eric sir",
     "gk": "fiona mam",
@@ -9325,6 +9525,7 @@ const teacherBySubject = {
     "hindi": "ian sir"
   },
   "3rd b": {
+     "form": "Kashish Mam",
     "science": "julia mam",
     "english": "karl sir",
     "geography": "laura mam",
@@ -9333,7 +9534,19 @@ const teacherBySubject = {
     "sst": "oscar sir",
     "hindi": "paula mam"
   },
+  "3rd c": {
+     "form": "Preet Mam",
+    "science": "carl sir",
+    "english": "diana mam",
+    "geography": "eric sir",
+    "gk": "fiona mam",
+    "maths": "george sir",
+    "sst": "helen mam",
+    "hindi": "ian sir"
+  },
+
   "4th a": {
+    "form": "Nidhi Mam",
     "science": "quentin sir",
     "english": "rachel mam",
     "geography": "steve sir",
@@ -9343,6 +9556,7 @@ const teacherBySubject = {
     "hindi": "will sir"
   },
   "4th b": {
+    "form": "Sumegha Mam",
     "science": "xena mam",
     "english": "yusuf sir",
     "geography": "zoe mam",
@@ -9351,25 +9565,48 @@ const teacherBySubject = {
     "sst": "carol sir",
     "hindi": "dave mam"
   },
+  "4th c": {
+    "science": "Indra Mam",
+    "english": "rachel mam",
+    "geography": "steve sir",
+    "gk": "tina mam",
+    "maths": "ulysses sir",
+    "sst": "victoria mam",
+    "hindi": "will sir"
+  },
+
   "5th a": {
-    "science": "eve sir",
-    "english": "frank mam",
-    "geography": "grace sir",
-    "gk": "hannah mam",
-    "maths": "ian sir",
-    "sst": "jane mam",
-    "hindi": "kevin sir"
+    "form": "Rupinder Mam",
+    "science": "Gurwinder Mam ",
+    "english": "Rupinder Mam",
+    "english grammar": "Rupinder Mam",
+    "gk": "Ankush Mam",
+    "maths": "Rupinder Mam",
+    "sst": "Rupinder Mam",
+    "hindi": "Gurwinder Mam"
   },
   "5th b": {
-    "science": "linda mam",
-    "english": "mike sir",
-    "geography": "nina mam",
-    "gk": "oliver sir",
-    "maths": "patricia mam",
-    "sst": "quentin sir",
-    "hindi": "rachel mam"
+    "form": "Tapasya Mam",
+    "science": "Tapasya Mam",
+    "english": "Tapasya Mam",
+    "english grammar": "Tapasya Mam",
+    "gk": "Tapasya Mam",
+    "maths": "Tapasya Mam",
+    "sst": "Tapasya Mam",
+    "hindi": "Tapasya Mam"
+  },
+  "5th c": {
+    "form": "Muskan Mam",
+    "science": "Muskan Mam",
+    "english": "Bharti Mam",
+    "english grammar": "Muskan Mam",
+    "gk": "Priya Mam",
+    "maths": "Muskan Mam",
+    "sst": "Muskan Mam",
+    "hindi": "Bindu Mam"
   },
   "6th a": {
+    "form": "Mamta Mam",
     "science": "sam sir",
     "english": "tina mam",
     "geography": "uma mam",
@@ -9379,7 +9616,8 @@ const teacherBySubject = {
     "hindi": "yara mam"
   },
   "6th b": {
-    "science": "zane sir",
+    "form": "Bindu Mam",
+    "science": "Bindu Mam",
     "english": "amy mam",
     "geography": "brian sir",
     "gk": "carl sir",
@@ -9387,17 +9625,31 @@ const teacherBySubject = {
     "sst": "eric sir",
     "hindi": "fiona mam"
   },
-  "7th a": {
-    "science": "george sir",
-    "english": "helen mam",
-    "geography": "ian sir",
-    "gk": "julia mam",
-    "maths": "karl sir",
-    "sst": "laura mam",
-    "hindi": "matt sir"
+
+"6th c": {
+     "form": "CEO Jashandeep",
+    "science": "Bindu Mam",
+    "english": "amy mam",
+    "geography": "brian sir",
+    "gk": "carl sir",
+    "maths": "diana mam",
+    "sst": "eric sir",
+    "hindi": "fiona mam"
   },
+"7th a": {
+  "form": "Brij Bala Mam",
+  "science": "Shivani Mam",
+  "english": "Brij Bala Mam",
+  "geography": "Brij Bala Mam",
+  "gk": "Bindu Mam",
+  "maths": "Brij Bala Mam",
+  "sst": "Bharti Mam",
+  "hindi": "Bindu Mam"
+},
+
   "7th b": {
-    "science": "nora mam",
+    "form": "Gurwinder Mam",
+    "science": "Gurwinder Mam",
     "english": "oscar sir",
     "geography": "paula mam",
     "gk": "quentin sir",
@@ -9406,6 +9658,7 @@ const teacherBySubject = {
     "hindi": "tina mam"
   },
   "8th a": {
+    "form": "Bharti Mam",
     "science": "bharti mam",
     "english": "kashika mam",
     "geography": "kashika mam",
@@ -9415,6 +9668,7 @@ const teacherBySubject = {
     "hindi": "mamta mam"
   },
   "8th b": {
+    "form": "Sudama Mam",
     "science": "sudama sir",
     "english": "deepika mam",
     "geography": "deepika mam",
@@ -9424,6 +9678,7 @@ const teacherBySubject = {
     "hindi": "bindu mam"
   },
   "9th a": {
+    "form": "Kashika Mam",
     "science": "alice sir",
     "english": "bob mam",
     "geography": "carol mam",
@@ -9433,6 +9688,7 @@ const teacherBySubject = {
     "hindi": "grace mam"
   },
   "9th b": {
+    "form": "Shivani Mam",
     "science": "Deepika Mam",
     "english": "ian sir",
     "geography": "jane mam",
@@ -9442,6 +9698,7 @@ const teacherBySubject = {
     "hindi": "nina mam"
   },
   "10th a": {
+    "form": "Deepika Mam",
     "science": "oliver sir",
     "english": "patricia mam",
     "geography": "quentin sir",
@@ -9451,7 +9708,8 @@ const teacherBySubject = {
     "hindi": "uma mam"
   },
   "10th b": {
-    "science": "victor sir",
+     "form": "Deepika Mam",
+    "science": "Dheeraj Sir",
     "english": "wendy mam",
     "geography": "xander sir",
     "gk": "yara mam",
@@ -9867,12 +10125,13 @@ function findAnswer(q) {
     return "⚠️ Could not parse or compute that expression.";
   }
 
+//------------------- Teacher Query Handler ------------------- // ------------------- Teacher by Subject ------------------- const subjectRegex = /(science|english|english grammar|geography|gk|maths|sst|hindi|form|history|civics|history\/civics|historycivics|history civics)/i; let responses = []; // --- Subject teacher queries (multi-grade & multi-section) --- // --- Subject teacher queries (multi-grade & multi-section) --- if (subjectRegex.test(q) && /teacher/i.test(q)) { const subject = q.match(subjectRegex)[0].toLowerCase(); // Extract grades like "8th", "9th", "10th", including optional sections const grades = q.match(/(\d+(?:th|st|nd|rd))(?:\s?[abc])?/gi) || []; let blocks = []; let seen = new Set(); grades.forEach(rawGrade => { const grade = normalize(rawGrade); // keep A/B if present if (seen.has(grade)) return; seen.add(grade); let foundSections = []; Object.keys(teacherBySubject).forEach(cls => { // Case-insensitive match; matches "9th" → "9th a" + "9th b" if (cls.toLowerCase().startsWith(grade.toLowerCase())) { const t = teacherBySubject[cls]?.[subject]; if (t) foundSections.push(- ${cls.toUpperCase()}: ${t}); } }); if (foundSections.length > 0) { let label = subject === "form" ? "FORM TEACHER" : *${subject.toUpperCase()}*; blocks.push(📘 ${label} of ${grade.toUpperCase()}\n${foundSections.join("\n")}); } else { blocks.push(❌ No sections found for *${subject.toUpperCase()}* in ${grade.toUpperCase()}); } }); if (blocks.length) responses.push(blocks.join("\n\n")); } // --- All teachers of multiple classes --- if (/teachers of/i.test(q)) { let classMatches = q.match(/\d+(?:th|st|nd|rd)(?:\s?[abc])?/gi) || []; let blocks = []; let seen = new Set(); classMatches.forEach(raw => { const grade = normalize(raw); if (seen.has(grade)) return; seen.add(grade); // Include all sections let found = false; Object.keys(teacherBySubject).forEach(cls => { if (cls.toLowerCase().startsWith(grade.toLowerCase())) { found = true; let lines = [📘 Teachers of ${cls.toUpperCase()}]; Object.keys(teacherBySubject[cls]).forEach(subject => { const t = teacherBySubject[cls][subject]; if (t) { let label = subject === "form" ? "FORM TEACHER" : *${subject.toUpperCase()}*; lines.push(- ${label}: ${t}); } }); blocks.push(lines.join("\n")); } }); if (!found) blocks.push(❌ No sections found for ${grade.toUpperCase()}); }); if (blocks.length) responses.push(blocks.join("\n\n")); } // --- Final Response --- if (responses.length) { return responses.join("\n\n"); } else { return "❌ Sorry, I could not find that teacher information in my base."; }   
+
 // ------------------- Profile Check -------------------
 // Step 1: Person profiles
 for (let person in profiles) {
   const normKey = normalize(person);
 
-  // Strict matching conditions
   if (
     lowerQ === normKey || // exact match (just the name)
     lowerQ === `who is ${normKey}` ||
@@ -9883,23 +10142,12 @@ for (let person in profiles) {
     return ans;
   }
 }
- 
 
-  // Step 2: Teacher by subject
-  const subjectRegex = /(science|english|geography|gk|maths|sst|hindi)/i;
-  const subjectMatch = q.match(subjectRegex);
-  let classKeys = Object.keys(teacherBySubject);
-  let classMatch = classKeys.find(cls => lowerQ.includes(normalize(cls)));
-  if (classMatch && subjectMatch) {
-    const subject = subjectMatch[0].toLowerCase();
-    const teacher = teacherBySubject[classMatch]?.[subject];
-    if (teacher) {
-      if (subject === "gk" && /teacher|sir|mam/.test(lowerQ)) {
-        return `📘 The **GK Teacher** for ${classMatch.toUpperCase()} is **${teacher}** 👩‍🏫👨‍🏫`;
-      }
-      return profiles[teacher] || `Hmm, the teacher for **${subject.toUpperCase()}** in **${classMatch.toUpperCase()}** is ${teacher}.`;
-    }
-  }
+// If "who is ___" or "tell me about ___" didn't match profiles → fallback
+if (/^who is |^tell me about /.test(lowerQ)) {
+  const name = lowerQ.replace(/^who is |^tell me about /, "").trim();
+  if (name) return `🤔 I don’t know who is ${name}.`;
+}
 
 // Step 3: GK fuzzy search
 let gkMatches = [];
@@ -9989,7 +10237,7 @@ for (let item of knowledge) {
 
     // Extra: check if all query tokens exist in keyword regardless of order (super fuzzy)
     if (queryTokens.every(qt => keywordTokens.some(kt => levenshteinSimilarity(qt, kt) > 0.3))) {
-      score += 0.5; // small extra boost
+      score += 0.5;
     }
 
     // Update bestKnowledge if score improves
@@ -9999,23 +10247,25 @@ for (let item of knowledge) {
   }
 }
 
-// Threshold logic (keep safe)
+// After your fuzzy matching loop, replace the return logic with this:
 let threshold = queryTokens.length <= 2 ? 0.1 : 0.3;
 
-// Return answer safely
-if (bestKnowledge.score > threshold) {
-  if (Array.isArray(bestKnowledge.answer)) {
+if (bestKnowledge.score > threshold && bestKnowledge.answer) {
+  // PRIORITIZE FUNCTION ANSWERS
+  if (typeof bestKnowledge.answer === "function") {
+    return bestKnowledge.answer(q); // call function with the query
+  } else if (Array.isArray(bestKnowledge.answer)) {
     return bestKnowledge.answer[Math.floor(Math.random() * bestKnowledge.answer.length)];
+  } else {
+    return bestKnowledge.answer;
   }
-  return typeof bestKnowledge.answer === "function"
-    ? bestKnowledge.answer(q)
-    : bestKnowledge.answer;
 }
 
 // Safe fallback for tiny queries
 for (let item of knowledge) {
   for (let k of item.keywords) {
     if (queryTokens.every(qt => k.toLowerCase().includes(qt))) {
+      if (typeof item.answer === "function") return item.answer(q);
       return item.answer;
     }
   }
