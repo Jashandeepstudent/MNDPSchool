@@ -9378,6 +9378,7 @@ const profiles = {
 const teacherBySubject = { 
 
     "nursery a": {
+     "form": "Poonam Mam",
     "science": "alice mam",
     "english": "bob mam",
     "geography": "carol mam",
@@ -9387,6 +9388,7 @@ const teacherBySubject = {
     "hindi": "grace mam"
   },
   "nursery b": {
+    "form": "Poonam Mam",
     "science": "alice mam",
     "english": "bob mam",
     "geography": "carol mam",
@@ -9397,6 +9399,7 @@ const teacherBySubject = {
   },
 
   "nursery c": {
+    "form": "Poonam Mam",
     "science": "alice mam",
     "english": "bob mam",
     "geography": "carol mam",
@@ -9407,6 +9410,7 @@ const teacherBySubject = {
   },
 
   "nursery d": {
+     "form": "Poonam Mam",
     "science": "alice mam",
     "english": "bob mam",
     "geography": "carol mam",
@@ -9416,6 +9420,7 @@ const teacherBySubject = {
     "hindi": "grace mam"
   },
   "lkg a": {
+     "form": "Poonam Mam",
     "science": "alice mam",
     "english": "bob mam",
     "geography": "carol mam",
@@ -9425,6 +9430,7 @@ const teacherBySubject = {
     "hindi": "grace mam"
   },
   "lkg b": {
+    "form": "Poonam Mam",
     "science": "alice mam",
     "english": "bob mam",
     "geography": "carol mam",
@@ -9434,6 +9440,7 @@ const teacherBySubject = {
     "hindi": "grace mam"
   },
   "ukg a": {
+    "form": "Poonam Mam",
     "science": "alice mam",
     "english": "bob mam",
     "geography": "carol mam",
@@ -9443,6 +9450,7 @@ const teacherBySubject = {
     "hindi": "grace mam"
   },
   "ukg b": {
+     "form": "Poonam Mam",
     "science": "alice mam",
     "english": "bob mam",
     "geography": "carol mam",
@@ -10127,7 +10135,10 @@ function findAnswer(q) {
 // ------------------- Teacher Query Handler -------------------
 
 // ------------------- Teacher by Subject -------------------
-const subjectRegex = /(science|english|english grammar|geography|gk|maths|sst|hindi|form|history|civics|history\/civics|history and civics|history civics)/i;
+const subjectRegex = /(science|english|english grammar|geography|gk|maths|sst|hindi|form|class teacher|history|civics|history\/civics|history and civics|history civics)/i;
+
+// Support classes like "1st", "2nd", "3rd", "10th", "nursery", "lkg", "ukg"
+const classPattern = "(?:\\d+(?:th|st|nd|rd)|nursery|lkg|ukg)(?:\\s?[abc])?";
 
 // Split into multiple queries if user asks many
 const queries = q.split(/,| and /i).map(x => x.trim()).filter(x => x);
@@ -10137,15 +10148,18 @@ let responses = [];
 queries.forEach(queryPart => {
   const lowerPart = queryPart.toLowerCase();
 
+  // ✅ Treat "class teacher" same as "form"
+  const normalizedPart = lowerPart.replace(/class teacher/g, "form");
+
   // ✅ Check if asking for all teachers of a class
-  const allClassMatch = /teachers of (\d+(?:th|st|nd|rd)(?:\s?[abc])?)/i.exec(lowerPart);
+  const allClassMatch = new RegExp(`teachers of (${classPattern})`, "i").exec(normalizedPart);
   if (allClassMatch) {
     let className = normalize(allClassMatch[1]);
 
     // exclude 8th a / 8th b special case
     if (className.startsWith("8th")) return;
 
-    if (className.endsWith("th")) {
+    if (/^\d/.test(className) && className.endsWith("th")) {
       // like "teachers of 9th" → include 9th A, 9th B, 9th C...
       let blocks = [];
       Object.keys(teacherBySubject).forEach(cls => {
@@ -10166,7 +10180,7 @@ queries.forEach(queryPart => {
         responses.push(blocks.join("\n\n"));
       }
     } else {
-      // like "teachers of 9th A" → only that section
+      // like "teachers of 9th A" or "teachers of LKG" → only that section
       if (teacherBySubject[className]) {
         let lines = [`📘 Teachers of ${className.toUpperCase()}`];
         let subjects = Object.keys(teacherBySubject[className]);
@@ -10183,11 +10197,11 @@ queries.forEach(queryPart => {
     return; // skip rest for "teachers of" queries
   }
 
-  // ✅ Check if asking subject teacher of a whole grade (like "GK teacher of 9th")
-  const subjectMatch = queryPart.match(subjectRegex);
-  const gradeMatch = /(\d+(?:th|st|nd|rd))(?!\s?[abc])/.exec(lowerPart); // 9th (without A/B/C)
+  // ✅ Check if asking subject teacher of a whole grade (like "GK teacher of 9th", "GK teacher of LKG")
+  const subjectMatch = normalizedPart.match(subjectRegex);
+  const gradeMatch = new RegExp(`(${classPattern})(?!\\s?[abc])`, "i").exec(normalizedPart);
   if (subjectMatch && gradeMatch) {
-    const subject = subjectMatch[0].toLowerCase();
+    const subject = subjectMatch[0].toLowerCase().replace("class teacher", "form");
     const grade = normalize(gradeMatch[1]);
 
     let blocks = [];
@@ -10207,28 +10221,59 @@ queries.forEach(queryPart => {
     return;
   }
 
+  // ✅ Handle "who teaches X in Y" / "who takes X in Y"
+  const teachMatch = new RegExp(`(who (teaches|takes) )?(.*) in (${classPattern})`, "i").exec(normalizedPart);
+  if (teachMatch) {
+    const subject = (teachMatch[3].trim().match(subjectRegex)?.[0] || "")
+      .toLowerCase()
+      .replace("class teacher", "form");
+    const className = normalize(teachMatch[4]);
+
+    if (subject && teacherBySubject[className]?.[subject]) {
+      let teacher = teacherBySubject[className][subject];
+      if (subject === "form") {
+        responses.push(`The FORM Teacher of ${className.toUpperCase()} is ${teacher}`);
+      } else {
+        let label = `*${subject.toUpperCase()}*`;
+        responses.push(`The teacher for ${label} in ${className.toUpperCase()} is ${teacher}`);
+      }
+    }
+    return;
+  }
+
   // ✅ Normal subject + section queries
   let classKeys = Object.keys(teacherBySubject);
-  let classMatch = classKeys.find(cls => lowerPart.includes(normalize(cls)));
+  let classMatch = classKeys.find(cls => normalizedPart.includes(normalize(cls)));
 
   if (classMatch && subjectMatch) {
-    const subject = subjectMatch[0].toLowerCase();
+    const subject = subjectMatch[0].toLowerCase().replace("class teacher", "form");
     const teacher = teacherBySubject[classMatch]?.[subject];
 
     if (teacher) {
-      let label = subject === "form" ? "FORM TEACHER" : `*${subject.toUpperCase()}*`;
-      responses.push(`The teacher for ${label} in ${classMatch.toUpperCase()} is ${teacher}`);
+      if (subject === "form") {
+        responses.push(`The FORM Teacher of ${classMatch.toUpperCase()} is ${teacher}`);
+      } else {
+        let label = `*${subject.toUpperCase()}*`;
+        responses.push(`The teacher for ${label} in ${classMatch.toUpperCase()} is ${teacher}`);
+      }
     }
   }
 });
 
-// ✅ Final join
+// ✅ Final join (better multiple query handling)
 if (responses.length) {
+  // If at least one is a list (📘 block), separate with blank lines
   if (responses.some(r => r.includes("📘"))) {
-    return responses.join("\n\n"); // list format
-  } else {
-    return responses.join(" and ") + ".";
+    return responses.join("\n\n");
   }
+
+  // If multiple short answers, return each on a new line
+  if (responses.length > 1) {
+    return responses.map(r => `- ${r}`).join("\n");
+  }
+
+  // Single response → return as is
+  return responses[0];
 }
 
 
@@ -10300,16 +10345,17 @@ if (gkMatches.length > 0) {
     return randomMultipleIntro() + "\n" + answers.join("\n") + " 😄";
   }
 }
-
 let bestKnowledge = { score: 0, answer: null };
 
-// Normalize and tokenize query
+// ------------------- Normalize + Tokenize -------------------
 let queryTokens = lowerQ
-  .replace(/[^\w\s]/g, " ")
+  .replace(/[^\w\s]/g, " ") // remove punctuation
   .split(/\s+/)
-  .filter(t => t.length > 0 && !["what","is","the","of","a","an","to","for","in"].includes(t));
+  .filter(
+    t => t.length > 0 && !["what","is","the","of","a","an","to","for","in"].includes(t)
+  );
 
-// Loop through knowledge items
+// ------------------- Matching Loop -------------------
 for (let item of knowledge) {
   for (let k of item.keywords) {
     const keywordNormalized = normalize(k);
@@ -10318,59 +10364,63 @@ for (let item of knowledge) {
     let matchedTokens = 0;
     let simSum = 0;
 
-    // Fuzzy token-level matching (ignore word order)
+    // --- Token-level fuzzy matching ---
     for (let qt of queryTokens) {
       let bestTokenSim = 0;
       for (let kt of keywordTokens) {
         const levSim = levenshteinSimilarity(qt, kt);
         if (levSim > bestTokenSim) bestTokenSim = levSim;
       }
-      if (bestTokenSim > 0.35) { // typo tolerance
+      if (bestTokenSim > 0.35) { // tolerate typos
         matchedTokens++;
         simSum += bestTokenSim;
       }
     }
 
-    // Score = average similarity + fraction of query tokens matched
+    // --- Score calculation ---
     let tokenMatchFraction = matchedTokens / Math.max(queryTokens.length, keywordTokens.length);
     let score = (simSum / keywordTokens.length) + tokenMatchFraction;
 
-    // Bonus for tiny queries (1-3 words)
+    // Bonus for tiny queries (1–3 words)
     if (queryTokens.length <= 3) score += tokenMatchFraction * 1.2;
 
-    // Exact substring bonus
-    if (lowerQ.includes(keywordNormalized)) score += 1.0;
+    // Substring bonus (normalize both sides)
+    if (normalize(lowerQ).includes(keywordNormalized)) score += 1.0;
 
-    // Extra: check if all query tokens exist in keyword regardless of order (super fuzzy)
-    if (queryTokens.every(qt => keywordTokens.some(kt => levenshteinSimilarity(qt, kt) > 0.3))) {
+    // Extra fuzzy: all query tokens appear in keyword (any order)
+    if (queryTokens.every(qt =>
+      keywordTokens.some(kt => levenshteinSimilarity(qt, kt) > 0.3)
+    )) {
       score += 0.5;
     }
 
-    // Update bestKnowledge if score improves
+    // Update best answer
     if (score > bestKnowledge.score) {
       bestKnowledge = { score, answer: item.answer };
     }
   }
 }
 
-// After your fuzzy matching loop, replace the return logic with this:
-let threshold = queryTokens.length <= 2 ? 0.1 : 0.3;
+// ------------------- Final Answer Selection -------------------
+let threshold = queryTokens.length <= 2 ? 0.25 : 0.35;
 
 if (bestKnowledge.score > threshold && bestKnowledge.answer) {
-  // PRIORITIZE FUNCTION ANSWERS
   if (typeof bestKnowledge.answer === "function") {
-    return bestKnowledge.answer(q); // call function with the query
+    return bestKnowledge.answer(q); // execute dynamic answer
   } else if (Array.isArray(bestKnowledge.answer)) {
-    return bestKnowledge.answer[Math.floor(Math.random() * bestKnowledge.answer.length)];
+    return bestKnowledge.answer[
+      Math.floor(Math.random() * bestKnowledge.answer.length)
+    ];
   } else {
     return bestKnowledge.answer;
   }
 }
 
-// Safe fallback for tiny queries
+// ------------------- Safe Fallback -------------------
 for (let item of knowledge) {
   for (let k of item.keywords) {
-    if (queryTokens.every(qt => k.toLowerCase().includes(qt))) {
+    let kNorm = normalize(k);
+    if (queryTokens.every(qt => kNorm.includes(qt))) {
       if (typeof item.answer === "function") return item.answer(q);
       return item.answer;
     }
@@ -10378,8 +10428,6 @@ for (let item of knowledge) {
 }
 
 return null;
-
-
 
   // Step 5: Fallback
   const fallbacks = [
