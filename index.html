@@ -10124,89 +10124,114 @@ function findAnswer(q) {
   } catch (err) {
     return "⚠️ Could not parse or compute that expression.";
   }
+// ------------------- Teacher Query Handler -------------------
 
 // ------------------- Teacher by Subject -------------------
-const subjectRegex = /(science|english|english grammar|geography|gk|maths|sst|hindi|form|history|civics|history\/civics|historycivics|history civics)/i;
+const subjectRegex = /(science|english|english grammar|geography|gk|maths|sst|hindi|form|history|civics|history\/civics|history and civics|history civics)/i;
+
+// Split into multiple queries if user asks many
+const queries = q.split(/,| and /i).map(x => x.trim()).filter(x => x);
 
 let responses = [];
 
-// --- Subject teacher queries (multi-grade & multi-section) ---
-// --- Subject teacher queries (multi-grade & multi-section) ---
-if (subjectRegex.test(q) && /teacher/i.test(q)) {
-  const subject = q.match(subjectRegex)[0].toLowerCase();
+queries.forEach(queryPart => {
+  const lowerPart = queryPart.toLowerCase();
 
-  // Extract grades like "8th", "9th", "10th", including optional sections
-  const grades = q.match(/(\d+(?:th|st|nd|rd))(?:\s?[abc])?/gi) || [];
+  // ✅ Check if asking for all teachers of a class
+  const allClassMatch = /teachers of (\d+(?:th|st|nd|rd)(?:\s?[abc])?)/i.exec(lowerPart);
+  if (allClassMatch) {
+    let className = normalize(allClassMatch[1]);
 
-  let blocks = [];
-  let seen = new Set();
+    // exclude 8th a / 8th b special case
+    if (className.startsWith("8th")) return;
 
-  grades.forEach(rawGrade => {
-    const grade = normalize(rawGrade); // keep A/B if present
-    if (seen.has(grade)) return;
-    seen.add(grade);
-
-    let foundSections = [];
-
-    Object.keys(teacherBySubject).forEach(cls => {
-      // Case-insensitive match; matches "9th" → "9th a" + "9th b"
-      if (cls.toLowerCase().startsWith(grade.toLowerCase())) {
-        const t = teacherBySubject[cls]?.[subject];
-        if (t) foundSections.push(`- ${cls.toUpperCase()}: ${t}`);
+    if (className.endsWith("th")) {
+      // like "teachers of 9th" → include 9th A, 9th B, 9th C...
+      let blocks = [];
+      Object.keys(teacherBySubject).forEach(cls => {
+        if (cls.startsWith(className)) {
+          let lines = [`📘 Teachers of ${cls.toUpperCase()}`];
+          let subjects = Object.keys(teacherBySubject[cls]);
+          subjects.forEach(subject => {
+            const teacher = teacherBySubject[cls][subject];
+            if (teacher) {
+              let label = subject === "form" ? "FORM TEACHER" : `*${subject.toUpperCase()}*`;
+              lines.push(`- ${label}: ${teacher}`);
+            }
+          });
+          blocks.push(lines.join("\n"));
+        }
+      });
+      if (blocks.length) {
+        responses.push(blocks.join("\n\n"));
       }
-    });
-
-    if (foundSections.length > 0) {
-      let label = subject === "form" ? "FORM TEACHER" : `*${subject.toUpperCase()}*`;
-      blocks.push(`📘 ${label} of ${grade.toUpperCase()}\n${foundSections.join("\n")}`);
     } else {
-      blocks.push(`❌ No sections found for *${subject.toUpperCase()}* in ${grade.toUpperCase()}`);
-    }
-  });
-
-  if (blocks.length) responses.push(blocks.join("\n\n"));
-}
-// --- All teachers of multiple classes ---
-if (/teachers of/i.test(q)) {
-  let classMatches = q.match(/\d+(?:th|st|nd|rd)(?:\s?[abc])?/gi) || [];
-  let blocks = [];
-  let seen = new Set();
-
-  classMatches.forEach(raw => {
-    const grade = normalize(raw);
-    if (seen.has(grade)) return;
-    seen.add(grade);
-
-    // Include all sections
-    let found = false;
-    Object.keys(teacherBySubject).forEach(cls => {
-      if (cls.toLowerCase().startsWith(grade.toLowerCase())) {
-        found = true;
-        let lines = [`📘 Teachers of ${cls.toUpperCase()}`];
-        Object.keys(teacherBySubject[cls]).forEach(subject => {
-          const t = teacherBySubject[cls][subject];
-          if (t) {
+      // like "teachers of 9th A" → only that section
+      if (teacherBySubject[className]) {
+        let lines = [`📘 Teachers of ${className.toUpperCase()}`];
+        let subjects = Object.keys(teacherBySubject[className]);
+        subjects.forEach(subject => {
+          const teacher = teacherBySubject[className][subject];
+          if (teacher) {
             let label = subject === "form" ? "FORM TEACHER" : `*${subject.toUpperCase()}*`;
-            lines.push(`- ${label}: ${t}`);
+            lines.push(`- ${label}: ${teacher}`);
           }
         });
-        blocks.push(lines.join("\n"));
+        responses.push(lines.join("\n"));
+      }
+    }
+    return; // skip rest for "teachers of" queries
+  }
+
+  // ✅ Check if asking subject teacher of a whole grade (like "GK teacher of 9th")
+  const subjectMatch = queryPart.match(subjectRegex);
+  const gradeMatch = /(\d+(?:th|st|nd|rd))(?!\s?[abc])/.exec(lowerPart); // 9th (without A/B/C)
+  if (subjectMatch && gradeMatch) {
+    const subject = subjectMatch[0].toLowerCase();
+    const grade = normalize(gradeMatch[1]);
+
+    let blocks = [];
+    Object.keys(teacherBySubject).forEach(cls => {
+      if (cls.startsWith(grade)) {
+        const teacher = teacherBySubject[cls]?.[subject];
+        if (teacher) {
+          let label = subject === "form" ? "FORM TEACHER" : `*${subject.toUpperCase()}*`;
+          if (!blocks.length) blocks.push(`📘 ${label} of ${grade.toUpperCase()}`);
+          blocks.push(`- ${cls.toUpperCase()}: ${teacher}`);
+        }
       }
     });
+    if (blocks.length) {
+      responses.push(blocks.join("\n"));
+    }
+    return;
+  }
 
-    if (!found) blocks.push(`❌ No sections found for ${grade.toUpperCase()}`);
-  });
+  // ✅ Normal subject + section queries
+  let classKeys = Object.keys(teacherBySubject);
+  let classMatch = classKeys.find(cls => lowerPart.includes(normalize(cls)));
 
-  if (blocks.length) responses.push(blocks.join("\n\n"));
-}
+  if (classMatch && subjectMatch) {
+    const subject = subjectMatch[0].toLowerCase();
+    const teacher = teacherBySubject[classMatch]?.[subject];
 
-// --- Final Response ---
+    if (teacher) {
+      let label = subject === "form" ? "FORM TEACHER" : `*${subject.toUpperCase()}*`;
+      responses.push(`The teacher for ${label} in ${classMatch.toUpperCase()} is ${teacher}`);
+    }
+  }
+});
+
+// ✅ Final join
 if (responses.length) {
-  return responses.join("\n\n");
-} else {
-  return "❌ Sorry, I could not find that teacher information in my base.";
+  if (responses.some(r => r.includes("📘"))) {
+    return responses.join("\n\n"); // list format
+  } else {
+    return responses.join(" and ") + ".";
+  }
 }
-  
+
+
 
 // ------------------- Profile Check -------------------
 // Step 1: Person profiles
