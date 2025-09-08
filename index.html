@@ -811,11 +811,21 @@ section#home.active {
 
 /* smaller screens: reduce image sizes and layout */
 @media (max-width: 820px){
-  .welcome-box { padding: 40px 18px; margin: 20px; }
-  .welcome-box .collage img { display: none; } /* collapse collage on small devices for clarity */
+  .welcome-box { 
+    padding: 40px 18px; 
+    margin: 20px; 
+  }
+
+  /* ✅ keep collage images visible but smaller */
+  .welcome-box .collage img { 
+    width: 90px;   /* scale down for mobile */
+    height: auto;  /* keep aspect ratio */
+  }
+
   #homeTitle { font-size: 2.2rem; }
   #homeDesc { font-size: 1rem; }
 }
+
 </style>
 </head>
 <body>
