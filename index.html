@@ -10563,19 +10563,27 @@ if (responses.length) {
 // ------------------- Profile Check -------------------
 // Step 1: Person profiles
 for (let person in profiles) {
-  const normKey = normalize(person);
+  const normKey = normalize(person); // "bharti mam"
+  const nameParts = normKey.split(" "); // ["bharti", "mam"]
 
-  // Strict matching conditions
+  // Normalize query
+  const qWords = lowerQ.replace(/who is |tell me about /g, "").split(" ");
+
+  // Check if any part of the query matches any part of the name
+  const partialMatch = qWords.some(qWord => nameParts.includes(qWord));
+
   if (
-    lowerQ === normKey || // exact match (just the name)
+    lowerQ === normKey || // exact
     lowerQ === `who is ${normKey}` ||
-    lowerQ === `tell me about ${normKey}`
+    lowerQ === `tell me about ${normKey}` ||
+    partialMatch // first name, last name, or nickname match
   ) {
     const ans = profiles[person];
     if (Array.isArray(ans)) return randomPick(ans);
     return ans;
   }
 }
+
 
 // Step 3: GK fuzzy search
 let gkMatches = [];
