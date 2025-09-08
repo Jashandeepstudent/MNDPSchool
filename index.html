@@ -7432,6 +7432,64 @@ Also, sugarcoating? Nah… I’m just sprinkling some extra 🍭 respect.`
   }
 },
 
+{
+  keywords: [
+    "gayatri mantra",
+    "gayatri",
+    "gaitri mantra",
+    "gaitri"
+  ],
+  answer: function(query) {
+    const lower = query.toLowerCase();
+
+    // Check if query is about Gayatri Mantra
+    const isMantra = /gayatri|gaitri/i.test(lower);
+    if (!isMantra) return "";
+
+    let response = "🌸 **Gayatri Mantra** 🌸\n\n";
+
+    // Detect requested language
+    const wantsSanskrit = /sanskrit/i.test(lower);
+    const wantsHindi = /hindi|hind/i.test(lower);
+    const wantsEnglish = /english|meaning|translation/i.test(lower);
+
+    if (!wantsSanskrit && !wantsHindi && !wantsEnglish) {
+      // No language specified → return all
+      response += getSanskrit() + "\n" + getHindiMeaning() + "\n" + getEnglish();
+    } else {
+      if (wantsSanskrit) response += getSanskrit();
+      if (wantsHindi) response += getHindiMeaning();
+      if (wantsEnglish) response += getEnglish();
+    }
+
+    response += "\n🙏 Chant with devotion and focus on the divine light.";
+    return response;
+
+    // ---------------- Language Functions ----------------
+    function getSanskrit() {
+      return "**Sanskrit:**\n" +
+        "ॐ भूर्भुवः स्वः।\n" +
+        "तत्सवितुर्वरेण्यं।\n" +
+        "भर्गो देवस्य धीमहि।\n" +
+        "धियो यो नः प्रचोदयात्॥\n";
+    }
+
+    function getHindiMeaning() {
+      return "**Hindi अर्थ:**\n" +
+        "हम उस परमसत्ता की उपासना करते हैं, जो त्रिलोक का पालन करने वाली है।\n" +
+        "जो पूज्य और श्रेष्ठ है, देवस्वरूप है।\n" +
+        "हम उसके तेज का ध्यान करते हैं।\n" +
+        "वह परमसत्ता हमारी बुद्धि को शुभ मार्ग की ओर प्रेरित करे।\n";
+    }
+
+    function getEnglish() {
+      return "**English Meaning:**\n" +
+        "\"We meditate on the divine light of the radiant Creator. May that Supreme Being inspire and enlighten our intellect.\"";
+    }
+  }
+},
+
+
 
 
   
