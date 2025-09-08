@@ -809,25 +809,15 @@ section#home.active {
 }
 
 
-/* smaller screens: reduce image sizes and layout */
-@media (max-width: 820px) {
-  .welcome-box { 
-    padding: 30px 20px;   /* Adds more inner spacing top/bottom (50px), left/right (20px) */
-    margin: 20px;         /* Adds 20px space outside the box */
-  }
-
+@media (max-width: 820px){
+  .welcome-box { padding: 50px 20px; margin: 20px; }
+  /* keep images visible, maybe smaller size */
   .welcome-box .collage img { 
-    width: 100px;         /* Shrinks images inside the collage to 100px width */
-    height: 70px;         /* Shrinks them to 70px height */
+    width: 100px;
+    height: 70px;
   }
-
-  #homeTitle { 
-    font-size: 2.5rem;    /* Makes the title text smaller on small screens */
-  }
-
-  #homeDesc { 
-    font-size: 1.1rem;    /* Makes the description text a bit smaller */
-  }
+  #homeTitle { font-size: 2.5rem; }
+  #homeDesc { font-size: 1.1rem; }
 }
 </style>
 </head>
