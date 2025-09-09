@@ -19,6 +19,8 @@ window.addEventListener("load", () => {
 });
  </script>
 <script>
+  const secret = String.fromCharCode(71,105,102,116,98,121,109,101);
+
   emailjs.init('82kjXx_GqN4q2HVOh');
  </script>
 <head>
@@ -1362,7 +1364,7 @@ function submitAdmissionForm() {
     return;
   }
   const pwd = prompt("Enter Admin Password:");
-  if (pwd === "Giftbyme") {
+  if (pwd === secret) {
     // Set admin state
     if (typeof window.isAdmin === "boolean") { window.isAdmin = true; } else { window.isAdmin = true; }
     try { localStorage.setItem("isAdmin", "true"); } catch(_) {}
@@ -1862,7 +1864,7 @@ document.getElementById("adminOption").addEventListener("click", (e) => {
     return;
   }
   const pwd = prompt("Enter Admin Password:");
-  if (pwd === "admin123") {
+  if (pwd === secret) {
     // Set admin state
     if (typeof window.isAdmin === "boolean") { window.isAdmin = true; } else { window.isAdmin = true; }
     try { localStorage.setItem("isAdmin", "true"); } catch(_) {}
