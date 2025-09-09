@@ -1,196 +1,102 @@
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs');
-const multer = require('multer');
-const bodyParser = require('body-parser');
-const path = require('path');
+// backend/server.js
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const webpush = require("web-push");
+const fs = require("fs");
+const session = require("express-session");
+const bcrypt = require("bcrypt");
 
+// --- File storage for subscriptions ---
+const SUB_FILE = "./subs.json";
+let subscriptions = [];
+try { subscriptions = JSON.parse(fs.readFileSync(SUB_FILE)); } catch(e) { subscriptions = []; }
+function saveSubs() { fs.writeFileSync(SUB_FILE, JSON.stringify(subscriptions, null, 2)); }
+
+// --- VAPID keys for push ---
+const VAPID_PUBLIC = "BHWc5lZp511aGI0p7ca4nBJIz-hSMC29h4guSDW4OUNkYYgcpr4wllsiJHEdVQxdM2Fn8EeM4RgE3YhOi0DHSCc";
+const VAPID_PRIVATE = "GUQ9KKEqBhm_KJzNYriYSVY0tA1YCHEoyXi6JnHvBiM";
+
+webpush.setVapidDetails("mailto:you@example.com", VAPID_PUBLIC, VAPID_PRIVATE);
+
+// --- Express setup ---
 const app = express();
+app.use(cors({
+  origin: "http://localhost:5500", // change to your frontend URL
+  credentials: true
+}));
+app.use(bodyParser.json());
+app.use(session({
+  secret: "super_secret_school_key", // change this to something random
+  resave: false,
+  saveUninitialized: true,
+  cookie: { httpOnly: true } // secure:true if you use HTTPS
+}));
+
+// --- Admin password (change before use!) ---
+const ADMIN_HASH = bcrypt.hashSync("SchoolAdmin123", 10);
+
+// --- Login route ---
+app.post("/login", async (req, res) => {
+  const { password } = req.body;
+  if (!password) return res.status(400).json({ error: "Password required" });
+
+  const match = await bcrypt.compare(password, ADMIN_HASH);
+  if (!match) return res.status(401).json({ error: "Invalid password" });
+
+  req.session.isAdmin = true;
+  res.json({ success: true });
+});
+
+// --- Logout route ---
+app.post("/logout", (req, res) => {
+  req.session.destroy(() => res.json({ success: true }));
+});
+
+// --- Middleware for protected routes ---
+function requireAdmin(req, res, next) {
+  if (!req.session.isAdmin) return res.status(403).json({ error: "Not authorized" });
+  next();
+}
+
+// --- Public: return VAPID public key ---
+app.get("/vapidPublicKey", (req, res) => res.send(VAPID_PUBLIC));
+
+// --- Public: save subscription ---
+app.post("/subscribe", (req, res) => {
+  const sub = req.body;
+  if (!sub || !sub.endpoint) return res.status(400).json({ error: "Invalid subscription" });
+  if (!subscriptions.find(s => s.endpoint === sub.endpoint)) {
+    subscriptions.push(sub);
+    saveSubs();
+  }
+  res.status(201).json({});
+});
+
+// --- Protected: send notification ---
+app.post("/notify", requireAdmin, async (req, res) => {
+  const payload = JSON.stringify({
+    title: req.body.title || "New School Update",
+    body: req.body.body || "Check announcements/polls.",
+    url: req.body.url || "/"
+  });
+
+  const results = await Promise.all(subscriptions.map(async (sub, i) => {
+    try {
+      await webpush.sendNotification(sub, payload);
+      return { ok: true };
+    } catch (err) {
+      if (err.statusCode === 410 || err.statusCode === 404) {
+        subscriptions.splice(i, 1);
+        saveSubs();
+      }
+      return { ok: false, error: err.toString() };
+    }
+  }));
+
+  res.json({ success: true, results });
+});
+
+// --- Start server ---
 const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true, limit: '100mb' }));
-app.use(bodyParser.json({ limit: '100mb' }));
-app.use('/', express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Ensure folders exist
-const ensureDir = (dir) => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-};
-ensureDir(path.join(__dirname, 'uploads/images'));
-ensureDir(path.join(__dirname, 'uploads/videos'));
-ensureDir(path.join(__dirname, 'data'));
-
-const contentPath = path.join(__dirname, 'data', 'content.json');
-
-// Multer setup
-const imageStorage = multer.diskStorage({
-  destination: './uploads/images',
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
-const videoStorage = multer.diskStorage({
-  destination: './uploads/videos',
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
-const bgStorage = multer.diskStorage({
-  destination: './uploads',
-  filename: (req, file, cb) => cb(null, 'background.jpg')
-});
-
-const uploadImages = multer({ storage: imageStorage }).array('images');
-const uploadVideo = multer({
-  storage: videoStorage,
-  limits: { fileSize: 500 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const allowed = ['video/mp4', 'video/webm', 'video/ogg'];
-    if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('Only MP4, WebM, and OGG formats are allowed.'));
-  }
-}).single('video');
-const uploadBackground = multer({ storage: bgStorage }).single('background');
-
-// Upload image
-app.post('/upload-image', (req, res) => {
-  uploadImages(req, res, (err) => {
-    if (err || !req.files) return res.status(500).send({ error: err?.message || 'No files uploaded' });
-    const urls = req.files.map(file => `/uploads/images/${file.filename}`);
-    let content = fs.existsSync(contentPath) ? JSON.parse(fs.readFileSync(contentPath, 'utf8')) : {};
-    content.galleryImages = Array.from(new Set([...(content.galleryImages || []), ...urls]));
-    fs.writeFileSync(contentPath, JSON.stringify(content, null, 2));
-    res.send({ files: urls });
-  });
-});
-
-// Upload video
-app.post('/upload-video', (req, res) => {
-  uploadVideo(req, res, (err) => {
-    if (err) return res.status(500).send({ error: err.message });
-    if (!req.file) return res.status(400).send({ error: 'No video file uploaded.' });
-
-    const url = `/uploads/videos/${req.file.filename}`;
-    let content = fs.existsSync(contentPath) ? JSON.parse(fs.readFileSync(contentPath, 'utf8')) : {};
-    content.galleryVideos = Array.from(new Set([...(content.galleryVideos || []), url]));
-    fs.writeFileSync(contentPath, JSON.stringify(content, null, 2));
-    res.send({ file: url });
-  });
-});
-
-// Upload background
-app.post('/upload-background', (req, res) => {
-  uploadBackground(req, res, (err) => {
-    if (err || !req.file) return res.status(500).send({ error: err?.message || 'No file uploaded' });
-    let content = fs.existsSync(contentPath) ? JSON.parse(fs.readFileSync(contentPath, 'utf8')) : {};
-    content.backgroundImage = '/uploads/background.jpg';
-    fs.writeFileSync(contentPath, JSON.stringify(content, null, 2));
-    res.send({ file: '/uploads/background.jpg' });
-  });
-});
-
-// Save text content
-app.post('/save-content', (req, res) => {
-  const { section, title, desc } = req.body;
-  let content = fs.existsSync(contentPath) ? JSON.parse(fs.readFileSync(contentPath, 'utf8')) : {};
-  content[section] = { title, desc };
-  fs.writeFileSync(contentPath, JSON.stringify(content, null, 2));
-  res.send({ message: 'Content saved.' });
-});
-
-// Submit leave (with persistent cooldown)
-app.post('/submit-leave', (req, res) => {
-  const { name, roll } = req.body;
-  if (!name || !roll) return res.status(400).send({ error: 'Missing name or roll' });
-
-  const key = `${name}_${roll}`;
-  const now = Date.now();
-  const cooldown = 24 * 60 * 60 * 1000;
-
-  let content = fs.existsSync(contentPath)
-    ? JSON.parse(fs.readFileSync(contentPath, 'utf8'))
-    : {};
-
-  if (!content.leaveRecords) content.leaveRecords = {};
-
-  const lastSubmit = content.leaveRecords[key];
-
-  if (lastSubmit && now - lastSubmit < cooldown) {
-    const remaining = cooldown - (now - lastSubmit);
-    return res.status(429).send({ error: 'Leave already submitted', remaining });
-  }
-
-  content.leaveRecords[key] = now;
-  fs.writeFileSync(contentPath, JSON.stringify(content, null, 2));
-  res.send({ message: 'Leave submitted successfully', nextAllowed: now + cooldown });
-});
-
-// Leave status (for frontend to check cooldown after refresh)
-app.get('/leave-status', (req, res) => {
-  const { name, roll } = req.query;
-  if (!name || !roll) return res.status(400).send({ error: 'Missing name or roll' });
-
-  const key = `${name}_${roll}`;
-  const now = Date.now();
-  const cooldown = 24 * 60 * 60 * 1000;
-
-  let content = fs.existsSync(contentPath)
-    ? JSON.parse(fs.readFileSync(contentPath, 'utf8'))
-    : {};
-
-  const lastSubmit = content.leaveRecords?.[key];
-
-  if (!lastSubmit) return res.send({ canSubmit: true });
-
-  const remaining = cooldown - (now - lastSubmit);
-  if (remaining > 0) {
-    res.send({ canSubmit: false, remaining });
-  } else {
-    res.send({ canSubmit: true });
-  }
-});
-
-// Load content
-app.get('/load-content', (req, res) => {
-  try {
-    const content = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
-    res.send(content);
-  } catch (err) {
-    res.status(500).send({ error: 'Error loading content.' });
-  }
-});
-
-// Delete image
-app.post('/delete-image', (req, res) => {
-  const { url } = req.body;
-  const filename = path.basename(url);
-  const filepath = path.join(__dirname, 'uploads/images', filename);
-  try {
-    if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
-    let content = fs.existsSync(contentPath) ? JSON.parse(fs.readFileSync(contentPath, 'utf8')) : {};
-    content.galleryImages = (content.galleryImages || []).filter(img => img !== url);
-    fs.writeFileSync(contentPath, JSON.stringify(content, null, 2));
-    res.send({ success: true });
-  } catch (err) {
-    res.status(500).send({ error: 'Failed to delete image' });
-  }
-});
-
-// Delete video
-app.post('/delete-video', (req, res) => {
-  const { url } = req.body;
-  const filename = path.basename(url);
-  const filepath = path.join(__dirname, 'uploads/videos', filename);
-  try {
-    if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
-    let content = fs.existsSync(contentPath) ? JSON.parse(fs.readFileSync(contentPath, 'utf8')) : {};
-    content.galleryVideos = (content.galleryVideos || []).filter(vid => vid !== url);
-    fs.writeFileSync(contentPath, JSON.stringify(content, null, 2));
-    res.send({ success: true });
-  } catch (err) {
-    res.status(500).send({ error: 'Failed to delete video' });
-  }
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ Secure backend running at http://localhost:${PORT}`));
