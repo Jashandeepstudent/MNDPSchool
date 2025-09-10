@@ -10558,23 +10558,49 @@ if (responses.length) {
 
 
 
+// ------------------- Profile Check ------------------- //
 
-// ------------------- Profile Check -------------------
-// Step 1: Person profiles
+// Teacher surname + first name aliases
+const surnameAliases = {
+  "dheeraj sir": ["dheeraj choudhary", "dheeraj"],
+  "shivani": ["shivani sharma", "shivani"],
+  "bharti": ["bharti chib", "bharti"],
+  "mamta": ["mamta chib", "mamta"],   // ✅ fixed spelling
+  "kashika": ["kashika rajput", "kashika"],
+  "sudama": ["sudama bhagat", "sudama"],
+  "deepikee": ["deepikee bhagat", "deepikee"],
+  "sumegha": ["sumegha bhagat", "sumegha"],
+  "gurwinder": ["gurwinder kour", "gurwinder"],
+  "bindu": ["bindu sharma", "bindu"],
+  "manju": ["manju rajput", "manju"],
+  "muskan": ["muskan gupta", "muskan"],
+};
+
+// Extend profiles with surnames + first names
+for (let key in surnameAliases) {
+  const baseProfile = profiles[key];
+  if (baseProfile) {
+    for (let alias of surnameAliases[key]) {
+      profiles[alias] = baseProfile; // copy same profile answer
+    }
+  }
+}
+
+// Matching system
 for (let person in profiles) {
   const normKey = normalize(person);
 
-  // Strict matching conditions
   if (
-    lowerQ === normKey || // exact match (just the name)
-    lowerQ === `who is ${normKey}` ||
-    lowerQ === `tell me about ${normKey}`
+    lowerQ === normKey ||                       // exact match
+    lowerQ === `who is ${normKey}` ||           // "who is ..."
+    lowerQ === `tell me about ${normKey}`       // "tell me about ..."
   ) {
     const ans = profiles[person];
     if (Array.isArray(ans)) return randomPick(ans);
     return ans;
   }
 }
+
 
 // Step 3: GK fuzzy search
 let gkMatches = [];
