@@ -7219,13 +7219,14 @@ Also, sugarcoating? Nah… I’m just sprinkling some extra 🍭 respect.`
     "chhatra pratigya",
     "pledge",
     "national pledge",
-    "bharat pledge"
+    "bharat pledge",
+    "chatra pratigya"
   ],
   answer: function(query) {
     const lower = query.toLowerCase();
 
     // Check if query is related to pledge
-    const isPledge = /chhatra pratigya|pledge|national pledge|bharat pledge/i.test(lower);
+    const isPledge = /chhatra pratigya|pledge|national pledge|chatra pratigya|bharat pledge/i.test(lower);
     if (!isPledge) return "";
 
     let response = "Check this out — **National Pledge / Chhatra Pratigya** 🇮🇳\n\n";
