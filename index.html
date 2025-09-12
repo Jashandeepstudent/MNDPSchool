@@ -6572,35 +6572,20 @@ const knowledge = [
   keywords: ["menu", "food menu", "what is menu", "tell me menu", "give me menu"],
   answer: function (query) {
     const menuData = {
-      "17/07/2025": "THURSDAY - LADY FINGER - भिंडी",
-      "18/07/2025": "FRIDAY - NUTRI - न्यूट्री",
-      "19/07/2025": "SATURDAY - DRY BLACK GRAM - सूखे काले चने",
-      "21/07/2025": "MONDAY - BOTTLE GOURD - घीया",
-      "22/07/2025": "TUESDAY - DRY PEAS WITH POTATOES - मटर आलू के साथ",
-      "23/07/2025": "WEDNESDAY - STUFFED PRANTHA WITH PICKLE - पराँठा अचार के साथ",
-      "04/08/2025": "MONDAY - BITTER GOURD - करेला",
-      "05/08/2025": "TUESDAY - WHITE GRAM - सफ़ेद चने",
-      "06/08/2025": "WEDNESDAY - PULAAV - पुलाव",
-      "07/08/2025": "THURSDAY - RIDGE GOURD - तोरी",
-      "09/08/2025": "SATURDAY - RAKSHA BANDHAN (HOLIDAY)",
-      "11/08/2025": "MONDAY - CAPSICUM WITH POTATOES - आलू के साथ शिमला मिर्च",
-      "12/08/2025": "TUESDAY - POTATO - आलू",
-      "13/08/2025": "WEDNESDAY - NOOL KHOL OR LADY FINGER - कढ़म या भिंडी",
-      "14/08/2025": "THURSDAY - CHEESE BHURJI - पनीर भुर्जी",
-      "15/08/2025": "FRIDAY - INDEPENDENCE DAY (HOLIDAY)",
-      "16/08/2025": "SATURDAY - JANMASHTHAMI (HOLIDAY)",
-      "18/08/2025": "MONDAY - TARO ROOT OR COLOCASIA - अरबी",
-      "19/08/2025": "TUESDAY - BAINGAN/BRINJAL BHARTA - बैंगन भरता",
-      "20/08/2025": "WEDNESDAY - ROUND MELON - टिंडा",
-      "21/08/2025": "THURSDAY - BITTER GOURD - करेला",
-      "22/08/2025": "FRIDAY - CHILDREN’S CHOICE - बच्चों की मर्जी से कोई भी डिश",
-      "23/08/2025": "SATURDAY - TARO ROOT OR COLOCASIA - अरबी",
-      "25/08/2025": "MONDAY - LADY FINGER - भिंडी",
-      "26/08/2025": "TUESDAY - BOTTLE GOURD - घीया",
-      "27/08/2025": "WEDNESDAY - NUTRI AND CHOORA PEAS - (चूरा न्यूट्री मटर के साथ)",
-      "28/08/2025": "THURSDAY - CAPSICUM WITH POTATOES - आलू के साथ शिमला मिर्च",
-      "29/08/2025": "FRIDAY - PULAAV - पुलाव",
-      "30/08/2025": "SATURDAY - BLACK GRAM - काले चने"
+      "15/09/2025": "MONDAY - LADY FINGER - भिंडी",
+      "16/09/2025": "TUESDAY - NUTRI - न्यूट्री",
+      "17/09/2025": "WEDNESDAY - RIDGE GOURD - तोरी",
+      "18/09/2025": "THURSDAY - KNOL KHOL - कड़म",
+      "19/09/2025": "FRIDAY - BOTTLE GOURD - घीया",
+      "20/09/2025": "SATURDAY - BLACK GRAM - काले चने",
+      "22/09/2025": "MONDAY - BITTER GOURD - करेला",
+      "23/09/2025": "TUESDAY - HOLIDAY",
+      "24/09/2025": "WEDNESDAY - TARO ROOT OR COLOCASIA - अरबी",
+      "25/09/2025": "THURSDAY - BAINGAN/BRINJAL BHARTA - बैंगन भरता",
+      "26/09/2025": "FRIDAY - NUTRI AND CHOORA PEAS - (चूरा न्यूट्री को मटर के साथ मिला कर सब्ज़ी)",
+      "27/09/2025": "SATURDAY - BITTER GOURD - करेला",
+      "29/09/2025": "MONDAY - CAPSICUM WITH POTATOES - आलू के साथ शिमला मिर्च",
+      "30/09/2025": "TUESDAY - WHITE GRAM - सफ़ेद चने"
     };
 
     query = query.toLowerCase();
@@ -6613,50 +6598,62 @@ const knowledge = [
       return `${dd}/${mm}/${yyyy}`;
     }
 
-    // Handle "today" and "tomorrow"
+    // Handle "today"
     if (query.includes("today")) {
       let today = new Date();
       let todayKey = formatDate(today);
-      if (menuData[todayKey]) {
-        return `📅 Today (${todayKey}) - ${menuData[todayKey]}`;
-      } else {
-        return `😔 Sorry, no menu scheduled for today (${todayKey}).`;
-      }
+      if (menuData[todayKey]) return `📅 Today (${todayKey}) - ${menuData[todayKey]}`;
+      return `😔 Sorry, no menu scheduled for today (${todayKey}).`;
     }
 
+    // Handle "tomorrow"
     if (query.includes("tomorrow")) {
       let tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       let tomorrowKey = formatDate(tomorrow);
-      if (menuData[tomorrowKey]) {
-        return `📅 Tomorrow (${tomorrowKey}) - ${menuData[tomorrowKey]}`;
-      } else {
-        return `😔 Sorry, no menu scheduled for tomorrow (${tomorrowKey}).`;
+      if (menuData[tomorrowKey]) return `📅 Tomorrow (${tomorrowKey}) - ${menuData[tomorrowKey]}`;
+      return `😔 Sorry, no menu scheduled for tomorrow (${tomorrowKey}).`;
+    }
+
+    // If asking by weekday name (like monday, tuesday, etc.)
+    const weekdays = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
+    for (let i=0; i<weekdays.length; i++) {
+      if (query.includes(weekdays[i])) {
+        let today = new Date();
+        let target = new Date(today);
+        // Move to the *next* requested weekday
+        while (target.getDay() !== i || target <= today) {
+          target.setDate(target.getDate() + 1);
+        }
+        let key = formatDate(target);
+        if (menuData[key]) return `📅 ${weekdays[i].toUpperCase()} (${key}) - ${menuData[key]}`;
+        return `😔 Sorry, no menu scheduled for ${weekdays[i]} (${key}).`;
+      }
+    }
+
+    // If specific date asked (like "19 september", "19th september", "19th")
+    const dateMatch = query.match(/(\d{1,2})(st|nd|rd|th)?\s*(\w+)?\s*(\d{4})?/);
+    if (dateMatch) {
+      let day = dateMatch[1].padStart(2, "0");
+      let month = dateMatch[3] ? dateMatch[3].toLowerCase() : "september"; // default to september
+      let year = dateMatch[4] || "2025"; // default year
+
+      const months = { 
+        "july": "07", "jul": "07", 
+        "august": "08", "aug": "08",
+        "september": "09", "sep": "09"
+      };
+
+      if (months[month]) {
+        let fullDate = `${day}/${months[month]}/${year}`;
+        if (menuData[fullDate]) return `📅 ${fullDate} - ${menuData[fullDate]}`;
       }
     }
 
     // If just asking for full menu
     if (/menu\b/.test(query) && !/\d{1,2}/.test(query)) {
-      return "📋 MENU OF MEALS : FROM 17TH JULY TO 30TH AUGUST, 2025\n\n" + 
-        Object.entries(menuData)
-          .map(([date, item]) => `${date} - ${item}`)
-          .join("\n");
-    }
-
-    // If specific date asked (like 22 july 2025)
-    const dateMatch = query.match(/(\d{1,2})\s*(\/|-|\s)?\s*(\w+)\s*(2025)?/);
-    if (dateMatch) {
-      let day = dateMatch[1].padStart(2, "0");
-      let month = dateMatch[3].toLowerCase();
-
-      const months = { "july": "07", "jul": "07", "august": "08", "aug": "08" };
-
-      if (months[month]) {
-        let fullDate = `${day}/${months[month]}/2025`;
-        if (menuData[fullDate]) {
-          return `📅 ${fullDate} - ${menuData[fullDate]}`;
-        }
-      }
+      return "📋 MENU OF MEALS : FROM 15TH SEPTEMBER TO 30TH SEPTEMBER, 2025\n\n" + 
+        Object.entries(menuData).map(([date, item]) => `${date} - ${item}`).join("\n");
     }
 
     // Fallback
