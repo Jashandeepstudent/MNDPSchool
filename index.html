@@ -1970,11 +1970,39 @@ function runBotReview(leave) {
   }
 
   // --- Class Check ---
-  const validClasses = ["Nursery","1","2","3","4","5","6","7","8","9","10"];
-  if (!validClasses.includes(leave.className)) {
-    suspicious = true;
-    errors.className = "Class must be Nursery or between 1–10.";
-  }
+const validClasses = ["Nursery","1","2","3","4","5","6","7","8","9","10"];
+
+// Map variations (numbers with suffixes, words → digits)
+const classAliases = {
+  "nursery": "Nursery",
+  "1st": "1", "first": "1", "one": "1",
+  "2nd": "2", "second": "2", "two": "2",
+  "3rd": "3", "third": "3", "three": "3",
+  "4th": "4", "fourth": "4", "four": "4",
+  "5th": "5", "fifth": "5", "five": "5",
+  "6th": "6", "sixth": "6", "six": "6",
+  "7th": "7", "seventh": "7", "seven": "7",
+  "8th": "8", "eighth": "8", "eight": "8",
+  "9th": "9", "ninth": "9", "nine": "9",
+  "10th": "10", "tenth": "10", "ten": "10"
+};
+
+function normalizeClass(input) {
+  if (!input) return "";
+  let lower = input.toString().trim().toLowerCase();
+  // Replace known aliases
+  return classAliases[lower] || input;
+}
+
+let normalizedClass = normalizeClass(leave.className);
+
+if (!validClasses.includes(normalizedClass)) {
+  suspicious = true;
+  errors.className = "Class must be Nursery or between 1–10.";
+} else {
+  leave.className = normalizedClass; // store normalized value
+}
+
 
   // --- Section Check ---
   if (!/^[A-G]$/i.test(leave.section)) {
@@ -2383,14 +2411,39 @@ function runBotReview(leave) {
     errors.name = "Enter a valid name (letters only, optional second word).";
   }
   // --- Class Check ---
-  const validClasses = ["Nursery","1","2","3","4","5","6","7","8","9","10"];
-  if (!leave.className) {
-    suspicious = true;
-    errors.className = "Class is required.";
-  } else if (!validClasses.includes(leave.className)) {
-    suspicious = true;
-    errors.className = "Class must be Nursery or between 1–10.";
-  }
+const validClasses = ["Nursery","1","2","3","4","5","6","7","8","9","10"];
+
+// Map variations (numbers with suffixes, words → digits)
+const classAliases = {
+  "nursery": "Nursery",
+  "1st": "1", "first": "1", "one": "1",
+  "2nd": "2", "second": "2", "two": "2",
+  "3rd": "3", "third": "3", "three": "3",
+  "4th": "4", "fourth": "4", "four": "4",
+  "5th": "5", "fifth": "5", "five": "5",
+  "6th": "6", "sixth": "6", "six": "6",
+  "7th": "7", "seventh": "7", "seven": "7",
+  "8th": "8", "eighth": "8", "eight": "8",
+  "9th": "9", "ninth": "9", "nine": "9",
+  "10th": "10", "tenth": "10", "ten": "10"
+};
+
+function normalizeClass(input) {
+  if (!input) return "";
+  let lower = input.toString().trim().toLowerCase();
+  // Replace known aliases
+  return classAliases[lower] || input;
+}
+
+let normalizedClass = normalizeClass(leave.className);
+
+if (!validClasses.includes(normalizedClass)) {
+  suspicious = true;
+  errors.className = "Class must be Nursery or between 1–10.";
+} else {
+  leave.className = normalizedClass; // store normalized value
+}
+
 
   // --- Roll Number Check ---
   if (!leave.roll) {
@@ -6287,6 +6340,223 @@ const knowledge = [
     "Haha yeah, you could say Jashandeep adopted me 🤖 But don’t worry, I don’t actually have human feelings!"
   ]
 },
+
+{
+  keywords: [
+    "poem chaos of 8th class",
+    "poem chaos verses of 8th class",
+    "40 verses of poem chaos",
+    "pronunciation of 40 verses of poem chaos"
+  ],
+  answer: `📖 **Poem – The Chaos (40 Verses, Pronunciation Guide)**  
+
+ 1.⁠ ⁠Dearest creature (ख़्रीएचर) in creation (ख़्रीएशन)  
+   Studying English pronunciation, (प्रनन्सीएशन)  
+   I will (ऑयल) teach you in my verse (वर्स)  
+   Sounds like corpse,(खोपस) corps,(खोर) horse (होर्स) and worse (वर्स)  
+
+ 2.⁠ ⁠I will (ऑयल) keep you, Susy,(सूज़ी) busy, (बिज़ी)  
+   Make your head with heat grow dizzy; (डिज़ी)  
+   Tear (ठियर) in eye, your dress you'll (यूल) tear; (ठेयर)  
+   Queer,(खवियर) fair seer, (सीयर) hear (हेयर) my prayer.  
+
+ 3.⁠ ⁠Pray, console(खाँसोल) your loving poet, (पोयट)  
+   Make my coat look new, dear, sew (सो) it!  
+   Just compare heart,(हार्ट) hear and heard, (हर्ड)  
+   Dies (डाइज़) and diet,( डायट) lord (लोर्ड) and word (वर्ड)  
+
+ 4.⁠ ⁠Sword (सोर्ड) and sward, (स्वॉर्ड) (रीठेन) retain and Britain (ब्रिठन)  
+  (Mind the latter (लैटर) how it's written).  
+   Made (मेड) has not the sound of bade, (बैड)  
+   Say-said,(सैड) pay-paid, (पेड) laid (लेड) but plaid. (प्लैड)  
+
+ 5.⁠ ⁠Now I surely will not plague (पलैग) you  
+    With such words as vague (वेग) and ague,( एग्यू)  
+   But be careful how you speak,  
+   Say: gush(,गश) bush,(बुश) steak, (स्ठीख) streak, (स्ठ्रीख) break, bleak ,(ब्लीक़)  
+
+ 6.⁠ ⁠Previous, (प्रीवीयस) precious, (प्रीशियस)  fuchsia, via (फ़्यूयिया-वाया)  
+      Recipe, (रेसेपी) pipe, studding-sail, (स्टनसिल) choir; (खवायर)  
+     Woven, (वूवन) oven, (ओवन) how and low,  
+     Script, (स्क्रिप्ट)receipt,( रीसीट)shoe, poem,( पोम) toe.(ठो)  
+
+ 7.⁠ ⁠Say, expecting fraud  (फ्राड) and trickery:( ठ्रिखरि)  
+      Daughter, laughter (लाफ़्टर) and Terpsichore, (ठ्पसीख़्री)  
+      Branch, (ब्रेंच ) ranch, (रैंच) measles,(मीज़ल्ज़)  topsails, (ठोपसेल्स) aisles, (आयल्ज़)  
+      Missiles, (मिज़ाइल्ज़) similes, (सिम्मीलीज़) reviles. (रेवायल्ज़)  
+
+ 8.⁠ ⁠Wholly,( हौल्ली) holly, (हाली) signal, (सिग्नल) signing, (साइनिंग)  
+    Same, examining, (इग्ज़ैमिनिंग) but mining,(माइनिंग)  
+   Scholar, (सखोलर)vicar, (विखर) and cigar,(सिगार)  
+   Solar,(सोलर) mica, (माइका) war and far.  
+
+ 9.⁠ ⁠From "desire": )( डिज़ाइअर)desirable (डिज़ायरेबल)-admirable (ऐडमीरेबल)from "admire", (ऐडमाइयर)  
+    Lumber (लम्बर) , plumber, (पलहमर) bier,( बीयर) but brier, ब्रायर)  
+   Topsham, (ठापसम) brougham, (ब्रूम) renown, but known,  
+   Knowledge, done, (डन) lone, (लोन) gone,(गोन) none, (नन) tone, (ठोन)  
+
+10.⁠ ⁠One, anemone, (ऐनामिनी) Balmoral, (बैल्मोरल)  
+     Kitchen, (खिचन) lichen,(लाइखन)  laundry, (लॉंड्री) laurel.(लोरल)  
+     Gertrude,( गटरुड) German, (जर्मन) wind (विंड)and wind,( वाइंड)  
+     Beau,( बो) kind, (खाइंड) kindred,(खिंडरड) queue, (ख्यू) mankind,(मैनखाइंड)  
+
+11.⁠ ⁠Tortoise,(ठोरठेस/ठोठेस)  turquoise, (ठरख्वाय्स)chamois-leather,(शमिया-लैदर)  
+     Reading, (रीडिंग) Reading,(रैडिंग) heathen,(हीदन)  heather.(हैदर)  
+    This phonetic (फनिठिक) labyrinth लैब्रिन्थ)  
+    Gives moss,(मास) gross, (ग्रैस) brook,(ब्रुक) brooch, (ब्रूच) ninth,नाइन्थ) plinth.(प्लिन्थ)  
+
+12.⁠ ⁠Have you ever yet endeavoured (एंडेवर्ड)  
+     To pronounce revered (रीवीयर्ड) and severed,(सैवर्ड)  
+     Demon, (डीमन) lemon, (लैमन) ghoul, (घूल) foul,(फ़ाउल) soul, (साउल/सोल)  
+     Peter, (पहीठर) petrol (पैठ्रोल) and patrol (पेठ्रोल)?  
+
+13.⁠ ⁠Billet (बिलहट) does not end like ballet;(बैले)  
+      Bouquet,(बुके)  wallet, (वालेट) mallet,(मैंलेट) chalet.(शैले)  
+      Blood and flood are not like food,  
+      Nor is mould (मोल्ड) like should and would.  
+
+14.⁠ ⁠Banquet (बैनख्विठ) is not nearly parquet, (पारखे)  
+     Which exactly rhymes with khaki.(ख़ाकी)  
+     Discount, (डिस्काउंट) viscount,(वाईखोऊँठ) load and broad,  
+     Toward, to forward, to reward,  
+
+15.⁠ ⁠Ricocheted (रिखोशेड) and crocheting, (ख़्रोशेइंग)croquet?(खरूखे)  
+     Right! Your pronunciation's OK.  
+     Rounded, (राउंडिड) wounded, (वूँडिड) grieve (ग्रीव)and sieve,(सिव)  
+     Friend and fiend, (फींड) alive and live.  
+
+16.⁠ ⁠Is your r correct in higher?  
+     Keats (खीट्स) asserts (ऐज़र्टस) it rhymes Thalia.(थालिया)  
+     Hugh, (ह्यू)but hug, हग) and hood, but hoot,  
+     Buoyant, (बोयंठ) minute, (मिनट) but minute.(माइन्यूट)  
+
+17.⁠ ⁠Say abscission (ऐबसीशन) with precision (परैसीयन)  
+     Now: position and transition; (ट्रैंज़िशन)  
+     Would it tally (ठैली) with my rhyme (राईम)  
+     If I mentioned paradigm? )(पहराड़ाइम)  
+
+18.⁠ ⁠Twopence, (ठपेन्स) threepence, (थरैपेंस) tease are easy,  
+     But cease,(सीस) crease, (ख़्रीस) grease (ग्रीस) and greasy?(ग्रिसि)  
+     Cornice, (खोरनिस) nice, valise, (वलीस)revise, (रीवाईज़)  
+     Rabies, (रेबीज़) but lullabies.लल्लाबाइस)  
+
+19.⁠ ⁠Of such puzzling (पज़्लिंग) words as nauseous,(नाशियस)  
+     Rhyming well with cautious, (खाशस) tortious, (ठारशस)  
+     You'll envelop (इनवेलोप) lists, I hope,  
+     In a linen(लिनन) envelope (इनवेलोप)  
+
+20.⁠ ⁠Would you like some more? You'll have it!  
+       Affidavit, (ऐफ़्फ़ीडेविट) David, डेविड) davit.(डैविट)  
+       To abjure, (ऐबज्योर)to perjure.(पर्जर) Sheik (शीक)  
+       Does not sound like Czech (चेक) but ache.(एख)  
+
+
+21. Say inveigh (इन्वे), neigh (ने), but inveigle (इन्वीगल),  
+    Make the latter rhyme with eagle (ईगल).  
+    Mind! Meandering (मीएंडरिंग) but mean (मीन),  
+    Valentine (वैलनटाइन) and magazine (मैगज़ीन).  
+
+22. And I bet you, dear, a penny (पैनी),  
+    You say mani- (मनी) like many (मेनी);  
+    Which is wrong. Say rapier (रेपियर), pier (पीयर),  
+    Tier (टायर – one who ties), but tear (टीयर).  
+
+23. Arch (आर्च), archangel (आर्क-एन्जल); pray, does erring (एरिंग)  
+    Rhyme with herring (हेरिंग) or with stirring (स्टरिंग)?  
+    Prison (प्रिज़न), bison (बायसन), treasure trove (ट्रेशर ट्रोव),  
+    Treason (ट्रीज़न), hover (हॉवर), cover (कवर), cove (कोव).  
+
+24. Perseverance (पर्सवीरन्स), severance (सेवरन्स), ribald (रिबॉल्ड),  
+    Rhymes with piebald (पाइबॉल्ड), but with nibbled (निब्ल्ड)?  
+    Phaeton (फेटन), paean (पियन), gnat (नैट), ghat (घाट),  
+    Laugh (लाफ), draught (ड्राफ्ट), bouquet (बुके), and debt (डेट).  
+
+25. Mind the r in rarer (रेयरर), rarer (रेयरर),  
+    You’ll be wrong, my fairer sharer.  
+    Dost (डोस्ट) thou think it’s right and proper,  
+    When I ask thee to say copper (कॉप्पर)?  
+
+26. Pudding (पुडिंग), putting (पुटिंग), putting (प्युटिंग).  
+    Yes, at golf it rhymes with shutting.  
+    Respite (रेस्पाइट), spite (स्पाइट), consent (कन्सेंट), resent (रीज़ेंट),  
+    Liable (लायबल), but parliament (पार्लियामेंट).  
+
+27. Seven is right, but so is even (ईवन),  
+    Hyphen (हाइफन), roughen (रफन), nephew (नेफ्यू).  
+    With the accent on the second,  
+    Say: perfidious (परफिडियस) or treasoned.  
+
+28. Watch out how you say: physique (फिज़ीक),  
+    Epaulet (एपॉले), eider (आइडर), freak (फ्रीक).  
+    Gaelic (गेलिक), Arabic (एराबिक), Pacific (पसिफिक),  
+    Science (साइंस), conscience (कॉन्शन्स), scientific (साइंटिफिक).  
+
+29. Liberty (लिबर्टी), library (लाइब्रेरी), heave (हीव) and heaven (हेवन),  
+    Rachel (रेचल), ache (एक), moustache (मस्टैश), eleven (इलेवन).  
+    We say hallowed (हैलोड), but allowed (अलाउड),  
+    People (पीपल), leopard (लेपर्ड), towed (टोव्ड) and vowed (वाउड).  
+
+30. Mark the difference, moreover,  
+    Between mover (मूवर), plover (प्लोवर), Dover (डोवर).  
+    Leeches (लीचेज़), breeches (ब्रीचेज़), wise (वाइज), precise (प्रिसाइस),  
+    Chalice (चैलिस), but police (पुलीस) and lice (लाइस).  
+
+31. Camel (कैमल), constable (कॉन्स्टेबल), unstable (अनस्टेबल),  
+    Principle (प्रिन्सिपल), disciple (डिसाइपल), label (लेबल).  
+    Petal (पेटल), penal (पीनल), and canal (कनाल),  
+    Wait! Surprise (सप्राइज़), plies (प्लाइज़), promise (प्रॉमिस), pal (पैल).  
+
+32. Woven (वोवन), oven (अवन), how and low,  
+    Script (स्क्रिप्ट), receipt (रसीट), show (शो), poem (पोएम) and toe (टो).  
+    Say: expected (एक्स्पेक्टिड), but excepted (एक्सेप्टिड),  
+    Passed (पास्ट) and last (लास्ट), but blessed (ब्लेस्ट) and wasted (वेस्टिड).  
+
+33. Bow (बो) differs from bow (बाउ),  
+    And row (रो) differs from row (राउ).  
+    Ever, fever (फीवर), neither, leisure (लेजर),  
+    Skies (स्काइज), but guise (गाइज), and lies (लाइज) with measure (मेझर).  
+
+34. Think of psalm (साम) and calm (काम), and balm (बाम),  
+    But palm (पाम) and qualm (क्वाम) and charm (चार्म).  
+    Judge (जज), just (जस्ट), lodge (लॉज) and judge;  
+    But fudge (फज), budge (बज), and nudge (नज).  
+
+35. Conquer (कॉंकर), conquest (कॉन्क्वेस्ट), vase (वास), phase (फेज़),  
+    Fanatic (फैनेटिक), but fanatic’s praise (प्रेज़).  
+    Plough (प्लाउ), drought (ड्राउट), but enough (इनफ),  
+    Through (थ्रू), bough (बाउ), cough (कॉफ), hough (हॉफ), or tough (टफ).  
+
+36. Say: fatigued (फटीग्ड), but antique (एण्टिक),  
+    Unique (यूनिक), but technique (टेक्नीक).  
+    Shone (शोन), bone (बोन), alone (अलोन), gone (गॉन),  
+    None (नन), done (डन), but gone (गॉन), along (अलॉन्ग).  
+
+37. Intelligence (इंटेलिजेन्स), indulgence (इंडल्जेन्स), and diligence (डिलिजेन्स),  
+    Résumé (रेज़्यूमे), but prestige (प्रेस्टीज).  
+    Sew (सो), sow (सौ), and sow (सो), and sow (सौ),  
+    But row (रो), row (रो), and row (राउ).  
+
+38. Say: oppress (ओप्रेस), impress (इम्प्रेस),  
+    Address (एड्रेस), redress (रीड्रेस).  
+    Blessed (ब्लेस्ट), but rest (रेस्ट), resist (रज़िस्ट),  
+    Consist (कन्सिस्ट), desist (डीज़िस्ट).  
+
+39. Remember (रिमेम्बर), member (मेंबर), ember (एम्बर),  
+    Timber (टिम्बर), limber (लिम्बर), chamber (चेम्बर).  
+    Clamber (क्लैम्बर), amber (ऐम्बर), number (नम्बर),  
+    Slumber (स्लम्बर), cucumber (क्युकम्बर).  
+
+40. Finally, which rhymes with enough (इनफ) –  
+    Though (थो), through (थ्रू), plough (प्लाउ), cough (कॉफ), hough (हॉफ), or tough (टफ)?  
+    Hiccough (हिकप) has the sound of cup (कप)…  
+    My advice is — GIVE IT UP! 🚫  
+
+
+
+
+✨ This is the **classic “Chaos” poem** (used in English pronunciation practice). Each line is given with Hindi-style phonetic hints to make reading smoother.`
+},
+
 
 
 
